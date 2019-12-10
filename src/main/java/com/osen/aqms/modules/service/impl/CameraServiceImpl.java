@@ -2,7 +2,7 @@ package com.osen.aqms.modules.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.modules.entity.system.Camera;
-import com.osen.aqms.modules.mapper.CameraMapper;
+import com.osen.aqms.modules.mapper.system.CameraMapper;
 import com.osen.aqms.modules.service.CameraService;
 import org.springframework.stereotype.Service;
 

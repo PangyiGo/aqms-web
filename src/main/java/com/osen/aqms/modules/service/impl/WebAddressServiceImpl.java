@@ -2,7 +2,7 @@ package com.osen.aqms.modules.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.modules.entity.address.WebAddress;
-import com.osen.aqms.modules.mapper.WebAddressMapper;
+import com.osen.aqms.modules.mapper.address.WebAddressMapper;
 import com.osen.aqms.modules.service.WebAddressService;
 import org.springframework.stereotype.Service;
 

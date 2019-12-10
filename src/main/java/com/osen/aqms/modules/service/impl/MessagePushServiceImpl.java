@@ -2,7 +2,7 @@ package com.osen.aqms.modules.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.modules.entity.message.MessagePush;
-import com.osen.aqms.modules.mapper.MessagePushMapper;
+import com.osen.aqms.modules.mapper.message.MessagePushMapper;
 import com.osen.aqms.modules.service.MessagePushService;
 import org.springframework.stereotype.Service;
 

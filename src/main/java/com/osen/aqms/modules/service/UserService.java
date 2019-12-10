@@ -10,4 +10,12 @@ import com.osen.aqms.modules.entity.system.User;
  * Description:
  */
 public interface UserService extends IService<User> {
+
+    /**
+     * 根据用户名查找用户
+     *
+     * @param username 用户名
+     * @return 指定用户
+     */
+    User findByUsername(String username);
 }

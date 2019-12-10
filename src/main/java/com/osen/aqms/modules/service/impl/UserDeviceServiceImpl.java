@@ -2,7 +2,7 @@ package com.osen.aqms.modules.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.modules.entity.system.UserDevice;
-import com.osen.aqms.modules.mapper.UserDeviceMapper;
+import com.osen.aqms.modules.mapper.system.UserDeviceMapper;
 import com.osen.aqms.modules.service.UserDeviceService;
 import org.springframework.stereotype.Service;
 

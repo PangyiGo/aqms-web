@@ -2,7 +2,7 @@ package com.osen.aqms.modules.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.modules.entity.logs.LogsLogin;
-import com.osen.aqms.modules.mapper.LogsLoginMapper;
+import com.osen.aqms.modules.mapper.logs.LogsLoginMapper;
 import com.osen.aqms.modules.service.LogsLoginService;
 import org.springframework.stereotype.Service;
 
