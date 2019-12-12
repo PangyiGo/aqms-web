@@ -1,0 +1,39 @@
+2019-12-11 09:12:48.329 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 09:16:36.649 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 09:17:08.478 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 10:17:42.988 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:13:16.810 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:14:21.764 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:16:07.846 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=1m45s411ms676µs763ns).
+2019-12-11 11:22:02.861 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:30:59.383 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=8m55s875ms998µs7ns).
+2019-12-11 11:37:59.866 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:38:53.957 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=53s421ms16µs170ns).
+2019-12-11 11:39:11.782 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:40:13.505 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:41:36.146 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=1m22s19ms729µs626ns).
+2019-12-11 11:46:11.372 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:50:41.060 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 11:57:16.702 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=6m34s993ms313µs441ns).
+2019-12-11 11:59:05.289 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 12:02:27.920 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 13:32:28.598 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=1h30m75ms234µs130ns).
+2019-12-11 14:05:45.220 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 14:08:37.720 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 14:14:59.932 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 15:16:16.460 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 15:18:51.202 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 15:20:02.527 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 15:24:39.639 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=4m36s554ms183µs679ns).
+2019-12-11 15:44:53.955 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 15:47:04.291 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 16:11:54.439 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 16:25:00.659 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 16:39:47.849 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 16:40:50.628 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 16:41:18.376 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 16:44:49.840 log message -> DatebookHikariCP - Thread starvation or clock leap detected (housekeeper delta=49s341ms699µs179ns).
+2019-12-11 16:54:27.924 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 17:32:24.298 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 17:50:22.207 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-11 17:57:21.220 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.

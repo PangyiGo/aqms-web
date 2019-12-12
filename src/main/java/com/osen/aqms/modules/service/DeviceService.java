@@ -1,7 +1,10 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.modules.entity.system.Device;
+
+import java.util.List;
 
 /**
  * User: PangYi
@@ -11,4 +14,19 @@ import com.osen.aqms.modules.entity.system.Device;
  */
 public interface DeviceService extends IService<Device> {
 
+    /**
+     * 根据用户名查询用户设备树形列表
+     *
+     * @param username 用户名
+     * @return 信息
+     */
+    List<DeviceTreeModel> findDeviceTreeListToUsername(String username);
+
+    /**
+     * 根据设备ID批量查询设备列表
+     *
+     * @param deviceIds 设备ID列表
+     * @return 信息
+     */
+    List<Device> findDeviceToDeviceIds(List<Integer> deviceIds);
 }

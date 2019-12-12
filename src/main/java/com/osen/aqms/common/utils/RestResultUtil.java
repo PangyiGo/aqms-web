@@ -45,12 +45,31 @@ public class RestResultUtil {
     }
 
     /**
+     * 成功请求，自定义消息
+     *
+     * @param data 数据
+     * @return 信息
+     */
+    public static RestResult success(String message) {
+        return new RestResult(Success_OK.getCode(), message);
+    }
+
+    /**
      * 失败请求，无数据
      *
      * @return 信息
      */
     public static RestResult failed() {
         return new RestResult(Failed_Error.getCode(), Failed_Error.getMessage());
+    }
+
+    /**
+     * 失败请求，自定义消息
+     *
+     * @return 信息
+     */
+    public static RestResult failed(String message) {
+        return new RestResult(Failed_Error.getCode(), message);
     }
 
     /**

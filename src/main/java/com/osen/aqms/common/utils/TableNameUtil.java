@@ -49,6 +49,9 @@ public class TableNameUtil {
 
     public static String Msg_Warning = "msg_warning_db";
 
+    // 设备树形节点列表
+    public static String DeviceTree_List = "device_tree_db";
+
     /**
      * 动态生成当前月份表名
      *
