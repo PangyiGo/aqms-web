@@ -1,5 +1,9 @@
 package com.osen.aqms;
 
+import com.osen.aqms.common.utils.TableNameUtil;
+
+import java.util.List;
+
 /**
  * User: PangYi
  * Date: 2019-12-10
@@ -9,5 +13,11 @@ package com.osen.aqms;
 public class ApplicationTest {
 
     public static void main(String[] args) {
+        String start = "2019-11-01";
+        String end = "2021-03-01";
+
+        List<String> strings = TableNameUtil.tableNameList(TableNameUtil.Air_history, start, end);
+
+        System.out.println(strings);
     }
 }

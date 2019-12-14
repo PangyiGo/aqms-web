@@ -19,4 +19,7 @@ public class ConstUtil {
 
     // 请求失败编码
     public static Integer UNOK = 2004;
+
+    // 日期格式化
+    public static String QUERY_DATE = "yyyy-MM-dd";
 }

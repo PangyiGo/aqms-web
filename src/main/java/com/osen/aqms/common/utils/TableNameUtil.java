@@ -1,6 +1,12 @@
 package com.osen.aqms.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: PangYi
@@ -8,6 +14,7 @@ import java.time.LocalDateTime;
  * Time: 14:30
  * Description:
  */
+@Slf4j
 public class TableNameUtil {
 
     // 空气站实时数据表名
@@ -116,5 +123,51 @@ public class TableNameUtil {
         String month = (monthValue < 10) ? "0" + monthValue : "" + monthValue;
         // 格式：基本表名_年月
         return baseName + "_" + year + month;
+    }
+
+    /**
+     * 获取查询表名列表
+     *
+     * @param baseName  基本表名
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 信息
+     */
+    public static List<String> tableNameList(String baseName, String startTime, String endTime) {
+        List<String> tableNames = new ArrayList<>(0);
+        // 时间格式化
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        // 开始时间
+        LocalDate startDateTime = null;
+        // 结束时间
+        LocalDate endDateTime = null;
+        try {
+            startDateTime = LocalDate.parse(startTime, dateTimeFormatter);
+            startDateTime = LocalDate.of(startDateTime.getYear(), startDateTime.getMonthValue(), startDateTime.getDayOfMonth());
+            endDateTime = LocalDate.parse(endTime, dateTimeFormatter);
+            endDateTime = LocalDate.of(endDateTime.getYear(), endDateTime.getMonthValue(), endDateTime.getDayOfMonth());
+        } catch (Exception e) {
+            log.error("Query time format exception");
+            log.error(ThrowableUtil.getStackTrace(e));
+            return tableNames;
+        }
+        // 最早时间
+        LocalDate initDate = LocalDate.of(2019, 12, 1);
+        if (initDate.isAfter(startDateTime)) {
+            startDateTime = initDate;
+        }
+        // 月份时间差
+        int minMonth = (endDateTime.getYear() - startDateTime.getYear()) * 12 + (endDateTime.getMonthValue() - startDateTime.getMonthValue());
+        // 最开始时间日期
+        LocalDate localDate = LocalDate.of(startDateTime.getYear(), startDateTime.getMonthValue(), 1);
+        for (int i = 0; i <= minMonth; i++) {
+            String month = (localDate.getMonthValue() < 10) ? "0" + localDate.getMonthValue() : "" + localDate.getMonthValue();
+            String year = localDate.getYear() + "";
+            String tableName = baseName + "_" + year + month;
+            tableNames.add(tableName);
+            // 下一个月
+            localDate = localDate.plusMonths(1);
+        }
+        return tableNames;
     }
 }
