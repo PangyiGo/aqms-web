@@ -1,5 +1,6 @@
 package com.osen.aqms.modules.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -208,6 +209,17 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             devices = new ArrayList<>(super.listByIds(deviceIds));
         }
         return devices;
+    }
+
+    @Override
+    public Device findOneDeviceToNo(String deviceNo) {
+        try {
+            LambdaQueryWrapper<Device> wrapper = Wrappers.<Device>lambdaQuery().eq(Device::getDeviceNo, deviceNo);
+            Device device = super.getOne(wrapper, true);
+            return BeanUtil.isEmpty(device) ? null : device;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

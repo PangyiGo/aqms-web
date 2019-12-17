@@ -129,7 +129,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 表单
                 .formLogin().loginPage("/**/auth/login").successHandler(userAuthenticationSuccessHandler).failureHandler(userAuthenticationFailureHandler).permitAll().and()
                 // 过滤请求
-                .authorizeRequests().antMatchers(HttpMethod.GET, "/*.html", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.GET, "/*.html", "/**/*.html", "/**/*.css", "/**/*.js").anonymous()
 
                 // 忽略地址 start
                 // 忽略地址 end

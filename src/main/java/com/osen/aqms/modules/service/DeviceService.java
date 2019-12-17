@@ -29,4 +29,12 @@ public interface DeviceService extends IService<Device> {
      * @return 信息
      */
     List<Device> findDeviceToDeviceIds(List<Integer> deviceIds);
+
+    /**
+     * 根据设备号查询对应设备信息
+     *
+     * @param deviceNo 设备号
+     * @return 信息
+     */
+    Device findOneDeviceToNo(String deviceNo);
 }
