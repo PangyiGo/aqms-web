@@ -21,7 +21,7 @@ public class AqiRealtimeModel {
 
     private String deviceNo;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime dateTime;
 
     private BigDecimal pm25 = new BigDecimal(0);

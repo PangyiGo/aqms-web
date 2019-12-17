@@ -32,7 +32,7 @@ public class SystemDeviceController {
      *
      * @return 信息
      */
-    @PostMapping("/device/tree")
+    @PostMapping("/device/treeList")
     public RestResult getDeviceTreeToUsername() {
         // 当前登录用户名
         String username = SecurityUtil.getUsername();

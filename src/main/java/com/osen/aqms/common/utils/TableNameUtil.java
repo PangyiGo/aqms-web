@@ -170,4 +170,20 @@ public class TableNameUtil {
         }
         return tableNames;
     }
+
+    /**
+     * 获取查询表名列表
+     *
+     * @param baseName  基本表名
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 信息
+     */
+    public static List<String> tableNameList(String baseName, LocalDateTime startTime, LocalDateTime endTime) {
+        // 转换为 yyyy-MM-dd 格式
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        String start = startTime.format(dateTimeFormatter);
+        String end = endTime.format(dateTimeFormatter);
+        return tableNameList(baseName, start, end);
+    }
 }

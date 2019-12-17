@@ -13,8 +13,8 @@ import java.util.List;
 public class ApplicationTest {
 
     public static void main(String[] args) {
-        String start = "2019-11-01";
-        String end = "2021-03-01";
+        String start = "2019-12-01";
+        String end = "2019-12-10";
 
         List<String> strings = TableNameUtil.tableNameList(TableNameUtil.Air_history, start, end);
 
