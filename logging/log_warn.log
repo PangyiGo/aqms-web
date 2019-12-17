@@ -16,3 +16,6 @@
  java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1693)
  java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
 2019-12-17 14:40:32.861 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-17 14:46:42.215 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-17 14:51:32.172 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-17 14:53:51.804 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
