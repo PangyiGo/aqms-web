@@ -60,7 +60,7 @@ public class AqiRealtimeModel {
 
     private int level;
 
-    private String primary = "-";
+    private String pollute = "-";
 
     private BigDecimal data = new BigDecimal(0);
 

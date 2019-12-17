@@ -19,3 +19,4 @@
 2019-12-17 14:46:42.215 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-17 14:51:32.172 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-17 14:53:51.804 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-17 14:55:35.568 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
