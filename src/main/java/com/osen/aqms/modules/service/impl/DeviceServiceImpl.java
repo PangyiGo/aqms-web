@@ -245,14 +245,17 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         LambdaQueryWrapper<Device> query = Wrappers.<Device>lambdaQuery();
         switch (level) {
             case "province":
+                address = address.equals("一级地区") ? "" : address;
                 query.in(Device::getId, deviceIds).eq(Device::getProvince, address);
                 deviceList = super.list(query);
                 break;
             case "city":
+                address = address.equals("二级地区") ? "" : address;
                 query.in(Device::getId, deviceIds).eq(Device::getCity, address);
                 deviceList = super.list(query);
                 break;
             case "area":
+                address = address.equals("三级地区") ? "" : address;
                 query.in(Device::getId, deviceIds).eq(Device::getArea, address);
                 deviceList = super.list(query);
                 break;
