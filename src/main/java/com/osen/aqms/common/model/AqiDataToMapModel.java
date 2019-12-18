@@ -27,6 +27,10 @@ public class AqiDataToMapModel {
 
     private String installAddress;
 
+    private String longitude;
+
+    private String latitude;
+
     private String live;
 
     @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")

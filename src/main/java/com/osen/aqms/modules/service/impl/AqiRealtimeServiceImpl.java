@@ -74,6 +74,8 @@ public class AqiRealtimeServiceImpl extends ServiceImpl<AqiRealtimeMapper, AqiRe
         aqiDataToMapModel.setAddress(address);
         aqiDataToMapModel.setInstallAddress((StrUtil.isNotEmpty(device.getAddress()) ? device.getAddress() : ""));
         aqiDataToMapModel.setLive(device.getLive() == ConstUtil.OPEN_STATUS ? "在线" : "离线");
+        aqiDataToMapModel.setLongitude(device.getLongitude());
+        aqiDataToMapModel.setLatitude(device.getLatitude());
         // 获取实时数据
         String dataJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, deviceNo);
         if (dataJson != null) {
