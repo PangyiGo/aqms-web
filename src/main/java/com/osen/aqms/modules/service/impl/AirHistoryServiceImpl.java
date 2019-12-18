@@ -1,5 +1,6 @@
 package com.osen.aqms.modules.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -10,8 +11,11 @@ import com.osen.aqms.common.enums.AirSensor;
 import com.osen.aqms.common.exception.type.ControllerException;
 import com.osen.aqms.common.model.AirDataModel;
 import com.osen.aqms.common.model.AirRealTimeModel;
+import com.osen.aqms.common.model.AqiDataToMapModel;
 import com.osen.aqms.common.model.AqiRealtimeModel;
+import com.osen.aqms.common.utils.ConstUtil;
 import com.osen.aqms.common.utils.RedisOpsUtil;
+import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.common.utils.TableNameUtil;
 import com.osen.aqms.modules.entity.data.AirHistory;
 import com.osen.aqms.modules.entity.system.Device;
@@ -24,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: PangYi
@@ -185,5 +190,40 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         realTimeModel.setDataModels(airDataToSensor);
 
         return realTimeModel;
+    }
+
+    @Override
+    public List<AqiDataToMapModel> getAirRealtimeList(Map<String, Object> params) {
+        List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
+        List<Device> deviceList = null;
+        if (params == null) {
+            // 查询全部设备列表数据
+            String username = SecurityUtil.getUsername();
+            deviceList = deviceService.findDeviceAllToUsername(username);
+        } else {
+            // 查询
+            String address = (String) params.get("address");
+            String level = (String) params.get("level");
+            deviceList = deviceService.findDeviceGroupByAddress(address, level);
+        }
+        for (Device device : deviceList) {
+            AqiDataToMapModel aqiDataToMapModel = new AqiDataToMapModel();
+            aqiDataToMapModel.setDeviceName(device.getDeviceName());
+            aqiDataToMapModel.setDeviceNo(device.getDeviceNo());
+            String ade = (StrUtil.isNotEmpty(device.getProvince()) ? device.getProvince() : "") + (StrUtil.isNotEmpty(device.getCity()) ? device.getCity() : "") + (StrUtil.isNotEmpty(device.getArea()) ? device.getArea() : "");
+            aqiDataToMapModel.setAddress(ade);
+            aqiDataToMapModel.setInstallAddress((StrUtil.isNotEmpty(device.getAddress()) ? device.getAddress() : ""));
+            aqiDataToMapModel.setLive(device.getLive() == ConstUtil.OPEN_STATUS ? "在线" : "离线");
+            aqiDataToMapModel.setLongitude(device.getLongitude());
+            aqiDataToMapModel.setLatitude(device.getLatitude());
+            // 获取实时数据
+            String dataJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, device.getDeviceNo());
+            if (dataJson != null) {
+                AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(dataJson, AqiRealtimeModel.class);
+                BeanUtil.copyProperties(aqiRealtimeModel, aqiDataToMapModel);
+            }
+            aqiDataToMapModels.add(aqiDataToMapModel);
+        }
+        return aqiDataToMapModels;
     }
 }

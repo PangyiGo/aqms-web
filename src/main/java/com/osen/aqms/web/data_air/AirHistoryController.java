@@ -2,6 +2,7 @@ package com.osen.aqms.web.data_air;
 
 import com.osen.aqms.common.model.AirDataModel;
 import com.osen.aqms.common.model.AirRealTimeModel;
+import com.osen.aqms.common.model.AqiDataToMapModel;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -10,12 +11,10 @@ import com.osen.aqms.modules.service.AirHistoryService;
 import com.osen.aqms.modules.service.DeviceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: PangYi
@@ -75,5 +74,17 @@ public class AirHistoryController {
     public RestResult getDataToSensor(@PathVariable("deviceNo") String deviceNo, @PathVariable("sensor") String sensor) {
         List<AirDataModel> airDataToSensor = airHistoryService.getAirDataToSensor(deviceNo, sensor);
         return RestResultUtil.success(airDataToSensor);
+    }
+
+    /**
+     * 查询当前用户的实时数据列表
+     *
+     * @param params 无参数默认查询全部，否则根据区域名称与区域等级查询
+     * @return 信息
+     */
+    @PostMapping("/airHistory/realtimeList")
+    public RestResult getAirRealtimeList(@RequestBody(required = false) Map<String, Object> params) {
+        List<AqiDataToMapModel> airRealtimeList = airHistoryService.getAirRealtimeList(params);
+        return RestResultUtil.success(airRealtimeList);
     }
 }
