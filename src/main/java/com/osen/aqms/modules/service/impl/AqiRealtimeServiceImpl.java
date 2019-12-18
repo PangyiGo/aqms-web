@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.model.AqiRankMapModel;
 import com.osen.aqms.common.model.AqiRealtimeMapModel;
 import com.osen.aqms.common.model.AqiRealtimeModel;
 import com.osen.aqms.common.utils.ConstUtil;
@@ -19,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User: PangYi
@@ -83,5 +86,57 @@ public class AqiRealtimeServiceImpl extends ServiceImpl<AqiRealtimeMapper, AqiRe
             BeanUtil.copyProperties(aqiRealtimeModel, aqiDataToMapModel);
         }
         return aqiDataToMapModel;
+    }
+
+    @Override
+    public AqiRankMapModel getAqiRankToAddress(String address, String level) {
+        AqiRankMapModel aqiRankMapModel = new AqiRankMapModel();
+        // 获取区域设备列表
+        List<Device> groupByAddress = deviceService.findDeviceGroupByAddress(address, level);
+        if (groupByAddress.size() <= 0)
+            return aqiRankMapModel;
+        // 默认获取列表第一台设备
+        Device firstDevice = groupByAddress.get(0);
+        AqiDataToMapModel firstMapModel = new AqiDataToMapModel();
+        firstMapModel.setDeviceName(firstDevice.getDeviceName());
+        firstMapModel.setDeviceNo(firstDevice.getDeviceNo());
+        String ade = (StrUtil.isNotEmpty(firstDevice.getProvince()) ? firstDevice.getProvince() : "") + (StrUtil.isNotEmpty(firstDevice.getCity()) ? firstDevice.getCity() : "") + (StrUtil.isNotEmpty(firstDevice.getArea()) ? firstDevice.getArea() : "");
+        firstMapModel.setAddress(ade);
+        firstMapModel.setInstallAddress((StrUtil.isNotEmpty(firstDevice.getAddress()) ? firstDevice.getAddress() : ""));
+        firstMapModel.setLive(firstDevice.getLive() == ConstUtil.OPEN_STATUS ? "在线" : "离线");
+        firstMapModel.setLongitude(firstDevice.getLongitude());
+        firstMapModel.setLatitude(firstDevice.getLatitude());
+        // 获取实时数据
+        String dataJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, firstDevice.getDeviceNo());
+        if (dataJson != null) {
+            AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(dataJson, AqiRealtimeModel.class);
+            BeanUtil.copyProperties(aqiRealtimeModel, firstMapModel);
+        }
+        // 获取所有设备列表并按照AQI升序排名
+        List<AqiRealtimeMapModel> aqiRealtimeMapModels = new ArrayList<>(0);
+        for (Device device : groupByAddress) {
+            AqiRealtimeMapModel model = new AqiRealtimeMapModel();
+            model.setDeviceName(device.getDeviceName());
+            model.setDeviceNo(device.getDeviceNo());
+            model.setLive(device.getLive());
+            model.setLongitude(device.getLongitude());
+            model.setLatitude(device.getLatitude());
+            // 获取AQI实时值
+            String tempJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, device.getDeviceNo());
+            if (StrUtil.isNotEmpty(tempJson)) {
+                AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(dataJson, AqiRealtimeModel.class);
+                assert aqiRealtimeModel != null;
+                model.setAqi(aqiRealtimeModel.getAqi());
+            } else {
+                model.setAqi(0);
+            }
+            aqiRealtimeMapModels.add(model);
+        }
+        // 排名
+        aqiRealtimeMapModels = aqiRealtimeMapModels.stream().sorted(Comparator.comparing(AqiRealtimeMapModel::getAqi)).collect(Collectors.toList());
+
+        aqiRankMapModel.setMapModel(firstMapModel);
+        aqiRankMapModel.setMapModels(aqiRealtimeMapModels);
+        return aqiRankMapModel;
     }
 }

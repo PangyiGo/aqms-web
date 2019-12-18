@@ -1,6 +1,8 @@
 package com.osen.aqms.web.data_aqi;
 
+import com.osen.aqms.common.exception.type.ControllerException;
 import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.model.AqiRankMapModel;
 import com.osen.aqms.common.model.AqiRealtimeMapModel;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
@@ -8,12 +10,10 @@ import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.modules.service.AqiRealtimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: PangYi
@@ -52,5 +52,20 @@ public class AqiRealtimeController {
     public RestResult getAqiDataMap(@PathVariable("deviceNo") String deviceNo) {
         AqiDataToMapModel aqiDataMapToDeviceNo = aqiRealtimeService.getAqiDataMapToDeviceNo(deviceNo);
         return RestResultUtil.success(aqiDataMapToDeviceNo);
+    }
+
+    /**
+     * 根据区域查询设备列表
+     *
+     * @return 信息
+     */
+    @PostMapping("/aqiRealtime/rank")
+    public RestResult getAqiRankToAddress(@RequestBody Map<String, Object> params) {
+        String address = (String) params.get("address");
+        String level = (String) params.get("level");
+        if (address == null || level == null)
+            throw new ControllerException("参数异常");
+        AqiRankMapModel aqiRankToAddress = aqiRealtimeService.getAqiRankToAddress(address, level);
+        return RestResultUtil.success(aqiRankToAddress);
     }
 }

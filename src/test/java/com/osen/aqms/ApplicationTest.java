@@ -1,6 +1,8 @@
 package com.osen.aqms;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User: PangYi
@@ -11,17 +13,13 @@ import java.time.LocalDateTime;
 public class ApplicationTest {
 
     public static void main(String[] args) {
-        LocalDateTime now = LocalDateTime.of(2020, 1, 1, 8, 0, 0);
-
-        LocalDateTime endTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), 0,0);
-
-        LocalDateTime tmp = endTime;
-        for (int i = 0; i < 24; i++) {
-            tmp = tmp.minusHours(1);
-            System.out.println(tmp);
-        }
-
-        System.out.println("------------------");
-        System.out.println(endTime.minusHours(24));
+        List<Integer> list = new ArrayList<>();
+        list.add(50);
+        list.add(45);
+        list.add(25);
+        list.add(98);
+        list.add(32);
+        List<Integer> collect = list.stream().sorted().collect(Collectors.toList());
+        System.out.println("list<Integer>元素正序：" + collect);
     }
 }

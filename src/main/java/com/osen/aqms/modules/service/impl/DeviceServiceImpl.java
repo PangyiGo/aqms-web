@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.common.utils.RedisOpsUtil;
+import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.common.utils.TableNameUtil;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.mapper.system.DeviceMapper;
@@ -227,9 +228,40 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         List<Device> devices = new ArrayList<>(0);
         // 获取当前用户的设备ID
         List<Integer> deviceIds = userDeviceService.findDeviceIdToUserName(username);
-        if (deviceIds.size()>0)
+        if (deviceIds.size() > 0)
             devices = this.findDeviceToDeviceIds(deviceIds);
         return devices;
+    }
+
+    @Override
+    public List<Device> findDeviceGroupByAddress(String address, String level) {
+        List<Device> deviceList = new ArrayList<>(0);
+        // 获取当前用户的设备ID
+        String username = SecurityUtil.getUsername();
+        List<Integer> deviceIds = userDeviceService.findDeviceIdToUserName(username);
+        if (deviceIds.size() <= 0)
+            return deviceList;
+        // 区域分组查询
+        LambdaQueryWrapper<Device> query = Wrappers.<Device>lambdaQuery();
+        switch (level) {
+            case "province":
+                query.in(Device::getId, deviceIds).eq(Device::getProvince, address);
+                deviceList = super.list(query);
+                break;
+            case "city":
+                query.in(Device::getId, deviceIds).eq(Device::getCity, address);
+                deviceList = super.list(query);
+                break;
+            case "area":
+                query.in(Device::getId, deviceIds).eq(Device::getArea, address);
+                deviceList = super.list(query);
+                break;
+            default:
+                query.eq(Device::getDeviceNo, level);
+                deviceList = super.list(query);
+                break;
+        }
+        return deviceList;
     }
 
 }

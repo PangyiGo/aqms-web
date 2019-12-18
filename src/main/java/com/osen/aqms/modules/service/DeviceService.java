@@ -45,4 +45,13 @@ public interface DeviceService extends IService<Device> {
      * @return 信息
      */
     List<Device> findDeviceAllToUsername(String username);
+
+    /**
+     * 根据当前用户名，按地区查询设备列表
+     *
+     * @param address 区域名
+     * @param level   区域等级(有可能是设备号)
+     * @return 信息
+     */
+    List<Device> findDeviceGroupByAddress(String address, String level);
 }
