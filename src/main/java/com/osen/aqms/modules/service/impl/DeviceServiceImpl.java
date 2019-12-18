@@ -222,4 +222,14 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         }
     }
 
+    @Override
+    public List<Device> findDeviceAllToUsername(String username) {
+        List<Device> devices = new ArrayList<>(0);
+        // 获取当前用户的设备ID
+        List<Integer> deviceIds = userDeviceService.findDeviceIdToUserName(username);
+        if (deviceIds.size()>0)
+            devices = this.findDeviceToDeviceIds(deviceIds);
+        return devices;
+    }
+
 }

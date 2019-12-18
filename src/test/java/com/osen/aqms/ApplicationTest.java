@@ -1,8 +1,6 @@
 package com.osen.aqms;
 
-import com.osen.aqms.common.utils.TableNameUtil;
-
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * User: PangYi
@@ -13,11 +11,17 @@ import java.util.List;
 public class ApplicationTest {
 
     public static void main(String[] args) {
-        String start = "2019-12-01";
-        String end = "2019-12-10";
+        LocalDateTime now = LocalDateTime.of(2020, 1, 1, 8, 0, 0);
 
-        List<String> strings = TableNameUtil.tableNameList(TableNameUtil.Air_history, start, end);
+        LocalDateTime endTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), 0,0);
 
-        System.out.println(strings);
+        LocalDateTime tmp = endTime;
+        for (int i = 0; i < 24; i++) {
+            tmp = tmp.minusHours(1);
+            System.out.println(tmp);
+        }
+
+        System.out.println("------------------");
+        System.out.println(endTime.minusHours(24));
     }
 }

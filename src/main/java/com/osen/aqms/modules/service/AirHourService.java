@@ -1,6 +1,7 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.model.AirDataModel;
 import com.osen.aqms.modules.entity.data.AirHour;
 
 /**

@@ -2,6 +2,7 @@ package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.AirDataModel;
+import com.osen.aqms.common.model.AirRealTimeModel;
 import com.osen.aqms.modules.entity.data.AirHistory;
 
 import java.util.List;
@@ -22,4 +23,12 @@ public interface AirHistoryService extends IService<AirHistory> {
      * @return 信息
      */
     List<AirDataModel> getAirDataToSensor(String deviceNo, String sensor);
+
+    /**
+     * 根据设备号查询最新的实时数据
+     *
+     * @param deviceNo 设备号
+     * @return 信息
+     */
+    AirRealTimeModel getAirRealtime(String deviceNo);
 }

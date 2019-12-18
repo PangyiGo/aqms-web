@@ -1,23 +1,6 @@
-2019-12-17 08:59:52.017 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2019-12-17 14:39:41.147 log message -> Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Invalid mapping on handler class [com.osen.aqms.web.data_air.AirHistoryController]: public com.osen.aqms.common.result.RestResult com.osen.aqms.web.data_air.AirHistoryController.getAirRealtime(java.lang.String)
-2019-12-17 14:39:41.177 log message -> The web application [ROOT] appears to have started a thread named [ForkJoinPool.commonPool-worker-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
- sun.misc.Unsafe.park(Native Method)
- java.util.concurrent.ForkJoinPool.awaitWork(ForkJoinPool.java:1824)
- java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1693)
- java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
-2019-12-17 14:39:41.178 log message -> The web application [ROOT] appears to have started a thread named [ForkJoinPool.commonPool-worker-2] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
- sun.misc.Unsafe.park(Native Method)
- java.util.concurrent.ForkJoinPool.awaitWork(ForkJoinPool.java:1824)
- java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1693)
- java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
-2019-12-17 14:39:41.178 log message -> The web application [ROOT] appears to have started a thread named [ForkJoinPool.commonPool-worker-3] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
- sun.misc.Unsafe.park(Native Method)
- java.util.concurrent.ForkJoinPool.awaitWork(ForkJoinPool.java:1824)
- java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1693)
- java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
-2019-12-17 14:40:32.861 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2019-12-17 14:46:42.215 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2019-12-17 14:51:32.172 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2019-12-17 14:53:51.804 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2019-12-17 14:55:35.568 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2019-12-17 15:36:28.348 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-18 08:46:35.306 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-18 09:05:06.708 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-18 09:07:59.138 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-18 09:13:03.255 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-18 09:21:01.223 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-18 09:22:09.886 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.

@@ -37,4 +37,12 @@ public interface DeviceService extends IService<Device> {
      * @return 信息
      */
     Device findOneDeviceToNo(String deviceNo);
+
+    /**
+     * 根据用户名获取对应的所有设备列表
+     *
+     * @param username 用户名
+     * @return 信息
+     */
+    List<Device> findDeviceAllToUsername(String username);
 }
