@@ -57,7 +57,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                     DeviceTreeModel provinceNode = new DeviceTreeModel();
                     provinceNode.setLabel(province.getProvince().trim().equals("") ? "一级地区" : province.getProvince());
                     provinceNode.setCode(province.getProvinceCode());
-                    provinceNode.setDeviceNo("");
+                    provinceNode.setDeviceNo("province");
                     List<DeviceTreeModel> provinceChild = new ArrayList<>(0);
                     // 查询市级节点列表
                     List<Device> cityList = this.findDeviceGroupByAddress(province.getProvince(), null, 2, deviceIds);
@@ -87,7 +87,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                                     DeviceTreeModel areaNode = new DeviceTreeModel();
                                     areaNode.setLabel(area.getArea().trim().equals("") ? "三级地区" : area.getArea());
                                     areaNode.setCode(area.getAreaCode());
-                                    areaNode.setDeviceNo("");
+                                    areaNode.setDeviceNo("area");
                                     List<DeviceTreeModel> areaClid = new ArrayList<>(0);
                                     // 具体区级下的设备列表
                                     List<Device> devices = deviceList.stream() // 数据流
@@ -114,7 +114,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                             DeviceTreeModel cityNode = new DeviceTreeModel();
                             cityNode.setLabel(city.getCity().trim().equals("") ? "二级地区" : city.getCity());
                             cityNode.setCode(city.getCityCode());
-                            cityNode.setDeviceNo("");
+                            cityNode.setDeviceNo("city");
                             List<DeviceTreeModel> cityChild = new ArrayList<>(0);
                             // 查询区级节点列表
                             List<Device> areaList = this.findDeviceGroupByAddress(province.getProvince(), city.getCity(), 3, deviceIds);
@@ -138,7 +138,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                                     DeviceTreeModel areaNode = new DeviceTreeModel();
                                     areaNode.setLabel(area.getArea().trim().equals("") ? "三级地区" : area.getArea());
                                     areaNode.setCode("");
-                                    areaNode.setDeviceNo("");
+                                    areaNode.setDeviceNo("area");
                                     List<DeviceTreeModel> areaClid = new ArrayList<>(0);
                                     // 具体区级下的设备列表
                                     List<Device> devices = deviceList.stream() // 数据流
