@@ -1,8 +1,6 @@
 package com.osen.aqms;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * User: PangYi
@@ -13,13 +11,10 @@ import java.util.stream.Collectors;
 public class ApplicationTest {
 
     public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
-        list.add(50);
-        list.add(45);
-        list.add(25);
-        list.add(98);
-        list.add(32);
-        List<Integer> collect = list.stream().sorted().collect(Collectors.toList());
-        System.out.println("list<Integer>元素正序：" + collect);
+        String name = "aqi_hour_201912";
+
+        System.out.println(StrUtil.sub(name, 9, 13));
+
+        System.out.println(StrUtil.sub(name, 13, name.length()));
     }
 }
