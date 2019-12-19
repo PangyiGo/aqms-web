@@ -66,6 +66,8 @@ public class AqiDataToMapModel {
 
     private int level;
 
+    private int aqi;
+
     private String pollute = "-";
 
     private String quality = "";

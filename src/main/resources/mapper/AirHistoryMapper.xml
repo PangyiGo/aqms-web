@@ -2,4 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.osen.aqms.modules.mapper.data.AirHistoryMapper">
 
+    <select id="getAvgToDay" resultType="com.osen.aqms.common.model.AirAvgModel">
+        SELECT
+            AVG(pm25) AS pm25_avg,
+            AVG(pm10) AS pm10_avg,
+            AVG(so2) AS so2_avg,
+            AVG(no2) AS no2_avg,
+            AVG(co) AS co_avg,
+            AVG(o3) AS o3_avg,
+            AVG(voc) AS voc_avg
+        FROM
+            ${tableName}
+        WHERE
+            (
+                device_no = ${deviceNo}
+                AND date_time BETWEEN "${start}"
+                AND "${end}"
+            );
+    </select>
 </mapper>

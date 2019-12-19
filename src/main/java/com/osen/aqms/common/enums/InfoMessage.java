@@ -17,7 +17,7 @@ public enum InfoMessage {
     /**
      * 异常信息体
      */
-    UnknownSystem_Error(ConstUtil.UNOK, "系统未知异常"),
+    UnknownSystem_Error(ConstUtil.UNOK, "服务请求失败"),
 
     /**
      * 成功信息体

@@ -9,15 +9,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.config.MybatisPlusConfig;
 import com.osen.aqms.common.enums.AirSensor;
 import com.osen.aqms.common.exception.type.ControllerException;
-import com.osen.aqms.common.model.AirDataModel;
-import com.osen.aqms.common.model.AirRealTimeModel;
-import com.osen.aqms.common.model.AqiDataToMapModel;
-import com.osen.aqms.common.model.AqiRealtimeModel;
-import com.osen.aqms.common.utils.ConstUtil;
-import com.osen.aqms.common.utils.RedisOpsUtil;
-import com.osen.aqms.common.utils.SecurityUtil;
-import com.osen.aqms.common.utils.TableNameUtil;
+import com.osen.aqms.common.model.*;
+import com.osen.aqms.common.requestVo.AirRankVo;
+import com.osen.aqms.common.utils.*;
 import com.osen.aqms.modules.entity.data.AirHistory;
+import com.osen.aqms.modules.entity.data.AqiHour;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.mapper.data.AirHistoryMapper;
 import com.osen.aqms.modules.service.AirHistoryService;
@@ -25,10 +21,14 @@ import com.osen.aqms.modules.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * User: PangYi
@@ -195,7 +195,7 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
     @Override
     public List<AqiDataToMapModel> getAirRealtimeList(Map<String, Object> params) {
         List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
-        List<Device> deviceList = null;
+        List<Device> deviceList;
         if (params == null) {
             // 查询全部设备列表数据
             String username = SecurityUtil.getUsername();
@@ -206,6 +206,36 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
             String level = (String) params.get("level");
             deviceList = deviceService.findDeviceGroupByAddress(address, level);
         }
+        // 数据获取
+        this.aqiDataWrapper(deviceList, aqiDataToMapModels);
+        return aqiDataToMapModels;
+    }
+
+    @Override
+    public List<AqiDataToMapModel> getAirRankToRealtime(AirRankVo airRankVo) {
+        List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
+        List<Device> deviceList;
+        if (airRankVo == null) {
+            // 默认查询全部
+            String username = SecurityUtil.getUsername();
+            deviceList = deviceService.findDeviceAllToUsername(username);
+        } else {
+            deviceList = deviceService.findDeviceGroupByAddress(airRankVo.getAddress(), airRankVo.getLevel());
+        }
+        // 数据获取
+        this.aqiDataWrapper(deviceList, aqiDataToMapModels);
+        // AQI升序排名
+        aqiDataToMapModels = aqiDataToMapModels.stream().sorted(Comparator.comparing(AqiDataToMapModel::getAqi)).collect(Collectors.toList());
+        return aqiDataToMapModels;
+    }
+
+    /**
+     * 数据封装
+     *
+     * @param deviceList         设备列表
+     * @param aqiDataToMapModels 参数
+     */
+    private void aqiDataWrapper(List<Device> deviceList, List<AqiDataToMapModel> aqiDataToMapModels) {
         for (Device device : deviceList) {
             AqiDataToMapModel aqiDataToMapModel = new AqiDataToMapModel();
             aqiDataToMapModel.setDeviceName(device.getDeviceName());
@@ -224,6 +254,59 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
             }
             aqiDataToMapModels.add(aqiDataToMapModel);
         }
+    }
+
+    @Override
+    public List<AqiDataToMapModel> getAirRankToHistory(AirRankVo airRankVo) {
+        List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
+        List<Device> deviceList;
+        if (airRankVo.getAddress() == null && airRankVo.getLevel() == null) {
+            // 获取全部设备
+            deviceList = deviceService.findDeviceAllToUsername(SecurityUtil.getUsername());
+        } else {
+            deviceList = deviceService.findDeviceGroupByAddress(airRankVo.getAddress(), airRankVo.getLevel());
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        LocalDate time = LocalDate.parse(airRankVo.getTime(), formatter);
+        // TableName
+        int year = time.getYear();
+        String month = (time.getMonthValue() < 10) ? "0" + time.getMonthValue() : "" + time.getMonthValue();
+        String tableName = TableNameUtil.Air_history + "_" + year + month;
+        for (Device device : deviceList) {
+            AqiDataToMapModel aqiDataToMapModel = new AqiDataToMapModel();
+            aqiDataToMapModel.setDeviceName(device.getDeviceName());
+            aqiDataToMapModel.setDeviceNo(device.getDeviceNo());
+            String ade = (StrUtil.isNotEmpty(device.getProvince()) ? device.getProvince() : "") + (StrUtil.isNotEmpty(device.getCity()) ? device.getCity() : "") + (StrUtil.isNotEmpty(device.getArea()) ? device.getArea() : "");
+            aqiDataToMapModel.setAddress(ade);
+            aqiDataToMapModel.setInstallAddress((StrUtil.isNotEmpty(device.getAddress()) ? device.getAddress() : ""));
+            aqiDataToMapModel.setLive(device.getLive() == ConstUtil.OPEN_STATUS ? "在线" : "离线");
+            aqiDataToMapModel.setLongitude(device.getLongitude());
+            aqiDataToMapModel.setLatitude(device.getLatitude());
+            // 数据
+            LocalDateTime startTime = LocalDateTime.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth(), 0, 0, 0);
+            LocalDateTime endTime = LocalDateTime.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth(), 23, 59, 59);
+            AirAvgModel avgToDay = baseMapper.getAvgToDay(tableName, device.getDeviceNo(), startTime, endTime);
+            if (avgToDay == null) {
+                aqiDataToMapModels.add(aqiDataToMapModel);
+            } else {
+                AqiHour aqiHour = AQIComputedUtil.computedAqiToHour(device.getDeviceNo(), startTime, avgToDay);
+                aqiDataToMapModel.setPm25(aqiHour.getPm25());
+                aqiDataToMapModel.setPm10(aqiHour.getNo2());
+                aqiDataToMapModel.setSo2(aqiHour.getSo2());
+                aqiDataToMapModel.setNo2(aqiHour.getNo2());
+                aqiDataToMapModel.setCo(aqiHour.getCo());
+                aqiDataToMapModel.setO3(aqiHour.getO3());
+                aqiDataToMapModel.setVoc(aqiHour.getVoc());
+                aqiDataToMapModel.setAqi(aqiHour.getAqi());
+                aqiDataToMapModel.setPollute(aqiHour.getPollute());
+                aqiDataToMapModel.setLevel(aqiHour.getLevel());
+                aqiDataToMapModel.setQuality(aqiHour.getQuality());
+                aqiDataToMapModel.setDateTime(aqiHour.getDateTime());
+                aqiDataToMapModels.add(aqiDataToMapModel);
+            }
+        }
+        // AQI升序排名
+        aqiDataToMapModels = aqiDataToMapModels.stream().sorted(Comparator.comparing(AqiDataToMapModel::getAqi)).collect(Collectors.toList());
         return aqiDataToMapModels;
     }
 }

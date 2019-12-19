@@ -1,8 +1,10 @@
 package com.osen.aqms.web.data_air;
 
+import com.osen.aqms.common.exception.type.ControllerException;
 import com.osen.aqms.common.model.AirDataModel;
 import com.osen.aqms.common.model.AirRealTimeModel;
 import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -86,5 +88,30 @@ public class AirHistoryController {
     public RestResult getAirRealtimeList(@RequestBody(required = false) Map<String, Object> params) {
         List<AqiDataToMapModel> airRealtimeList = airHistoryService.getAirRealtimeList(params);
         return RestResultUtil.success(airRealtimeList);
+    }
+
+    /**
+     * 获取当前用户设备实时数据监测排行
+     *
+     * @return 信息
+     */
+    @PostMapping("/airHistory/rank/realtime")
+    public RestResult getAirRankToRealtime(@RequestBody(required = false) AirRankVo airRankVo) {
+        List<AqiDataToMapModel> airRankToRealtime = airHistoryService.getAirRankToRealtime(airRankVo);
+        return RestResultUtil.success(airRankToRealtime);
+    }
+
+    /**
+     * 获取当前用户设备历史数据监测排行
+     * 默认查询某一天的小时平均值排行
+     *
+     * @return 信息
+     */
+    @PostMapping("/airHistory/rank/history")
+    public RestResult getAirRankToHistory(@RequestBody AirRankVo airRankVo) {
+        if (airRankVo.getTime() == null || "".equals(airRankVo.getTime().trim()))
+            throw new ControllerException("请求体参数异常");
+        List<AqiDataToMapModel> airRankToHistory = airHistoryService.getAirRankToHistory(airRankVo);
+        return RestResultUtil.success(airRankToHistory);
     }
 }

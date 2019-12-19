@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.AirDataModel;
 import com.osen.aqms.common.model.AirRealTimeModel;
 import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.modules.entity.data.AirHistory;
 
 import java.util.List;
@@ -41,4 +42,20 @@ public interface AirHistoryService extends IService<AirHistory> {
      * @return 信息
      */
     List<AqiDataToMapModel> getAirRealtimeList(Map<String, Object> params);
+
+    /**
+     * 查询当前用户的空气站监测实时数据排行
+     *
+     * @param airRankVo 请求体
+     * @return 信息
+     */
+    List<AqiDataToMapModel> getAirRankToRealtime(AirRankVo airRankVo);
+
+    /**
+     * 查询当前用户的空气站监测历史数据排行
+     *
+     * @param airRankVo 请求体
+     * @return 信息
+     */
+    List<AqiDataToMapModel> getAirRankToHistory(AirRankVo airRankVo);
 }
