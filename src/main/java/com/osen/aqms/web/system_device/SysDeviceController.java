@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${restful.prefix}")
 @Slf4j
-public class SystemDeviceController {
+public class SysDeviceController {
 
     @Autowired
     private DeviceService deviceService;
