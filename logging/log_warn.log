@@ -25,3 +25,5 @@ com.osen.aqms.web.data_air.AirDataHistoryController#getAirRealtimeHistory(AirQue
  java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1693)
  java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
 2019-12-19 14:47:18.499 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-19 14:50:29.359 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-19 15:04:10.345 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
