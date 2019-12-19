@@ -6,7 +6,6 @@ import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +25,6 @@ import static com.osen.aqms.common.enums.InfoMessage.User_Logout_Success;
 @RequestMapping("${restful.prefix}")
 @Slf4j
 public class AuthorizationController {
-
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private RedisOpsUtil redisOpsUtil;
