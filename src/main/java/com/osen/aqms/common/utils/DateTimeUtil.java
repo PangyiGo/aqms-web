@@ -4,7 +4,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User: PangYi
@@ -52,5 +55,25 @@ public class DateTimeUtil {
      */
     public static LocalDateTime asLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    /**
+     * 查询时间格式化
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 信息
+     */
+    public static List<LocalDateTime> queryTimeFormatter(String startTime, String endTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        LocalDate start = LocalDate.parse(startTime, formatter);
+        LocalDate end = LocalDate.parse(endTime, formatter);
+        LocalDateTime startDate = LocalDateTime.of(start.getYear(), start.getMonthValue(), start.getDayOfMonth(), 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(end.getYear(), end.getMonth(), end.getDayOfMonth(), 23, 59, 59);
+        // 返回
+        List<LocalDateTime> localDateTimes = new ArrayList<>(0);
+        localDateTimes.add(startDate);
+        localDateTimes.add(endDate);
+        return localDateTimes;
     }
 }

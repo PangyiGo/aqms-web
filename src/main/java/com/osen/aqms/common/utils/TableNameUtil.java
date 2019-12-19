@@ -138,9 +138,9 @@ public class TableNameUtil {
         // 时间格式化
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
         // 开始时间
-        LocalDate startDateTime = null;
+        LocalDate startDateTime;
         // 结束时间
-        LocalDate endDateTime = null;
+        LocalDate endDateTime;
         try {
             startDateTime = LocalDate.parse(startTime, dateTimeFormatter);
             startDateTime = LocalDate.of(startDateTime.getYear(), startDateTime.getMonthValue(), startDateTime.getDayOfMonth());

@@ -10,6 +10,7 @@ import com.osen.aqms.common.config.MybatisPlusConfig;
 import com.osen.aqms.common.enums.AirSensor;
 import com.osen.aqms.common.exception.type.ControllerException;
 import com.osen.aqms.common.model.*;
+import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.common.utils.*;
 import com.osen.aqms.modules.entity.data.AirHistory;
@@ -308,5 +309,30 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         // AQI升序排名
         aqiDataToMapModels = aqiDataToMapModels.stream().sorted(Comparator.comparing(AqiDataToMapModel::getAqi)).collect(Collectors.toList());
         return aqiDataToMapModels;
+    }
+
+    @Override
+    public List<AirQueryDataModel> getAirRealtimeHistory(AirQueryVo airQueryVo) {
+        List<AirQueryDataModel> airQueryDataModels = new ArrayList<>(0);
+        // 获取查询数据表
+        List<String> tableNameList = TableNameUtil.tableNameList(TableNameUtil.Air_history, airQueryVo.getStartTime(), airQueryVo.getEndTime());
+        // 时间格式换
+        List<LocalDateTime> dateTimes = DateTimeUtil.queryTimeFormatter(airQueryVo.getStartTime(), airQueryVo.getEndTime());
+        // 查询
+        List<AirHistory> historyList = new ArrayList<>(0);
+        LambdaQueryWrapper<AirHistory> query = Wrappers.<AirHistory>lambdaQuery();
+        for (String name : tableNameList) {
+            MybatisPlusConfig.TableName.set(name);
+            query.select(AirHistory::getDeviceNo, AirHistory::getPm25, AirHistory::getPm10, AirHistory::getSo2, AirHistory::getNo2, AirHistory::getCo, AirHistory::getO3, AirHistory::getVoc, AirHistory::getDateTime);
+            query.eq(AirHistory::getDeviceNo, airQueryVo.getDeviceNo()).between(AirHistory::getDateTime, dateTimes.get(0), dateTimes.get(1));
+            // 添加
+            historyList.addAll(super.list(query));
+        }
+        for (AirHistory airHistory : historyList) {
+            AirQueryDataModel airQueryDataModel = new AirQueryDataModel();
+            BeanUtil.copyProperties(airHistory, airQueryDataModel);
+            airQueryDataModels.add(airQueryDataModel);
+        }
+        return airQueryDataModels;
     }
 }
