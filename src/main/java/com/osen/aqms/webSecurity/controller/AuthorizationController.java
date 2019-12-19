@@ -44,10 +44,13 @@ public class AuthorizationController {
         log.info("system_user logout: " + authorization);
         // 登录令牌
         String authToken = authorization.substring(7);
+
+        String access_token = redisOpsUtil.getToMap(JwtTokenUtil.LOGIN_TOKEN, authToken);
+        if (access_token == null)
+            RestResultUtil.failed("无效登录令牌");
         redisOpsUtil.deleteToMap(JwtTokenUtil.LOGIN_TOKEN, authToken);
         // 访问令牌
-        String jwtToken = redisOpsUtil.getToMap(JwtTokenUtil.ACCESS_TOKEN, authToken);
-        redisOpsUtil.deleteToMap(JwtTokenUtil.ACCESS_TOKEN, jwtToken);
+        redisOpsUtil.deleteToMap(JwtTokenUtil.ACCESS_TOKEN, access_token);
         // 返回
         return RestResultUtil.authorization(User_Logout_Success.getCode(), User_Logout_Success.getMessage());
     }

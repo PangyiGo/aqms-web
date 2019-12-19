@@ -32,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = null;
         try {
             // 查询多条记录，抛出异常
-            LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery().select(User::getAccount, User::getId, User::getPassword, User::getStatus).eq(User::getAccount, username);
+            LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery().eq(User::getAccount, username);
             user = super.getOne(wrapper, true);
             if (BeanUtil.isEmpty(user))
                 return null;
