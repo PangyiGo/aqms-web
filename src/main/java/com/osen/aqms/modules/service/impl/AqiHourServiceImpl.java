@@ -19,6 +19,7 @@ import com.osen.aqms.modules.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -118,24 +119,25 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
             LocalDateTime endTime = LocalDateTime.of(year, month, startTime.getMonth().maxLength(), 23, 59, 59);
             // 平均值
             AirAvgModel avgToMonth = baseMapper.getAvgToMonth(name, airQueryVo.getDeviceNo(), startTime, endTime);
-            aqiHistoryToMonth.setPm25(avgToMonth.getPm25Avg());
-            aqiHistoryToMonth.setPm10(avgToMonth.getPm10Avg());
-            aqiHistoryToMonth.setSo2(avgToMonth.getSo2Avg());
-            aqiHistoryToMonth.setNo2(avgToMonth.getNo2Avg());
-            aqiHistoryToMonth.setCo(avgToMonth.getCoAvg());
-            aqiHistoryToMonth.setO3(avgToMonth.getO3Avg());
-            aqiHistoryToMonth.setVoc(avgToMonth.getVocAvg());
-            // 设备号,时间
-            aqiHistoryToMonth.setDeviceNo(airQueryVo.getDeviceNo());
-            aqiHistoryToMonth.setDateTime(startTime);
-            // 计算AQI
-            AqiDay aqiDay = AQIComputedUtil.computedAqiToDay(airQueryVo.getDeviceNo(), startTime, avgToMonth);
-            aqiDay.setAqi(aqiDay.getAqi());
-            aqiDay.setPollute(aqiDay.getPollute());
-            aqiDay.setQuality(aqiDay.getQuality());
-            aqiDay.setLevel(aqiDay.getLevel());
-
-            aqiHistoryToMonths.add(aqiHistoryToMonth);
+            if (avgToMonth != null) {
+                aqiHistoryToMonth.setPm25(avgToMonth.getPm25Avg().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiHistoryToMonth.setPm10(avgToMonth.getPm10Avg().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiHistoryToMonth.setSo2(avgToMonth.getSo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiHistoryToMonth.setNo2(avgToMonth.getNo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiHistoryToMonth.setCo(avgToMonth.getCoAvg().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiHistoryToMonth.setO3(avgToMonth.getO3Avg().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiHistoryToMonth.setVoc(avgToMonth.getVocAvg().setScale(1, BigDecimal.ROUND_DOWN));
+                // 设备号,时间
+                aqiHistoryToMonth.setDeviceNo(airQueryVo.getDeviceNo());
+                aqiHistoryToMonth.setDateTime(startTime);
+                // 计算AQI
+                AqiDay aqiDay = AQIComputedUtil.computedAqiToDay(airQueryVo.getDeviceNo(), startTime, avgToMonth);
+                aqiHistoryToMonth.setAqi(aqiDay.getAqi());
+                aqiHistoryToMonth.setPollute(aqiDay.getPollute());
+                aqiHistoryToMonth.setQuality(aqiDay.getQuality());
+                aqiHistoryToMonth.setLevel(aqiDay.getLevel());
+                aqiHistoryToMonths.add(aqiHistoryToMonth);
+            }
         }
         return aqiHistoryToMonths;
     }

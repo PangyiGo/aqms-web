@@ -519,3 +519,42 @@
 2019-12-20 15:25:29.351 log message -> Starting without optional kqueue library
 2019-12-20 15:25:30.473 log message -> DatebookHikariCP - Starting...
 2019-12-20 15:25:30.728 log message -> DatebookHikariCP - Start completed.
+2019-12-20 15:43:49.490 log message -> User is not logged in, please log in
+2019-12-20 16:37:34.558 log message -> User is not logged in, please log in
+2019-12-20 16:37:34.645 log message -> Reconnecting, last destination was /47.107.103.35:6379
+2019-12-20 16:37:34.675 log message -> Reconnected to 47.107.103.35:6379
+2019-12-20 17:14:42.770 log message -> User login successful......
+2019-12-20 17:19:58.506 log message -> Shutting down ExecutorService 'taskScheduler'
+2019-12-20 17:19:58.516 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2019-12-20 17:19:58.521 log message -> DatebookHikariCP - Shutdown initiated...
+2019-12-20 17:19:58.524 log message -> DatebookHikariCP - Shutdown completed.
+2019-12-20 17:24:31.198 log message -> Starting AqmsWebApplication on PC-20190708MDDO with PID 10312 (E:\gitworkspace\aqms-web\target\classes started by Administrator in E:\gitworkspace\aqms-web)
+2019-12-20 17:24:31.203 log message -> The following profiles are active: dev
+2019-12-20 17:24:32.362 log message -> Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-20 17:24:32.367 log message -> Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2019-12-20 17:24:32.456 log message -> Finished Spring Data repository scanning in 63ms. Found 0 Redis repository interfaces.
+2019-12-20 17:24:33.005 log message -> Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-20 17:24:33.012 log message -> Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-20 17:24:33.063 log message -> Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-20 17:24:33.068 log message -> Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@3cd9aa64' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-20 17:24:33.071 log message -> Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-20 17:24:33.079 log message -> Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-20 17:24:33.495 log message -> Tomcat initialized with port(s): 8989 (http)
+2019-12-20 17:24:33.510 log message -> Initializing ProtocolHandler ["http-nio-8989"]
+2019-12-20 17:24:33.511 log message -> Starting service [Tomcat]
+2019-12-20 17:24:33.511 log message -> Starting Servlet engine: [Apache Tomcat/9.0.29]
+2019-12-20 17:24:33.631 log message -> Initializing Spring embedded WebApplicationContext
+2019-12-20 17:24:33.632 log message -> Root WebApplicationContext: initialization completed in 2350 ms
+2019-12-20 17:24:36.308 log message -> Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@59d5a6fd, org.springframework.security.web.context.SecurityContextPersistenceFilter@11e17893, org.springframework.security.web.header.HeaderWriterFilter@50f4b83d, org.springframework.security.web.authentication.logout.LogoutFilter@237b2852, com.osen.aqms.webSecurity.config.JwtAuthenticationTokenFilter@6f9e08d4, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@448cdb47, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6682e6a5, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@30036a18, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@27bcb4ad, org.springframework.security.web.session.SessionManagementFilter@c5e69a5, org.springframework.security.web.access.ExceptionTranslationFilter@30159886, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@7523d5a1]
+2019-12-20 17:24:36.565 log message -> Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-20 17:24:37.052 log message -> Initializing ExecutorService 'taskScheduler'
+2019-12-20 17:24:37.158 log message -> Starting ProtocolHandler ["http-nio-8989"]
+2019-12-20 17:24:37.193 log message -> Tomcat started on port(s): 8989 (http) with context path ''
+2019-12-20 17:24:37.197 log message -> Started AqmsWebApplication in 7.715 seconds (JVM running for 8.972)
+2019-12-20 17:24:49.829 log message -> Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-20 17:24:49.829 log message -> Initializing Servlet 'dispatcherServlet'
+2019-12-20 17:24:49.842 log message -> Completed initialization in 12 ms
+2019-12-20 17:24:50.009 log message -> Starting without optional epoll library
+2019-12-20 17:24:50.010 log message -> Starting without optional kqueue library
+2019-12-20 17:24:51.370 log message -> DatebookHikariCP - Starting...
+2019-12-20 17:24:51.987 log message -> DatebookHikariCP - Start completed.
