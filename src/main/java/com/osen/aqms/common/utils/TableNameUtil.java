@@ -186,4 +186,21 @@ public class TableNameUtil {
         String end = endTime.format(dateTimeFormatter);
         return tableNameList(baseName, start, end);
     }
+
+    /**
+     * 根据时间日期生成对应的日期数据表
+     *
+     * @param baseName 基本表名称
+     * @param datetime 日期
+     * @return 信息
+     */
+    public static String generateTableName(String baseName, String datetime, String formate) {
+        // 时间格式化
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formate);
+        LocalDate localDate = LocalDate.parse(datetime, formatter);
+        // 生成表
+        String month = (localDate.getMonthValue() < 10) ? "0" + localDate.getMonthValue() : "" + localDate.getMonthValue();
+        String year = localDate.getYear() + "";
+        return baseName + "_" + year + month;
+    }
 }

@@ -261,7 +261,7 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
     public List<AqiDataToMapModel> getAirRankToHistory(AirRankVo airRankVo) {
         List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
         List<Device> deviceList;
-        if (airRankVo.getAddress() == null && airRankVo.getLevel() == null) {
+        if ((airRankVo.getAddress() == null && airRankVo.getLevel() == null) || ("".equals(airRankVo.getAddress().trim()) && "".equals(airRankVo.getLevel().trim()))) {
             // 获取全部设备
             deviceList = deviceService.findDeviceAllToUsername(SecurityUtil.getUsername());
         } else {

@@ -6,21 +6,22 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.config.MybatisPlusConfig;
-import com.osen.aqms.common.model.AirAvgModel;
-import com.osen.aqms.common.model.AqiDataModel;
-import com.osen.aqms.common.model.AqiHistoryToHour;
-import com.osen.aqms.common.model.AqiHistoryToMonth;
+import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirQueryVo;
-import com.osen.aqms.common.utils.AQIComputedUtil;
-import com.osen.aqms.common.utils.DateTimeUtil;
-import com.osen.aqms.common.utils.TableNameUtil;
+import com.osen.aqms.common.requestVo.AqiReportVo;
+import com.osen.aqms.common.utils.*;
 import com.osen.aqms.modules.entity.data.AqiDay;
 import com.osen.aqms.modules.entity.data.AqiHour;
+import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.mapper.data.AqiHourMapper;
 import com.osen.aqms.modules.service.AqiHourService;
+import com.osen.aqms.modules.service.DeviceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> implements AqiHourService {
+
+    @Autowired
+    private DeviceService deviceService;
 
     @Override
     public List<AqiDataModel> getAqi24HToDeviceNo(String deviceNo) {
@@ -134,5 +138,64 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
             aqiHistoryToMonths.add(aqiHistoryToMonth);
         }
         return aqiHistoryToMonths;
+    }
+
+    @Override
+    public List<AqiReportToHourModel> getAqiReportToHour(AqiReportVo aqiReportVo) {
+        List<AqiReportToHourModel> aqiReportToHourModels = new ArrayList<>(0);
+        List<Device> deviceList = new ArrayList<>(0);
+        if ((aqiReportVo.getAddress() == null && aqiReportVo.getLevel() == null) || ("".equals(aqiReportVo.getAddress().trim()) && "".equals(aqiReportVo.getLevel().trim()))) {
+            // 查询全部设备列表
+            deviceList = deviceService.findDeviceAllToUsername(SecurityUtil.getUsername());
+        } else {
+            // 按区域查询
+            deviceList = deviceService.findDeviceGroupByAddress(aqiReportVo.getAddress(), aqiReportVo.getLevel());
+        }
+        // 数据表
+        String tableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, aqiReportVo.getTime(), ConstUtil.QUERY_DATE);
+        // 时间
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        LocalDate localDate = LocalDate.parse(aqiReportVo.getTime(), formatter);
+        int hour = Integer.valueOf(aqiReportVo.getHour());
+        LocalDateTime start = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), hour, 0, 0);
+        LocalDateTime end = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), hour, 59, 59);
+        for (Device device : deviceList) {
+            AqiReportToHourModel hourModel = new AqiReportToHourModel();
+            hourModel.setDeviceNo(device.getDeviceNo());
+            hourModel.setDeviceName(device.getDeviceName());
+            hourModel.setDateTime(start);
+            // 查询
+            LambdaQueryWrapper<AqiHour> query = Wrappers.<AqiHour>lambdaQuery();
+            MybatisPlusConfig.TableName.set(tableName);
+            query.eq(AqiHour::getDeviceNo, device.getDeviceNo()).between(AqiHour::getDateTime, start, end);
+            AqiHour aqiHour = super.getOne(query);
+            if (aqiHour == null) {
+                // 添加
+                aqiReportToHourModels.add(hourModel);
+            } else {
+                hourModel.setAqi(aqiHour.getAqi() + "");
+                hourModel.setQuality(aqiHour.getQuality());
+                hourModel.setLevel(aqiHour.getLevel() + "");
+                hourModel.setPollute(aqiHour.getPollute());
+                hourModel.setData(aqiHour.getData().toString());
+                hourModel.setTips(aqiHour.getTips());
+                hourModel.setPm25(aqiHour.getPm25().toString());
+                hourModel.setPm10(aqiHour.getPm10().toString());
+                hourModel.setSo2(aqiHour.getSo2().toString());
+                hourModel.setNo2(aqiHour.getNo2().toString());
+                hourModel.setCo(aqiHour.getCo().toString());
+                hourModel.setO3(aqiHour.getO3().toString());
+                hourModel.setVoc(aqiHour.getVoc().toString());
+                hourModel.setPm25Index(aqiHour.getPm25Index() + "");
+                hourModel.setPm10Index(aqiHour.getPm10Index() + "");
+                hourModel.setSo2Index(aqiHour.getSo2Index() + "");
+                hourModel.setNo2Index(aqiHour.getNo2Index() + "");
+                hourModel.setCoIndex(aqiHour.getCoIndex() + "");
+                hourModel.setO3Index(aqiHour.getO3Index() + "");
+                // 添加
+                aqiReportToHourModels.add(hourModel);
+            }
+        }
+        return aqiReportToHourModels;
     }
 }

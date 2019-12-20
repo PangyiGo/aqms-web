@@ -2,6 +2,9 @@ package com.osen.aqms;
 
 import cn.hutool.core.util.StrUtil;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * User: PangYi
  * Date: 2019-12-10
@@ -16,5 +19,11 @@ public class ApplicationTest {
         System.out.println(StrUtil.sub(name, 9, 13));
 
         System.out.println(StrUtil.sub(name, 13, name.length()));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalDateTime localDateTime = LocalDateTime.parse("2019-12-20",formatter);
+
+        System.out.println(localDateTime);
     }
 }
