@@ -22,6 +22,7 @@ import com.osen.aqms.modules.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -291,13 +292,13 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
                 aqiDataToMapModels.add(aqiDataToMapModel);
             } else {
                 AqiHour aqiHour = AQIComputedUtil.computedAqiToHour(device.getDeviceNo(), startTime, avgToDay);
-                aqiDataToMapModel.setPm25(aqiHour.getPm25());
-                aqiDataToMapModel.setPm10(aqiHour.getNo2());
-                aqiDataToMapModel.setSo2(aqiHour.getSo2());
-                aqiDataToMapModel.setNo2(aqiHour.getNo2());
-                aqiDataToMapModel.setCo(aqiHour.getCo());
-                aqiDataToMapModel.setO3(aqiHour.getO3());
-                aqiDataToMapModel.setVoc(aqiHour.getVoc());
+                aqiDataToMapModel.setPm25(aqiHour.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataToMapModel.setPm10(aqiHour.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataToMapModel.setSo2(aqiHour.getSo2().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataToMapModel.setNo2(aqiHour.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataToMapModel.setCo(aqiHour.getCo().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataToMapModel.setO3(aqiHour.getO3().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataToMapModel.setVoc(aqiHour.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
                 aqiDataToMapModel.setAqi(aqiHour.getAqi());
                 aqiDataToMapModel.setPollute(aqiHour.getPollute());
                 aqiDataToMapModel.setLevel(aqiHour.getLevel());
