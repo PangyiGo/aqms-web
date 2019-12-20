@@ -36,8 +36,8 @@ public class AirDayServiceImpl extends ServiceImpl<AirDayMapper, AirDay> impleme
         List<LocalDateTime> dateTimes = DateTimeUtil.queryTimeFormatter(airQueryVo.getStartTime(), airQueryVo.getEndTime());
         // 查询
         List<AirDay> historyList = new ArrayList<>(0);
-        LambdaQueryWrapper<AirDay> query = Wrappers.<AirDay>lambdaQuery();
         for (String name : tableNameList) {
+            LambdaQueryWrapper<AirDay> query = Wrappers.<AirDay>lambdaQuery();
             MybatisPlusConfig.TableName.set(name);
             query.select(AirDay::getDeviceNo, AirDay::getPm25, AirDay::getPm10, AirDay::getSo2, AirDay::getNo2, AirDay::getCo, AirDay::getO3, AirDay::getVoc, AirDay::getDateTime);
             query.eq(AirDay::getDeviceNo, airQueryVo.getDeviceNo()).between(AirDay::getDateTime, dateTimes.get(0), dateTimes.get(1));

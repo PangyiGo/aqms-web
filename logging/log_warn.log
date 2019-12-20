@@ -135,3 +135,5 @@ Caused by: java.io.IOException: 您的主机中的软件中止了一个已建立
 2019-12-20 15:08:19.237 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-20 15:14:07.442 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-20 15:19:00.797 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-20 15:21:30.480 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-20 15:25:30.473 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
