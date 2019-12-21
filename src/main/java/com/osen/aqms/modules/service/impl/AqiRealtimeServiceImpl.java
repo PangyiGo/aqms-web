@@ -123,9 +123,8 @@ public class AqiRealtimeServiceImpl extends ServiceImpl<AqiRealtimeMapper, AqiRe
             model.setLatitude(device.getLatitude());
             // 获取AQI实时值
             String tempJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, device.getDeviceNo());
-            if (StrUtil.isNotEmpty(tempJson)) {
-                AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(dataJson, AqiRealtimeModel.class);
-                assert aqiRealtimeModel != null;
+            if (tempJson != null) {
+                AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(tempJson, AqiRealtimeModel.class);
                 model.setAqi(aqiRealtimeModel.getAqi());
             } else {
                 model.setAqi(0);
