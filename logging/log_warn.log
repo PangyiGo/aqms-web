@@ -421,3 +421,5 @@ java.lang.NoClassDefFoundError: com/osen/aqms/common/utils/ThrowableUtil
 2019-12-23 15:42:49.524 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-23 15:46:44.499 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-23 15:48:25.201 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-23 17:22:42.715 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-23 17:25:46.427 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.

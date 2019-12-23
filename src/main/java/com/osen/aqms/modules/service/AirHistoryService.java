@@ -2,11 +2,9 @@ package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.*;
-import com.osen.aqms.common.requestVo.AirAccordVo;
-import com.osen.aqms.common.requestVo.AirMonitorVo;
-import com.osen.aqms.common.requestVo.AirQueryVo;
-import com.osen.aqms.common.requestVo.AirRankVo;
+import com.osen.aqms.common.requestVo.*;
 import com.osen.aqms.modules.entity.data.AirHistory;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.util.List;
 import java.util.Map;
@@ -91,4 +89,12 @@ public interface AirHistoryService extends IService<AirHistory> {
      * @return 信息
      */
     AirMonitorModel getAirMonitor(AirMonitorVo airMonitorVo);
+
+    /**
+     * 空气站实时数据报表导出
+     *
+     * @param airExportVo 请求体
+     * @return 信息
+     */
+    HSSFWorkbook getAirSensorToExport(AirExportVo airExportVo);
 }
