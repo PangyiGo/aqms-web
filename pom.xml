@@ -87,6 +87,12 @@
             <artifactId>jjwt</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <!-- 数据导出Excel表格依赖 -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.17</version>
+        </dependency>
     </dependencies>
 
     <build>
