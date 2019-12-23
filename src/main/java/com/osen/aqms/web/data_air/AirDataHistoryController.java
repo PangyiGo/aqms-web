@@ -98,7 +98,7 @@ public class AirDataHistoryController {
      * @param airExportVo 请求体
      * @param type        类型：实时(history)，分钟(minute)，小时(hour)，天(day)
      */
-    @PostMapping("/airSensor/{type}")
+    @PostMapping("/airSensor/export/{type}")
     public void getAirSensorToExport(@RequestBody AirExportVo airExportVo, @PathVariable("type") String type, HttpServletResponse response) {
         HSSFWorkbook hssfWorkbook;
         switch (type) {
