@@ -1,9 +1,11 @@
 package com.osen.aqms.web.data_air;
 
 import com.osen.aqms.common.exception.type.ControllerException;
+import com.osen.aqms.common.model.AirAccordModel;
 import com.osen.aqms.common.model.AirDataModel;
 import com.osen.aqms.common.model.AirRealTimeModel;
 import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.requestVo.AirAccordVo;
 import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
@@ -15,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -113,5 +116,27 @@ public class AirHistoryController {
             throw new ControllerException("请求体参数异常");
         List<AqiDataToMapModel> airRankToHistory = airHistoryService.getAirRankToHistory(airRankVo);
         return RestResultUtil.success(airRankToHistory);
+    }
+
+    /**
+     * 获取空气站参数数据统计分析报表
+     *
+     * @param airAccordVo 请求体
+     * @return 信息
+     */
+    @PostMapping("/airHistory/according")
+    public RestResult getAirAccord(@RequestBody AirAccordVo airAccordVo) {
+        List<AirAccordModel> airAccordToDay = new ArrayList<>(0);
+        switch (airAccordVo.getType()) {
+            case "day":
+                airAccordToDay = airHistoryService.getAirAccordToDay(airAccordVo);
+                break;
+            case "month":
+                airAccordToDay = airHistoryService.getAirAccordToMonth(airAccordVo);
+                break;
+            default:
+                throw new ControllerException("请求类型参数异常");
+        }
+        return RestResultUtil.success(airAccordToDay);
     }
 }

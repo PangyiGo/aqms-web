@@ -1,10 +1,8 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.osen.aqms.common.model.AirDataModel;
-import com.osen.aqms.common.model.AirQueryDataModel;
-import com.osen.aqms.common.model.AirRealTimeModel;
-import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.model.*;
+import com.osen.aqms.common.requestVo.AirAccordVo;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.modules.entity.data.AirHistory;
@@ -68,4 +66,20 @@ public interface AirHistoryService extends IService<AirHistory> {
      * @return 信息
      */
     List<AirQueryDataModel> getAirRealtimeHistory(AirQueryVo airQueryVo);
+
+    /**
+     * 获取空气站参数日统计报表
+     *
+     * @param airAccordVo 请求体
+     * @return 信息
+     */
+    List<AirAccordModel> getAirAccordToDay(AirAccordVo airAccordVo);
+
+    /**
+     * 获取空气站参数月统计报表
+     *
+     * @param airAccordVo 请求体
+     * @return 信息
+     */
+    List<AirAccordModel> getAirAccordToMonth(AirAccordVo airAccordVo);
 }

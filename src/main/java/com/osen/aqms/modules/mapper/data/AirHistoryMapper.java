@@ -1,6 +1,7 @@
 package com.osen.aqms.modules.mapper.data;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.osen.aqms.common.model.AirAccordMapperModel;
 import com.osen.aqms.common.model.AirAvgModel;
 import com.osen.aqms.modules.entity.data.AirHistory;
 import io.lettuce.core.dynamic.annotation.Param;
@@ -25,4 +26,16 @@ public interface AirHistoryMapper extends BaseMapper<AirHistory> {
      * @return 信息
      */
     AirAvgModel getAvgToDay(@Param("tableName") String tableName, @Param("deviceNo") String deviceNo, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    /**
+     * 获取空气站数据统计分析
+     *
+     * @param tableName 表名
+     * @param deviceNo  设备号
+     * @param start     开始时间
+     * @param end       结束时间
+     * @return 信息
+     */
+    AirAccordMapperModel getAirAccord(@Param("tableName") String tableName, @Param("deviceNo") String deviceNo,
+                                      @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
