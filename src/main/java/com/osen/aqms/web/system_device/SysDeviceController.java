@@ -1,6 +1,7 @@
 package com.osen.aqms.web.system_device;
 
 import com.osen.aqms.common.model.DeviceTreeModel;
+import com.osen.aqms.common.requestVo.AddressVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -8,10 +9,7 @@ import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.service.DeviceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -54,5 +52,17 @@ public class SysDeviceController {
         if (oneDeviceToNo == null)
             return RestResultUtil.failed("无法查询设备");
         return RestResultUtil.success(oneDeviceToNo);
+    }
+
+    /**
+     * 根据区域名称和区域等级获取设备号信息
+     *
+     * @param addressVo 请求体
+     * @return 信息
+     */
+    @PostMapping("/device/group")
+    public RestResult getDeviceToGroupByAddress(@RequestBody AddressVo addressVo) {
+        List<Device> devices = deviceService.findDeviceGroupByAddress(addressVo.getAddress(), addressVo.getLevel());
+        return RestResultUtil.success(devices);
     }
 }
