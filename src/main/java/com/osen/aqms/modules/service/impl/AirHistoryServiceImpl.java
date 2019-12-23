@@ -451,7 +451,7 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
             Map<String, Object> map = new HashMap<>(0);
             // 平均值，最大值，最小值
             AirAccordModel accordModel = this.warpperModel(device, airMonitorVo.getTime(), 1);
-            if (accordModel.getAqi() == null) {
+            if (accordModel.getAqi().equals("NA")) {
                 map.put("deviceNo", device.getDeviceNo());
                 map.put("aqi", 0);
             } else {
