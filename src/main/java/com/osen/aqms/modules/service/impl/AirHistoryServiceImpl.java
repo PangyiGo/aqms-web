@@ -11,6 +11,7 @@ import com.osen.aqms.common.enums.AirSensor;
 import com.osen.aqms.common.exception.type.ControllerException;
 import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirAccordVo;
+import com.osen.aqms.common.requestVo.AirMonitorVo;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.common.utils.*;
@@ -28,10 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -349,50 +347,9 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         } else {
             deviceList = deviceService.findDeviceGroupByAddress(airAccordVo.getAddress(), airAccordVo.getLevel());
         }
-        // 查询表名
-        String tableName = TableNameUtil.generateTableName(TableNameUtil.Air_history, airAccordVo.getTime(), ConstUtil.QUERY_DATE);
-        // 计算日时间，格式化
-        List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(airAccordVo.getTime(), airAccordVo.getTime());
         for (Device device : deviceList) {
-            AirAccordModel accordModel = new AirAccordModel();
-            accordModel.setDeviceNo(device.getDeviceNo());
-            accordModel.setDeviceName(device.getDeviceName());
-            AirAccordMapperModel airAccord = baseMapper.getAirAccord(tableName, device.getDeviceNo(), localDateTimes.get(0), localDateTimes.get(1));
-            if (airAccord == null || airAccord.getPm25Avg() == null || airAccord.getPm10Avg() == null) {
-                airAccordModels.add(accordModel);
-            } else {
-                AirAvgModel airAvgModel = new AirAvgModel();
-                BeanUtil.copyProperties(airAccord, airAvgModel);
-                // 计算AQI
-                AqiDay aqiDay = AQIComputedUtil.computedAqiToDay(null, null, airAvgModel);
-                accordModel.setAqi(aqiDay.getAqi() + "");
-                accordModel.setLevel(aqiDay.getLevel() + "");
-                accordModel.setPollute(aqiDay.getPollute());
-                // 统计数据
-                accordModel.setCount(airAccord.getCount());
-                accordModel.setPm25Avg(airAccord.getPm25Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm25Max(airAccord.getPm25Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm25Min(airAccord.getPm25Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm10Avg(airAccord.getPm10Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm10Max(airAccord.getPm10Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm10Min(airAccord.getPm10Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setSo2Avg(airAccord.getSo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setSo2Max(airAccord.getSo2Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setSo2Min(airAccord.getSo2Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setNo2Avg(airAccord.getNo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setNo2Max(airAccord.getNo2Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setNo2Min(airAccord.getNo2Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setCoAvg(airAccord.getCoAvg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setCoMax(airAccord.getCoMax().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setCoMin(airAccord.getCoMin().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setO3Avg(airAccord.getO3Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setO3Max(airAccord.getO3Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setO3Min(airAccord.getO3Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setVocAvg(airAccord.getVocAvg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setVocMax(airAccord.getVocMax().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setVocMin(airAccord.getVocMin().setScale(1, BigDecimal.ROUND_DOWN));
-                airAccordModels.add(accordModel);
-            }
+            AirAccordModel accordModel = this.warpperModel(device, airAccordVo.getTime(), 1);
+            airAccordModels.add(accordModel);
         }
         return airAccordModels;
     }
@@ -407,54 +364,145 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         } else {
             deviceList = deviceService.findDeviceGroupByAddress(airAccordVo.getAddress(), airAccordVo.getLevel());
         }
-        // 表名
-        String tableName = TableNameUtil.generateTableName(TableNameUtil.Air_history, airAccordVo.getTime(), ConstUtil.QUERY_DATE);
-        // 时间
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
-        LocalDate localDate = LocalDate.parse(airAccordVo.getTime(), formatter);
-        LocalDateTime startTime = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), 1, 0, 0, 0);
-        LocalDateTime endTime = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getMonth().maxLength(), 23, 59, 59);
         for (Device device : deviceList) {
-            AirAccordModel accordModel = new AirAccordModel();
-            accordModel.setDeviceNo(device.getDeviceNo());
-            accordModel.setDeviceName(device.getDeviceName());
-            AirAccordMapperModel airAccord = baseMapper.getAirAccord(tableName, device.getDeviceNo(), startTime, endTime);
-            if (airAccord == null || airAccord.getPm25Avg() == null || airAccord.getPm10Avg() == null) {
-                airAccordModels.add(accordModel);
-            } else {
-                AirAvgModel airAvgModel = new AirAvgModel();
-                BeanUtil.copyProperties(airAccord, airAvgModel);
-                // 计算AQI
-                AqiDay aqiDay = AQIComputedUtil.computedAqiToDay(null, null, airAvgModel);
-                accordModel.setAqi(aqiDay.getAqi() + "");
-                accordModel.setLevel(aqiDay.getLevel() + "");
-                accordModel.setPollute(aqiDay.getPollute());
-                // 统计数据
-                accordModel.setCount(airAccord.getCount());
-                accordModel.setPm25Avg(airAccord.getPm25Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm25Max(airAccord.getPm25Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm25Min(airAccord.getPm25Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm10Avg(airAccord.getPm10Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm10Max(airAccord.getPm10Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setPm10Min(airAccord.getPm10Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setSo2Avg(airAccord.getSo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setSo2Max(airAccord.getSo2Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setSo2Min(airAccord.getSo2Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setNo2Avg(airAccord.getNo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setNo2Max(airAccord.getNo2Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setNo2Min(airAccord.getNo2Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setCoAvg(airAccord.getCoAvg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setCoMax(airAccord.getCoMax().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setCoMin(airAccord.getCoMin().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setO3Avg(airAccord.getO3Avg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setO3Max(airAccord.getO3Max().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setO3Min(airAccord.getO3Min().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setVocAvg(airAccord.getVocAvg().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setVocMax(airAccord.getVocMax().setScale(1, BigDecimal.ROUND_DOWN));
-                accordModel.setVocMin(airAccord.getVocMin().setScale(1, BigDecimal.ROUND_DOWN));
-                airAccordModels.add(accordModel);
-            }
+            AirAccordModel accordModel = this.warpperModel(device, airAccordVo.getTime(), 2);
+            airAccordModels.add(accordModel);
         }
         return airAccordModels;
+    }
+
+    /**
+     * @param device 设备
+     * @param time   时间
+     * @param type   1表示day报表，2表示month报表
+     * @return 信息
+     */
+    private AirAccordModel warpperModel(Device device, String time, int type) {
+        // 表名
+        String tableName = TableNameUtil.generateTableName(TableNameUtil.Air_history, time, ConstUtil.QUERY_DATE);
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        if (type == 1) {
+            // 计算日时间，格式化
+            List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(time, time);
+            startTime = localDateTimes.get(0);
+            endTime = localDateTimes.get(1);
+        }
+        if (type == 2) {
+            // 时间
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+            LocalDate localDate = LocalDate.parse(time, formatter);
+            startTime = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), 1, 0, 0, 0);
+            endTime = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getMonth().maxLength(), 23, 59, 59);
+        }
+        AirAccordModel accordModel = new AirAccordModel();
+        accordModel.setDeviceNo(device.getDeviceNo());
+        accordModel.setDeviceName(device.getDeviceName());
+        AirAccordMapperModel airAccord = baseMapper.getAirAccord(tableName, device.getDeviceNo(), startTime, endTime);
+        if (airAccord == null || airAccord.getPm25Avg() == null || airAccord.getPm10Avg() == null) {
+            return accordModel;
+        } else {
+            AirAvgModel airAvgModel = new AirAvgModel();
+            BeanUtil.copyProperties(airAccord, airAvgModel);
+            // 计算AQI
+            AqiDay aqiDay = AQIComputedUtil.computedAqiToDay(null, null, airAvgModel);
+            accordModel.setAqi(aqiDay.getAqi() + "");
+            accordModel.setLevel(aqiDay.getLevel() + "");
+            accordModel.setPollute(aqiDay.getPollute());
+            // 统计数据
+            accordModel.setCount(airAccord.getCount());
+            accordModel.setPm25Avg(airAccord.getPm25Avg().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setPm25Max(airAccord.getPm25Max().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setPm25Min(airAccord.getPm25Min().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setPm10Avg(airAccord.getPm10Avg().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setPm10Max(airAccord.getPm10Max().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setPm10Min(airAccord.getPm10Min().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setSo2Avg(airAccord.getSo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setSo2Max(airAccord.getSo2Max().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setSo2Min(airAccord.getSo2Min().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setNo2Avg(airAccord.getNo2Avg().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setNo2Max(airAccord.getNo2Max().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setNo2Min(airAccord.getNo2Min().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setCoAvg(airAccord.getCoAvg().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setCoMax(airAccord.getCoMax().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setCoMin(airAccord.getCoMin().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setO3Avg(airAccord.getO3Avg().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setO3Max(airAccord.getO3Max().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setO3Min(airAccord.getO3Min().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setVocAvg(airAccord.getVocAvg().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setVocMax(airAccord.getVocMax().setScale(1, BigDecimal.ROUND_DOWN));
+            accordModel.setVocMin(airAccord.getVocMin().setScale(1, BigDecimal.ROUND_DOWN));
+            return accordModel;
+        }
+    }
+
+    @Override
+    public AirMonitorModel getAirMonitor(AirMonitorVo airMonitorVo) {
+        // 数据封装体
+        AirMonitorModel airMonitorModel = new AirMonitorModel();
+        List<Device> deviceList;
+        if ((airMonitorVo.getAddress() == null && airMonitorVo.getLevel() == null) || ("".equals(airMonitorVo.getAddress().trim()) && "".equals(airMonitorVo.getLevel().trim()))) {
+            // 获取全部设备
+            deviceList = deviceService.findDeviceAllToUsername(SecurityUtil.getUsername());
+        } else {
+            deviceList = deviceService.findDeviceGroupByAddress(airMonitorVo.getAddress(), airMonitorVo.getLevel());
+        }
+        for (Device device : deviceList) {
+            Map<String, Object> map = new HashMap<>(0);
+            // 平均值，最大值，最小值
+            AirAccordModel accordModel = this.warpperModel(device, airMonitorVo.getTime(), 1);
+            if (accordModel.getAqi() == null) {
+                map.put("deviceNo", device.getDeviceNo());
+                map.put("aqi", 0);
+            } else {
+                // aqi等级分布
+                switch (accordModel.getLevel()) {
+                    case "1":
+                        airMonitorModel.setLv1(airMonitorModel.getLv1() + 1);
+                        break;
+                    case "2":
+                        airMonitorModel.setLv2(airMonitorModel.getLv2() + 1);
+                        break;
+                    case "3":
+                        airMonitorModel.setLv3(airMonitorModel.getLv3() + 1);
+                        break;
+                    case "4":
+                        airMonitorModel.setLv4(airMonitorModel.getLv4() + 1);
+                        break;
+                    case "5":
+                        airMonitorModel.setLv5(airMonitorModel.getLv5() + 1);
+                        break;
+                    case "6":
+                        airMonitorModel.setLv6(airMonitorModel.getLv6() + 1);
+                        break;
+                }
+                // 污染浓度分布
+                switch (accordModel.getPollute()) {
+                    case "PM2.5":
+                        airMonitorModel.setPm25(airMonitorModel.getPm25() + 1);
+                        break;
+                    case "PM10":
+                        airMonitorModel.setPm10(airMonitorModel.getPm10() + 1);
+                        break;
+                    case "SO2":
+                        airMonitorModel.setSo2(airMonitorModel.getSo2() + 1);
+                        break;
+                    case "NO2":
+                        airMonitorModel.setNo2(airMonitorModel.getNo2() + 1);
+                        break;
+                    case "CO":
+                        airMonitorModel.setCo(airMonitorModel.getCo() + 1);
+                        break;
+                    case "O3":
+                        airMonitorModel.setO3(airMonitorModel.getO3() + 1);
+                        break;
+                }
+                map.put("deviceNo", device.getDeviceNo());
+                map.put("aqi", Integer.valueOf(accordModel.getAqi()));
+            }
+            airMonitorModel.getAqiList().add(map);
+            airMonitorModel.getAirAccordModels().add(accordModel);
+        }
+        return airMonitorModel;
     }
 }

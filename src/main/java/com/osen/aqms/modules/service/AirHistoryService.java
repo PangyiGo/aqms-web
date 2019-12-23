@@ -3,6 +3,7 @@ package com.osen.aqms.modules.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirAccordVo;
+import com.osen.aqms.common.requestVo.AirMonitorVo;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.modules.entity.data.AirHistory;
@@ -82,4 +83,12 @@ public interface AirHistoryService extends IService<AirHistory> {
      * @return 信息
      */
     List<AirAccordModel> getAirAccordToMonth(AirAccordVo airAccordVo);
+
+    /**
+     * 获取设备数据总览
+     *
+     * @param airMonitorVo 请求体
+     * @return 信息
+     */
+    AirMonitorModel getAirMonitor(AirMonitorVo airMonitorVo);
 }

@@ -1,11 +1,9 @@
 package com.osen.aqms.web.data_air;
 
 import com.osen.aqms.common.exception.type.ControllerException;
-import com.osen.aqms.common.model.AirAccordModel;
-import com.osen.aqms.common.model.AirDataModel;
-import com.osen.aqms.common.model.AirRealTimeModel;
-import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirAccordVo;
+import com.osen.aqms.common.requestVo.AirMonitorVo;
 import com.osen.aqms.common.requestVo.AirRankVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
@@ -137,5 +135,17 @@ public class AirHistoryController {
                 throw new ControllerException("请求类型参数异常");
         }
         return RestResultUtil.success(airAccordToDay);
+    }
+
+    /**
+     * 获取数据总览分析数据
+     *
+     * @param airMonitorVo 请求体
+     * @return 信息
+     */
+    @PostMapping("/airHistory/monitor")
+    public RestResult getAirMonitor(@RequestBody AirMonitorVo airMonitorVo) {
+        AirMonitorModel airMonitor = airHistoryService.getAirMonitor(airMonitorVo);
+        return RestResultUtil.success(airMonitor);
     }
 }
