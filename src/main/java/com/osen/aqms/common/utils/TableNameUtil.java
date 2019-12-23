@@ -143,9 +143,7 @@ public class TableNameUtil {
         LocalDate endDateTime;
         try {
             startDateTime = LocalDate.parse(startTime, dateTimeFormatter);
-            startDateTime = LocalDate.of(startDateTime.getYear(), startDateTime.getMonthValue(), startDateTime.getDayOfMonth());
             endDateTime = LocalDate.parse(endTime, dateTimeFormatter);
-            endDateTime = LocalDate.of(endDateTime.getYear(), endDateTime.getMonthValue(), endDateTime.getDayOfMonth());
         } catch (Exception e) {
             log.error("Query time format exception");
             log.error(ThrowableUtil.getStackTrace(e));
@@ -155,6 +153,11 @@ public class TableNameUtil {
         LocalDate initDate = LocalDate.of(2019, 12, 1);
         if (initDate.isAfter(startDateTime)) {
             startDateTime = initDate;
+        }
+        // 最晚时间
+        LocalDate end = LocalDate.now();
+        if (end.isBefore(endDateTime)) {
+            endDateTime = end;
         }
         // 月份时间差
         int minMonth = (endDateTime.getYear() - startDateTime.getYear()) * 12 + (endDateTime.getMonthValue() - startDateTime.getMonthValue());

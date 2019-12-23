@@ -1,9 +1,8 @@
 package com.osen.aqms;
 
-import cn.hutool.core.util.StrUtil;
+import com.osen.aqms.common.utils.TableNameUtil;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * User: PangYi
@@ -14,16 +13,8 @@ import java.time.format.DateTimeFormatter;
 public class ApplicationTest {
 
     public static void main(String[] args) {
-        String name = "aqi_hour_201912";
+        List<String> strings = TableNameUtil.tableNameList(TableNameUtil.Air_history, "2019-11-11", "2020-12-12");
 
-        System.out.println(StrUtil.sub(name, 9, 13));
-
-        System.out.println(StrUtil.sub(name, 13, name.length()));
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        LocalDateTime localDateTime = LocalDateTime.parse("2019-12-20",formatter);
-
-        System.out.println(localDateTime);
+        System.out.println(strings);
     }
 }
