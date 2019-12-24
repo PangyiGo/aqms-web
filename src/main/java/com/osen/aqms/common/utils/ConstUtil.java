@@ -22,4 +22,6 @@ public class ConstUtil {
 
     // 日期格式化
     public static String QUERY_DATE = "yyyy-MM-dd";
+
+    public static Integer PAGENUMBER = 10;
 }

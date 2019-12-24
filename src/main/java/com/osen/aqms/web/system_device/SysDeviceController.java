@@ -1,5 +1,6 @@
 package com.osen.aqms.web.system_device;
 
+import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.common.requestVo.AddressVo;
 import com.osen.aqms.common.result.RestResult;
@@ -64,5 +65,17 @@ public class SysDeviceController {
     public RestResult getDeviceToGroupByAddress(@RequestBody AddressVo addressVo) {
         List<Device> devices = deviceService.findDeviceGroupByAddress(addressVo.getAddress(), addressVo.getLevel());
         return RestResultUtil.success(devices);
+    }
+
+    /**
+     * 获取当前用户的设备状态信息
+     *
+     * @param number 分页号
+     * @return 信息
+     */
+    @PostMapping("/device/status/{number}")
+    public RestResult getDeviceStatus(@PathVariable("number") String number) {
+        DeviceStatusModel deviceStatus = deviceService.findDeviceStatus(number);
+        return RestResultUtil.success(deviceStatus);
     }
 }

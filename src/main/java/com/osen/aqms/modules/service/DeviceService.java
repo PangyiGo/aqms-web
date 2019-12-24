@@ -1,6 +1,7 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.modules.entity.system.Device;
 
@@ -54,4 +55,12 @@ public interface DeviceService extends IService<Device> {
      * @return 信息
      */
     List<Device> findDeviceGroupByAddress(String address, String level);
+
+    /**
+     * 获取当前用户的设备列表状态信息
+     *
+     * @param number 分页数
+     * @return 信息
+     */
+    DeviceStatusModel findDeviceStatus(String number);
 }

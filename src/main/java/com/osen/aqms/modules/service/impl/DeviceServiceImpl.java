@@ -3,9 +3,13 @@ package com.osen.aqms.modules.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
+import com.osen.aqms.common.utils.ConstUtil;
 import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.common.utils.TableNameUtil;
@@ -265,6 +269,34 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                 break;
         }
         return deviceList;
+    }
+
+    @Override
+    public DeviceStatusModel findDeviceStatus(String number) {
+        DeviceStatusModel deviceStatusModel = new DeviceStatusModel();
+        // 获取用户名
+        String username = SecurityUtil.getUsername();
+        // 设备关联ID
+        List<Integer> deviceIds = userDeviceService.findDeviceIdToUserName(username);
+        // 分页查询
+        LambdaQueryWrapper<Device> query = Wrappers.<Device>lambdaQuery();
+        query.in(Device::getId, deviceIds);
+        Page page = new Page(Integer.valueOf(number), ConstUtil.PAGENUMBER);
+        IPage iPage = super.page(page, query);
+
+        List<Device> deviceList = iPage.getRecords();
+        // 在线设备号
+        List<Device> devices = deviceList.stream().filter(device -> device.getLive() == ConstUtil.OPEN_STATUS).collect(Collectors.toList());
+        int online = devices.size();
+        // 离线设备号
+        devices = deviceList.stream().filter(device -> device.getLive() == ConstUtil.CLOSE_STATUS).collect(Collectors.toList());
+        int offline = devices.size();
+
+        deviceStatusModel.setTotal(iPage.getTotal());
+        deviceStatusModel.setOnline(online);
+        deviceStatusModel.setOffline(offline);
+        deviceStatusModel.setDeviceList(deviceList);
+        return deviceStatusModel;
     }
 
 }
