@@ -48,7 +48,7 @@ public class AlarmControl extends Model<AlarmControl> implements Serializable {
 
     private BigDecimal voc;
 
-    private int status;
+    private Integer status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
