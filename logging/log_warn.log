@@ -186,3 +186,8 @@ Caused by: java.net.SocketException: Socket closed
 2019-12-24 10:09:53.313 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-24 10:12:46.515 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-24 10:15:06.933 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-24 10:50:49.977 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-24 11:40:33.722 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-24 11:42:56.356 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-24 11:54:15.095 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-24 13:43:17.160 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.

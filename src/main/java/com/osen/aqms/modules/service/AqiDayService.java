@@ -1,9 +1,11 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.model.AqiCompareDataModel;
 import com.osen.aqms.common.model.AqiHistoryToDay;
 import com.osen.aqms.common.model.AqiReportToDayModel;
 import com.osen.aqms.common.requestVo.AirQueryVo;
+import com.osen.aqms.common.requestVo.AqiCompareVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
 import com.osen.aqms.modules.entity.data.AqiDay;
 
@@ -32,4 +34,12 @@ public interface AqiDayService extends IService<AqiDay> {
      * @return 信息
      */
     List<AqiReportToDayModel> getAqiReportToDay(AqiReportVo aqiReportVo);
+
+    /**
+     * 获取小时设备对比分析数据
+     *
+     * @param aqiCompareVo 请求体
+     * @return 信息
+     */
+    AqiCompareDataModel getAqiDayToCompare(AqiCompareVo aqiCompareVo);
 }

@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.config.MybatisPlusConfig;
+import com.osen.aqms.common.model.AqiCompareDataModel;
 import com.osen.aqms.common.model.AqiHistoryToDay;
+import com.osen.aqms.common.model.AqiHistoryToHour;
 import com.osen.aqms.common.model.AqiReportToDayModel;
 import com.osen.aqms.common.requestVo.AirQueryVo;
+import com.osen.aqms.common.requestVo.AqiCompareVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
 import com.osen.aqms.common.utils.ConstUtil;
 import com.osen.aqms.common.utils.DateTimeUtil;
@@ -119,5 +122,51 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
             }
         }
         return aqiReportToDayModels;
+    }
+
+    @Override
+    public AqiCompareDataModel getAqiDayToCompare(AqiCompareVo aqiCompareVo) {
+        // 设备号
+        String deviceNo1 = aqiCompareVo.getDev1();
+        String deviceNo2 = aqiCompareVo.getDev2();
+        // 获取查询数据表
+        List<String> nameList = TableNameUtil.tableNameList(TableNameUtil.Aqi_day, aqiCompareVo.getStartTime(), aqiCompareVo.getEndTime());
+        // 查询时间
+        List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(aqiCompareVo.getStartTime(), aqiCompareVo.getEndTime());
+
+        List<AqiDay> first = new ArrayList<>(0);
+        List<AqiDay> second = new ArrayList<>(0);
+        // 查询
+        LambdaQueryWrapper<AqiDay> wrapper1 = Wrappers.<AqiDay>lambdaQuery().select(AqiDay::getDeviceNo,
+                AqiDay::getAqi, AqiDay::getDateTime, AqiDay::getPm25, AqiDay::getPm10, AqiDay::getSo2, AqiDay::getNo2, AqiDay::getCo, AqiDay::getO3, AqiDay::getVoc);
+        LambdaQueryWrapper<AqiDay> wrapper2 = Wrappers.<AqiDay>lambdaQuery().select(AqiDay::getDeviceNo, AqiDay::getAqi, AqiDay::getDateTime, AqiDay::getPm25, AqiDay::getPm10, AqiDay::getSo2, AqiDay::getNo2, AqiDay::getCo, AqiDay::getO3, AqiDay::getVoc);
+        for (String name : nameList) {
+            MybatisPlusConfig.TableName.set(name);
+            wrapper1.eq(AqiDay::getDeviceNo, deviceNo1).between(AqiDay::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+            List<AqiDay> list1 = super.list(wrapper1);
+            if (list1 != null)
+                first.addAll(list1);
+            MybatisPlusConfig.TableName.set(name);
+            wrapper2.eq(AqiDay::getDeviceNo, deviceNo2).between(AqiDay::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+            List<AqiDay> list2 = super.list(wrapper2);
+            if (list2 != null)
+                second.addAll(list2);
+        }
+        List<AqiHistoryToHour> d1 = new ArrayList<>(0);
+        List<AqiHistoryToHour> d2 = new ArrayList<>(0);
+        for (AqiDay AqiDay : first) {
+            AqiHistoryToHour hour = new AqiHistoryToHour();
+            BeanUtil.copyProperties(AqiDay, hour);
+            d1.add(hour);
+        }
+        for (AqiDay AqiDay : second) {
+            AqiHistoryToHour hour = new AqiHistoryToHour();
+            BeanUtil.copyProperties(AqiDay, hour);
+            d2.add(hour);
+        }
+        AqiCompareDataModel aqiCompareDataModel = new AqiCompareDataModel();
+        aqiCompareDataModel.setFirstDeviceData(d1);
+        aqiCompareDataModel.setSecondDeviceData(d2);
+        return aqiCompareDataModel;
     }
 }

@@ -9,6 +9,7 @@ import com.osen.aqms.common.config.MybatisPlusConfig;
 import com.osen.aqms.common.exception.type.ServiceException;
 import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirQueryVo;
+import com.osen.aqms.common.requestVo.AqiCompareVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
 import com.osen.aqms.common.requestVo.FeatureVo;
 import com.osen.aqms.common.utils.*;
@@ -308,5 +309,77 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         aqiDataFeatureModel.setMonAqiAvgModels(monData);
 
         return aqiDataFeatureModel;
+    }
+
+    @Override
+    public AqiCompareDataModel getAqiHourToCompare(AqiCompareVo aqiCompareVo) {
+        // 设备号
+        String deviceNo1 = aqiCompareVo.getDev1();
+        String deviceNo2 = aqiCompareVo.getDev2();
+        // 获取查询数据表
+        List<String> nameList = TableNameUtil.tableNameList(TableNameUtil.Aqi_hour, aqiCompareVo.getStartTime(), aqiCompareVo.getEndTime());
+        // 查询时间
+        List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(aqiCompareVo.getStartTime(), aqiCompareVo.getEndTime());
+
+        List<AqiHour> first = new ArrayList<>(0);
+        List<AqiHour> second = new ArrayList<>(0);
+        // 查询
+        LambdaQueryWrapper<AqiHour> wrapper1 = Wrappers.<AqiHour>lambdaQuery().select(AqiHour::getDeviceNo, AqiHour::getAqi, AqiHour::getDateTime, AqiHour::getPm25, AqiHour::getPm10, AqiHour::getSo2, AqiHour::getNo2, AqiHour::getCo, AqiHour::getO3, AqiHour::getVoc);
+        LambdaQueryWrapper<AqiHour> wrapper2 = Wrappers.<AqiHour>lambdaQuery().select(AqiHour::getDeviceNo, AqiHour::getAqi, AqiHour::getDateTime, AqiHour::getPm25, AqiHour::getPm10, AqiHour::getSo2, AqiHour::getNo2, AqiHour::getCo, AqiHour::getO3, AqiHour::getVoc);
+        for (String name : nameList) {
+            MybatisPlusConfig.TableName.set(name);
+            wrapper1.eq(AqiHour::getDeviceNo, deviceNo1).between(AqiHour::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+            List<AqiHour> list1 = super.list(wrapper1);
+            if (list1 != null)
+                first.addAll(list1);
+            MybatisPlusConfig.TableName.set(name);
+            wrapper2.eq(AqiHour::getDeviceNo, deviceNo2).between(AqiHour::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+            List<AqiHour> list2 = super.list(wrapper2);
+            if (list2 != null)
+                second.addAll(list2);
+        }
+        List<AqiHistoryToHour> d1 = new ArrayList<>(0);
+        List<AqiHistoryToHour> d2 = new ArrayList<>(0);
+        for (AqiHour aqiHour : first) {
+            AqiHistoryToHour hour = new AqiHistoryToHour();
+            BeanUtil.copyProperties(aqiHour, hour);
+            d1.add(hour);
+        }
+        for (AqiHour aqiHour : second) {
+            AqiHistoryToHour hour = new AqiHistoryToHour();
+            BeanUtil.copyProperties(aqiHour, hour);
+            d2.add(hour);
+        }
+        AqiCompareDataModel aqiCompareDataModel = new AqiCompareDataModel();
+        aqiCompareDataModel.setFirstDeviceData(d1);
+        aqiCompareDataModel.setSecondDeviceData(d2);
+        return aqiCompareDataModel;
+    }
+
+    @Override
+    public AqiCompareDataModel getAqiMonthToCompare(AqiCompareVo aqiCompareVo) {
+        // 月份数据
+        AirQueryVo airQueryVo1 = new AirQueryVo(aqiCompareVo.getDev1(), aqiCompareVo.getStartTime(), aqiCompareVo.getEndTime());
+        AirQueryVo airQueryVo2 = new AirQueryVo(aqiCompareVo.getDev2(), aqiCompareVo.getStartTime(), aqiCompareVo.getEndTime());
+
+        List<AqiHistoryToMonth> aqiMonthHistory = this.getAqiMonthHistory(airQueryVo1);
+        List<AqiHistoryToMonth> aqiMonthHistory1 = this.getAqiMonthHistory(airQueryVo2);
+
+        List<AqiHistoryToHour> d1 = new ArrayList<>(0);
+        List<AqiHistoryToHour> d2 = new ArrayList<>(0);
+        for (AqiHistoryToMonth aqiHistoryToMonth : aqiMonthHistory) {
+            AqiHistoryToHour hour = new AqiHistoryToHour();
+            BeanUtil.copyProperties(aqiHistoryToMonth, hour);
+            d1.add(hour);
+        }
+        for (AqiHistoryToMonth aqiHistoryToMonth : aqiMonthHistory1) {
+            AqiHistoryToHour hour = new AqiHistoryToHour();
+            BeanUtil.copyProperties(aqiHistoryToMonth, hour);
+            d2.add(hour);
+        }
+        AqiCompareDataModel aqiCompareDataModel = new AqiCompareDataModel();
+        aqiCompareDataModel.setFirstDeviceData(d1);
+        aqiCompareDataModel.setSecondDeviceData(d2);
+        return aqiCompareDataModel;
     }
 }
