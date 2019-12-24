@@ -17,6 +17,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class AqiFeatureModel {
 
+    private String deviceNo;
+
+    private String deviceName;
+
     private int nowAqi;
 
     private int yeaAqi;

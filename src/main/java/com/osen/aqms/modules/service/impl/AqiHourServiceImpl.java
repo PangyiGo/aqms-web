@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.config.MybatisPlusConfig;
+import com.osen.aqms.common.exception.type.ServiceException;
 import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
@@ -146,7 +147,7 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
     @Override
     public List<AqiReportToHourModel> getAqiReportToHour(AqiReportVo aqiReportVo) {
         List<AqiReportToHourModel> aqiReportToHourModels = new ArrayList<>(0);
-        List<Device> deviceList = new ArrayList<>(0);
+        List<Device> deviceList;
         if ((aqiReportVo.getAddress() == null && aqiReportVo.getLevel() == null) || ("".equals(aqiReportVo.getAddress().trim()) && "".equals(aqiReportVo.getLevel().trim()))) {
             // 查询全部设备列表
             deviceList = deviceService.findDeviceAllToUsername(SecurityUtil.getUsername());
@@ -204,13 +205,17 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
 
     @Override
     public AqiDataFeatureModel getAqiFeatureData(FeatureVo featureVo) {
+        AqiDataFeatureModel aqiDataFeatureModel = new AqiDataFeatureModel();
         // 设备号
         String deviceNo = featureVo.getDeviceNo();
+        Device device = deviceService.findOneDeviceToNo(deviceNo);
+        if (device == null)
+            throw new ServiceException("无法查询设备信息");
         // 时间格式化
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
         // 传参时间
         LocalDate argsTime = LocalDate.parse(featureVo.getTime(), formatter);
-        if (argsTime.isBefore(LocalDate.of(2019, 12, 01)))
+        if (argsTime.isBefore(LocalDate.of(2019, 12, 1)))
             return new AqiDataFeatureModel();
         // 现在时间
         String nowTableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, argsTime.format(formatter), ConstUtil.QUERY_DATE);
@@ -258,6 +263,8 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         aqiFeatureModel.setMonCo(monAvg.getCo().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setMonO3(monAvg.getO3().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setMonVoc(monAvg.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setDeviceNo(device.getDeviceNo());
+        aqiFeatureModel.setDeviceName(device.getDeviceName());
 
         LambdaQueryWrapper<AqiHour> wrapper1 = Wrappers.<AqiHour>lambdaQuery().select(AqiHour::getAqi, AqiHour::getDateTime, AqiHour::getPm25, AqiHour::getPm10, AqiHour::getSo2, AqiHour::getNo2, AqiHour::getCo, AqiHour::getO3, AqiHour::getVoc).eq(AqiHour::getDeviceNo, deviceNo).between(AqiHour::getDateTime, nowTimes.get(0), nowTimes.get(1)).orderByAsc(AqiHour::getDateTime);
         MybatisPlusConfig.TableName.set(nowTableName);
@@ -295,7 +302,6 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
             monData.add(aqiAvgModel);
         }
 
-        AqiDataFeatureModel aqiDataFeatureModel = new AqiDataFeatureModel();
         aqiDataFeatureModel.setAqiFeatureModel(aqiFeatureModel);
         aqiDataFeatureModel.setNowAqiAvgModels(nowData);
         aqiDataFeatureModel.setYeaAqiAvgModels(yesData);
