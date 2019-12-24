@@ -478,3 +478,111 @@
 2019-12-24 13:43:17.941 log message -> User login successful......
 2019-12-24 13:43:18.217 log message -> Starting without optional epoll library
 2019-12-24 13:43:18.220 log message -> Starting without optional kqueue library
+2019-12-24 14:10:26.805 log message -> User is not logged in, please log in
+2019-12-24 14:10:26.880 log message -> Reconnecting, last destination was /47.107.103.35:6379
+2019-12-24 14:10:26.900 log message -> Reconnected to 47.107.103.35:6379
+2019-12-24 14:17:15.536 log message -> Shutting down ExecutorService 'taskScheduler'
+2019-12-24 14:17:15.539 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2019-12-24 14:17:15.542 log message -> DatebookHikariCP - Shutdown initiated...
+2019-12-24 14:17:15.547 log message -> DatebookHikariCP - Shutdown completed.
+2019-12-24 14:17:28.204 log message -> Starting AqmsWebApplication on PC-20190708MDDO with PID 9304 (E:\gitworkspace\aqms-web\target\classes started by Administrator in E:\gitworkspace\aqms-web)
+2019-12-24 14:17:28.212 log message -> The following profiles are active: dev
+2019-12-24 14:17:29.602 log message -> Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-24 14:17:29.605 log message -> Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2019-12-24 14:17:29.681 log message -> Finished Spring Data repository scanning in 54ms. Found 0 Redis repository interfaces.
+2019-12-24 14:17:30.245 log message -> Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:17:30.253 log message -> Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:17:30.300 log message -> Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:17:30.303 log message -> Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@869d87c' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:17:30.307 log message -> Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:17:30.315 log message -> Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:17:30.697 log message -> Tomcat initialized with port(s): 8989 (http)
+2019-12-24 14:17:30.711 log message -> Initializing ProtocolHandler ["http-nio-8989"]
+2019-12-24 14:17:30.712 log message -> Starting service [Tomcat]
+2019-12-24 14:17:30.712 log message -> Starting Servlet engine: [Apache Tomcat/9.0.29]
+2019-12-24 14:17:30.831 log message -> Initializing Spring embedded WebApplicationContext
+2019-12-24 14:17:30.832 log message -> Root WebApplicationContext: initialization completed in 2475 ms
+2019-12-24 14:17:33.531 log message -> Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@adafe19, org.springframework.security.web.context.SecurityContextPersistenceFilter@35dcd032, org.springframework.security.web.header.HeaderWriterFilter@52ca0ad4, org.springframework.security.web.authentication.logout.LogoutFilter@376b5cb2, com.osen.aqms.webSecurity.config.JwtAuthenticationTokenFilter@153cb763, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@775f15fd, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@64dfb31d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@738a815c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7e2bd5e6, org.springframework.security.web.session.SessionManagementFilter@6658f08a, org.springframework.security.web.access.ExceptionTranslationFilter@6598caab, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@203765b2]
+2019-12-24 14:17:33.797 log message -> Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-24 14:17:34.319 log message -> Initializing ExecutorService 'taskScheduler'
+2019-12-24 14:17:34.427 log message -> Starting ProtocolHandler ["http-nio-8989"]
+2019-12-24 14:17:34.460 log message -> Tomcat started on port(s): 8989 (http) with context path ''
+2019-12-24 14:17:34.465 log message -> Started AqmsWebApplication in 8.355 seconds (JVM running for 9.704)
+2019-12-24 14:17:41.558 log message -> Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-24 14:17:41.559 log message -> Initializing Servlet 'dispatcherServlet'
+2019-12-24 14:17:41.572 log message -> Completed initialization in 13 ms
+2019-12-24 14:17:41.745 log message -> Starting without optional epoll library
+2019-12-24 14:17:41.746 log message -> Starting without optional kqueue library
+2019-12-24 14:17:42.130 log message -> User is not logged in, please log in
+2019-12-24 14:17:49.762 log message -> DatebookHikariCP - Starting...
+2019-12-24 14:17:50.075 log message -> DatebookHikariCP - Start completed.
+2019-12-24 14:17:50.344 log message -> User login successful......
+2019-12-24 14:18:02.880 log message -> User is not logged in, please log in
+2019-12-24 14:18:19.999 log message -> Shutting down ExecutorService 'taskScheduler'
+2019-12-24 14:18:20.001 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2019-12-24 14:18:20.004 log message -> DatebookHikariCP - Shutdown initiated...
+2019-12-24 14:18:20.012 log message -> DatebookHikariCP - Shutdown completed.
+2019-12-24 14:18:39.779 log message -> Starting AqmsWebApplication on PC-20190708MDDO with PID 10816 (E:\gitworkspace\aqms-web\target\classes started by Administrator in E:\gitworkspace\aqms-web)
+2019-12-24 14:18:39.784 log message -> The following profiles are active: dev
+2019-12-24 14:18:41.436 log message -> Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-24 14:18:41.440 log message -> Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2019-12-24 14:18:41.506 log message -> Finished Spring Data repository scanning in 45ms. Found 0 Redis repository interfaces.
+2019-12-24 14:18:42.099 log message -> Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:18:42.109 log message -> Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:18:42.181 log message -> Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:18:42.186 log message -> Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@3ac3f6f' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:18:42.187 log message -> Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:18:42.197 log message -> Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:18:42.585 log message -> Tomcat initialized with port(s): 8989 (http)
+2019-12-24 14:18:42.601 log message -> Initializing ProtocolHandler ["http-nio-8989"]
+2019-12-24 14:18:42.602 log message -> Starting service [Tomcat]
+2019-12-24 14:18:42.602 log message -> Starting Servlet engine: [Apache Tomcat/9.0.29]
+2019-12-24 14:18:42.726 log message -> Initializing Spring embedded WebApplicationContext
+2019-12-24 14:18:42.726 log message -> Root WebApplicationContext: initialization completed in 2840 ms
+2019-12-24 14:18:45.429 log message -> Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@25d911a, org.springframework.security.web.context.SecurityContextPersistenceFilter@43588265, org.springframework.security.web.header.HeaderWriterFilter@23b71d24, org.springframework.security.web.authentication.logout.LogoutFilter@dd737ea, com.osen.aqms.webSecurity.config.JwtAuthenticationTokenFilter@61e86192, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@7bc2ae16, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@100d0218, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@68fc9167, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@18026052, org.springframework.security.web.session.SessionManagementFilter@4c56644f, org.springframework.security.web.access.ExceptionTranslationFilter@305552d6, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@2c8a445b]
+2019-12-24 14:18:45.692 log message -> Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-24 14:18:46.244 log message -> Initializing ExecutorService 'taskScheduler'
+2019-12-24 14:18:46.349 log message -> Starting ProtocolHandler ["http-nio-8989"]
+2019-12-24 14:18:46.384 log message -> Tomcat started on port(s): 8989 (http) with context path ''
+2019-12-24 14:18:46.388 log message -> Started AqmsWebApplication in 7.727 seconds (JVM running for 8.877)
+2019-12-24 14:19:07.428 log message -> Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-24 14:19:07.428 log message -> Initializing Servlet 'dispatcherServlet'
+2019-12-24 14:19:07.442 log message -> Completed initialization in 14 ms
+2019-12-24 14:19:07.632 log message -> Starting without optional epoll library
+2019-12-24 14:19:07.636 log message -> Starting without optional kqueue library
+2019-12-24 14:19:08.904 log message -> DatebookHikariCP - Starting...
+2019-12-24 14:19:09.440 log message -> DatebookHikariCP - Start completed.
+2019-12-24 14:20:04.170 log message -> Shutting down ExecutorService 'taskScheduler'
+2019-12-24 14:20:04.174 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2019-12-24 14:20:04.177 log message -> DatebookHikariCP - Shutdown initiated...
+2019-12-24 14:20:04.183 log message -> DatebookHikariCP - Shutdown completed.
+2019-12-24 14:21:26.991 log message -> Starting AqmsWebApplication on PC-20190708MDDO with PID 4340 (E:\gitworkspace\aqms-web\target\classes started by Administrator in E:\gitworkspace\aqms-web)
+2019-12-24 14:21:26.996 log message -> The following profiles are active: dev
+2019-12-24 14:21:28.673 log message -> Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-24 14:21:28.678 log message -> Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2019-12-24 14:21:28.746 log message -> Finished Spring Data repository scanning in 47ms. Found 0 Redis repository interfaces.
+2019-12-24 14:21:29.351 log message -> Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:21:29.362 log message -> Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:21:29.410 log message -> Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:21:29.414 log message -> Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@6e0c6a7a' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:21:29.416 log message -> Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:21:29.424 log message -> Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 14:21:29.810 log message -> Tomcat initialized with port(s): 8989 (http)
+2019-12-24 14:21:29.825 log message -> Initializing ProtocolHandler ["http-nio-8989"]
+2019-12-24 14:21:29.826 log message -> Starting service [Tomcat]
+2019-12-24 14:21:29.827 log message -> Starting Servlet engine: [Apache Tomcat/9.0.29]
+2019-12-24 14:21:29.952 log message -> Initializing Spring embedded WebApplicationContext
+2019-12-24 14:21:29.953 log message -> Root WebApplicationContext: initialization completed in 2867 ms
+2019-12-24 14:21:32.581 log message -> Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4e8598d9, org.springframework.security.web.context.SecurityContextPersistenceFilter@21d9cd04, org.springframework.security.web.header.HeaderWriterFilter@514377fc, org.springframework.security.web.authentication.logout.LogoutFilter@35e74e08, com.osen.aqms.webSecurity.config.JwtAuthenticationTokenFilter@5ae1c281, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@a316f6b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@33bdd01, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@59b492ec, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@267ff4df, org.springframework.security.web.session.SessionManagementFilter@7b5021d1, org.springframework.security.web.access.ExceptionTranslationFilter@4662752a, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@37d699a1]
+2019-12-24 14:21:32.877 log message -> Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-24 14:21:33.370 log message -> Initializing ExecutorService 'taskScheduler'
+2019-12-24 14:21:33.489 log message -> Starting ProtocolHandler ["http-nio-8989"]
+2019-12-24 14:21:33.526 log message -> Tomcat started on port(s): 8989 (http) with context path ''
+2019-12-24 14:21:33.530 log message -> Started AqmsWebApplication in 7.669 seconds (JVM running for 8.8)
+2019-12-24 14:21:49.319 log message -> Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-24 14:21:49.319 log message -> Initializing Servlet 'dispatcherServlet'
+2019-12-24 14:21:49.333 log message -> Completed initialization in 12 ms
+2019-12-24 14:21:49.511 log message -> Starting without optional epoll library
+2019-12-24 14:21:49.514 log message -> Starting without optional kqueue library
+2019-12-24 14:21:50.795 log message -> DatebookHikariCP - Starting...
+2019-12-24 14:21:51.380 log message -> DatebookHikariCP - Start completed.
