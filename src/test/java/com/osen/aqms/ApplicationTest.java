@@ -2,6 +2,7 @@ package com.osen.aqms;
 
 import com.osen.aqms.common.utils.TableNameUtil;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,5 +17,10 @@ public class ApplicationTest {
         List<String> strings = TableNameUtil.tableNameList(TableNameUtil.Air_history, "2019-11-11", "2020-12-12");
 
         System.out.println(strings);
+
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(now);
+
+        System.out.println(now.minusMonths(1));
     }
 }

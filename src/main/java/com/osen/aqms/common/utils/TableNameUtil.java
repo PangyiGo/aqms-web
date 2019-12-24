@@ -217,6 +217,11 @@ public class TableNameUtil {
         // 时间格式化
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formate);
         LocalDate localDate = LocalDate.parse(datetime, formatter);
+        // 最早时间
+        LocalDate initDate = LocalDate.of(2019, 12, 1);
+        if (initDate.isAfter(localDate)) {
+            localDate = initDate;
+        }
         // 生成表
         String month = (localDate.getMonthValue() < 10) ? "0" + localDate.getMonthValue() : "" + localDate.getMonthValue();
         String year = localDate.getYear() + "";

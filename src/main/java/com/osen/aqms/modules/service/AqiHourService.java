@@ -1,12 +1,10 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.osen.aqms.common.model.AqiDataModel;
-import com.osen.aqms.common.model.AqiHistoryToHour;
-import com.osen.aqms.common.model.AqiHistoryToMonth;
-import com.osen.aqms.common.model.AqiReportToHourModel;
+import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
+import com.osen.aqms.common.requestVo.FeatureVo;
 import com.osen.aqms.modules.entity.data.AqiHour;
 
 import java.util.List;
@@ -50,4 +48,12 @@ public interface AqiHourService extends IService<AqiHour> {
      * @return 信息
      */
     List<AqiReportToHourModel> getAqiReportToHour(AqiReportVo aqiReportVo);
+
+    /**
+     * 获取AQI同比，环比分析数据
+     *
+     * @param featureVo 请求体
+     * @return 信息
+     */
+    AqiDataFeatureModel getAqiFeatureData(FeatureVo featureVo);
 }

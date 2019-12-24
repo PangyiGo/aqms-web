@@ -20,4 +20,24 @@
                 AND "${end}"
             );
     </select>
+
+    <select id="getAvgToFeature" resultType="com.osen.aqms.common.model.AqiAvgModel">
+        SELECT
+            AVG(aqi) AS aqi,
+            AVG(pm25) AS pm25,
+            AVG(pm10) AS pm10,
+            AVG(so2) AS so2,
+            AVG(no2) AS no2,
+            AVG(co) AS co,
+            AVG(o3) AS o3,
+            AVG(voc) AS voc
+        FROM
+            ${tableName}
+        WHERE
+            (
+                device_no = ${deviceNo}
+                AND date_time BETWEEN "${start}"
+                AND "${end}"
+            );
+    </select>
 </mapper>

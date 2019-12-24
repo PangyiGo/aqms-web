@@ -9,6 +9,7 @@ import com.osen.aqms.common.config.MybatisPlusConfig;
 import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
+import com.osen.aqms.common.requestVo.FeatureVo;
 import com.osen.aqms.common.utils.*;
 import com.osen.aqms.modules.entity.data.AqiDay;
 import com.osen.aqms.modules.entity.data.AqiHour;
@@ -199,5 +200,107 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
             }
         }
         return aqiReportToHourModels;
+    }
+
+    @Override
+    public AqiDataFeatureModel getAqiFeatureData(FeatureVo featureVo) {
+        // 设备号
+        String deviceNo = featureVo.getDeviceNo();
+        // 时间格式化
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        // 传参时间
+        LocalDate argsTime = LocalDate.parse(featureVo.getTime(), formatter);
+        if (argsTime.isBefore(LocalDate.of(2019, 12, 01)))
+            return new AqiDataFeatureModel();
+        // 现在时间
+        String nowTableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, argsTime.format(formatter), ConstUtil.QUERY_DATE);
+        List<LocalDateTime> nowTimes = DateTimeUtil.queryTimeFormatter(argsTime.format(formatter), argsTime.format(formatter));
+        AqiAvgModel nowAvg = baseMapper.getAvgToFeature(nowTableName, deviceNo, nowTimes.get(0), nowTimes.get(1));
+        if (BeanUtil.isEmpty(nowAvg))
+            nowAvg = new AqiAvgModel();
+        // 昨天时间
+        LocalDate yeaTime = argsTime.minusDays(1);
+        String yesTableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, yeaTime.format(formatter), ConstUtil.QUERY_DATE);
+        List<LocalDateTime> yesTimes = DateTimeUtil.queryTimeFormatter(yeaTime.format(formatter), yeaTime.format(formatter));
+        AqiAvgModel yesAvg = baseMapper.getAvgToFeature(yesTableName, deviceNo, yesTimes.get(0), yesTimes.get(1));
+        if (BeanUtil.isEmpty(yesAvg))
+            yesAvg = new AqiAvgModel();
+        // 上月今天时间
+        LocalDate monTime = argsTime.minusMonths(1);
+        String monTableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, monTime.format(formatter), ConstUtil.QUERY_DATE);
+        List<LocalDateTime> monTimes = DateTimeUtil.queryTimeFormatter(monTime.format(formatter), monTime.format(formatter));
+        AqiAvgModel monAvg = baseMapper.getAvgToFeature(monTableName, deviceNo, monTimes.get(0), monTimes.get(1));
+        if (BeanUtil.isEmpty(monAvg))
+            monAvg = new AqiAvgModel();
+        // 数据同比，环比
+        AqiFeatureModel aqiFeatureModel = new AqiFeatureModel();
+        aqiFeatureModel.setNowAqi(nowAvg.getAqi());
+        aqiFeatureModel.setNowPM25(nowAvg.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setNowPM10(nowAvg.getPm10().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setNowSo2(nowAvg.getSo2().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setNowSo2(nowAvg.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setNowCo(nowAvg.getCo().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setNowO3(nowAvg.getO3().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setNowVoc(nowAvg.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setYeaAqi(yesAvg.getAqi());
+        aqiFeatureModel.setYeaPM25(yesAvg.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setYeaPM10(yesAvg.getPm10().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setYeaSo2(yesAvg.getSo2().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setYeaSo2(yesAvg.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setYeaCo(yesAvg.getCo().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setYeaO3(yesAvg.getO3().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setYeaVoc(yesAvg.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setMonAqi(monAvg.getAqi());
+        aqiFeatureModel.setMonPM25(monAvg.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setMonPM10(monAvg.getPm10().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setMonSo2(monAvg.getSo2().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setMonSo2(monAvg.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setMonCo(monAvg.getCo().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setMonO3(monAvg.getO3().setScale(1, BigDecimal.ROUND_DOWN));
+        aqiFeatureModel.setMonVoc(monAvg.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
+
+        LambdaQueryWrapper<AqiHour> wrapper1 = Wrappers.<AqiHour>lambdaQuery().select(AqiHour::getAqi, AqiHour::getDateTime, AqiHour::getPm25, AqiHour::getPm10, AqiHour::getSo2, AqiHour::getNo2, AqiHour::getCo, AqiHour::getO3, AqiHour::getVoc).eq(AqiHour::getDeviceNo, deviceNo).between(AqiHour::getDateTime, nowTimes.get(0), nowTimes.get(1)).orderByAsc(AqiHour::getDateTime);
+        MybatisPlusConfig.TableName.set(nowTableName);
+        List<AqiHour> nowList = super.list(wrapper1);
+        if (nowList == null)
+            nowList = new ArrayList<>(0);
+        List<AqiAvgModel> nowData = new ArrayList<>(0);
+        for (AqiHour aqiHour : nowList) {
+            AqiAvgModel aqiAvgModel = new AqiAvgModel();
+            BeanUtil.copyProperties(aqiHour, aqiAvgModel);
+            nowData.add(aqiAvgModel);
+        }
+
+        LambdaQueryWrapper<AqiHour> wrapper2 = Wrappers.<AqiHour>lambdaQuery().select(AqiHour::getAqi, AqiHour::getDateTime, AqiHour::getPm25, AqiHour::getPm10, AqiHour::getSo2, AqiHour::getNo2, AqiHour::getCo, AqiHour::getO3, AqiHour::getVoc).eq(AqiHour::getDeviceNo, deviceNo).between(AqiHour::getDateTime, yesTimes.get(0), yesTimes.get(1)).orderByAsc(AqiHour::getDateTime);
+        MybatisPlusConfig.TableName.set(yesTableName);
+        List<AqiHour> yesList = super.list(wrapper2);
+        if (yesList == null)
+            yesList = new ArrayList<>(0);
+        List<AqiAvgModel> yesData = new ArrayList<>(0);
+        for (AqiHour aqiHour : yesList) {
+            AqiAvgModel aqiAvgModel = new AqiAvgModel();
+            BeanUtil.copyProperties(aqiHour, aqiAvgModel);
+            yesData.add(aqiAvgModel);
+        }
+
+        LambdaQueryWrapper<AqiHour> wrapper3 = Wrappers.<AqiHour>lambdaQuery().select(AqiHour::getAqi, AqiHour::getDateTime, AqiHour::getPm25, AqiHour::getPm10, AqiHour::getSo2, AqiHour::getNo2, AqiHour::getCo, AqiHour::getO3, AqiHour::getVoc).eq(AqiHour::getDeviceNo, deviceNo).between(AqiHour::getDateTime, monTimes.get(0), monTimes.get(1)).orderByAsc(AqiHour::getDateTime);
+        MybatisPlusConfig.TableName.set(monTableName);
+        List<AqiHour> monList = super.list(wrapper3);
+        if (monList == null)
+            monList = new ArrayList<>(0);
+        List<AqiAvgModel> monData = new ArrayList<>(0);
+        for (AqiHour aqiHour : monList) {
+            AqiAvgModel aqiAvgModel = new AqiAvgModel();
+            BeanUtil.copyProperties(aqiHour, aqiAvgModel);
+            monData.add(aqiAvgModel);
+        }
+
+        AqiDataFeatureModel aqiDataFeatureModel = new AqiDataFeatureModel();
+        aqiDataFeatureModel.setAqiFeatureModel(aqiFeatureModel);
+        aqiDataFeatureModel.setNowAqiAvgModels(nowData);
+        aqiDataFeatureModel.setYeaAqiAvgModels(yesData);
+        aqiDataFeatureModel.setMonAqiAvgModels(monData);
+
+        return aqiDataFeatureModel;
     }
 }

@@ -1,8 +1,10 @@
 package com.osen.aqms.web.data_aqi;
 
+import com.osen.aqms.common.model.AqiDataFeatureModel;
 import com.osen.aqms.common.model.AqiDataModel;
 import com.osen.aqms.common.model.AqiReportToHourModel;
 import com.osen.aqms.common.requestVo.AqiReportVo;
+import com.osen.aqms.common.requestVo.FeatureVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.modules.service.AqiHourService;
@@ -48,5 +50,17 @@ public class AqiHourController {
     public RestResult getAqiReportToHour(@RequestBody AqiReportVo aqiReportVo) {
         List<AqiReportToHourModel> aqiReportToHour = aqiHourService.getAqiReportToHour(aqiReportVo);
         return RestResultUtil.success(aqiReportToHour);
+    }
+
+    /**
+     * 计算同比，环比的数据分析
+     *
+     * @param featureVo 请求体
+     * @return 信息
+     */
+    @PostMapping("/aqiHour/feature")
+    public RestResult getAqiFeatureData(@RequestBody FeatureVo featureVo) {
+        AqiDataFeatureModel aqiFeatureData = aqiHourService.getAqiFeatureData(featureVo);
+        return RestResultUtil.success(aqiFeatureData);
     }
 }
