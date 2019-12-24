@@ -1,5 +1,6 @@
 package com.osen.aqms.web.message;
 
+import com.osen.aqms.common.requestVo.MsgDeviceVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -7,10 +8,7 @@ import com.osen.aqms.modules.entity.message.MessageDevice;
 import com.osen.aqms.modules.service.MessageDeviceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -54,4 +52,16 @@ public class MessageDeviceController {
         return RestResultUtil.success("设备信息标记已读");
     }
 
+    /**
+     * 查询设备信息历史记录
+     *
+     * @param msgDeviceVo 请求体
+     * @param type        类型
+     * @return 信息
+     */
+    @PostMapping("/message/history/{type}")
+    public RestResult getDeviceMsgToType(@RequestBody MsgDeviceVo msgDeviceVo, @PathVariable("type") String type) {
+        List<MessageDevice> deviceMsgToType = messageDeviceService.getDeviceMsgToType(msgDeviceVo, type);
+        return RestResultUtil.success(deviceMsgToType);
+    }
 }

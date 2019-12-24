@@ -2,7 +2,13 @@ package com.osen.aqms.modules.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.osen.aqms.common.enums.DeviceMessage;
+import com.osen.aqms.common.exception.type.ServiceException;
+import com.osen.aqms.common.requestVo.MsgDeviceVo;
+import com.osen.aqms.common.utils.DateTimeUtil;
 import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.common.utils.TableNameUtil;
@@ -14,6 +20,7 @@ import com.osen.aqms.modules.service.MessageDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,5 +76,45 @@ public class MessageDeviceServiceImpl extends ServiceImpl<MessageDeviceMapper, M
                 redisOpsUtil.deleteToMap(TableNameUtil.Msg_Warning, device.getDeviceNo());
             }
         }
+    }
+
+    @Override
+    public List<MessageDevice> getDeviceMsgToType(MsgDeviceVo msgDeviceVo, String type) {
+        List<MessageDevice> messageDevices = new ArrayList<>(0);
+        // 设备列表
+        List<Device> deviceList;
+        if ((msgDeviceVo.getAddress() == null && msgDeviceVo.getLevel() == null) || ("".equals(msgDeviceVo.getAddress().trim()) && "".equals(msgDeviceVo.getLevel().trim()))) {
+            // 获取全部设备
+            deviceList = deviceService.findDeviceAllToUsername(SecurityUtil.getUsername());
+        } else {
+            deviceList = deviceService.findDeviceGroupByAddress(msgDeviceVo.getAddress(), msgDeviceVo.getLevel());
+        }
+        if (deviceList.size() <= 0)
+            return messageDevices;
+        // 设备号
+        List<String> deviceNos = new ArrayList<>(0);
+        for (Device device : deviceList) {
+            deviceNos.add(device.getDeviceNo());
+        }
+        // 时间
+        List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(msgDeviceVo.getStartTime(), msgDeviceVo.getEndTime());
+        LambdaQueryWrapper<MessageDevice> query = Wrappers.<MessageDevice>lambdaQuery();
+        switch (type) {
+            case "status":
+                query.eq(MessageDevice::getEventType, DeviceMessage.Device.getType()).in(MessageDevice::getDeviceNo, deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+                break;
+            case "alarm":
+                query.eq(MessageDevice::getEventType, DeviceMessage.Device.getType()).in(MessageDevice::getDeviceNo, deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+                break;
+            case "warning":
+                query.eq(MessageDevice::getEventType, DeviceMessage.Device.getType()).in(MessageDevice::getDeviceNo, deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+                break;
+            default:
+                throw new ServiceException("请求参数类型异常");
+        }
+        List<MessageDevice> list = super.list(query);
+        if (list != null)
+            messageDevices.addAll(list);
+        return messageDevices;
     }
 }

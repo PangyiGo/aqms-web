@@ -1,6 +1,7 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.requestVo.MsgDeviceVo;
 import com.osen.aqms.modules.entity.message.MessageDevice;
 
 import java.util.List;
@@ -28,4 +29,13 @@ public interface MessageDeviceService extends IService<MessageDevice> {
      * @param deviceNo 设备号
      */
     void deleteMessageToTypeAndDeviceNo(String type, String deviceNo);
+
+    /**
+     * 查询设备信息历史记录
+     *
+     * @param msgDeviceVo 请求体
+     * @param type        类型
+     * @return 信息
+     */
+    List<MessageDevice> getDeviceMsgToType(MsgDeviceVo msgDeviceVo, String type);
 }
