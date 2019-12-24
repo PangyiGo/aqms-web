@@ -20,4 +20,12 @@ public interface UserDeviceService extends IService<UserDevice> {
      * @return 信息
      */
     List<Integer> findDeviceIdToUserName(String username);
+
+    /**
+     * 批量删除用户设备关联
+     *
+     * @param uids 用户IDs
+     * @return 信息
+     */
+    boolean deleteByUids(List<Integer> uids);
 }

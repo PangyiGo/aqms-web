@@ -25,4 +25,15 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
         LambdaQueryWrapper<UserRole> queryWrapper = Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUserId, uid);
         return super.list(queryWrapper);
     }
+
+    @Override
+    public boolean addUserRole(UserRole userRole) {
+        return super.save(userRole);
+    }
+
+    @Override
+    public boolean deleteBatchByUid(List<Integer> uids) {
+        LambdaQueryWrapper<UserRole> wrapper = Wrappers.<UserRole>lambdaQuery().in(UserRole::getUserId, uids);
+        return super.remove(wrapper);
+    }
 }

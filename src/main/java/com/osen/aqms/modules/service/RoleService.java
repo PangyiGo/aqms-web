@@ -20,4 +20,12 @@ public interface RoleService extends IService<Role> {
      * @return 数据
      */
     List<Role> findRoleByUserId(Integer uid);
+
+    /**
+     * 根据角色名称获取角色信息
+     *
+     * @param roleName 信息
+     * @return 数据
+     */
+    Role findRoleByName(String roleName);
 }

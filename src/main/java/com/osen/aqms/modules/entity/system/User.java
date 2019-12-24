@@ -48,9 +48,9 @@ public class User extends Model<User> implements Serializable {
 
     private String remark;
 
-    private int status;
+    private Integer status;
 
-    private int parentId;
+    private Integer parentId;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;

@@ -1,6 +1,8 @@
 package com.osen.aqms.modules.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.modules.entity.system.Role;
 import com.osen.aqms.modules.entity.system.UserRole;
@@ -38,5 +40,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
             roleIds.add(userRole.getRoleId());
         }
         return CollectionUtil.list(false, super.listByIds(roleIds));
+    }
+
+    @Override
+    public Role findRoleByName(String roleName) {
+        LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery().eq(Role::getRoleName, roleName);
+        return super.getOne(wrapper);
     }
 }

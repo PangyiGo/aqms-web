@@ -24,4 +24,7 @@ public class ConstUtil {
     public static String QUERY_DATE = "yyyy-MM-dd";
 
     public static Integer PAGENUMBER = 10;
+
+    // 用户初始密码，123456
+    public static final String INIT_PASSWORD = "$2a$10$tDccCl7gp41EmDwuCmGDmuSDjPnqT0tdzE.9DG2.l6kxgcOwVlibe";
 }

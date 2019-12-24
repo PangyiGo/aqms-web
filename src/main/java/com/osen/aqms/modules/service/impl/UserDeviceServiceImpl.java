@@ -46,4 +46,10 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
         }
         return deviceIds;
     }
+
+    @Override
+    public boolean deleteByUids(List<Integer> uids) {
+        LambdaQueryWrapper<UserDevice> wrapper = Wrappers.<UserDevice>lambdaQuery().in(UserDevice::getUserId, uids);
+        return super.remove(wrapper);
+    }
 }

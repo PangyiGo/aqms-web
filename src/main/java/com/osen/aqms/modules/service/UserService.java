@@ -1,6 +1,10 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.model.UserListDataModel;
+import com.osen.aqms.common.requestVo.UserAccountVo;
+import com.osen.aqms.common.requestVo.UserGetVo;
+import com.osen.aqms.common.requestVo.UserModifyVo;
 import com.osen.aqms.modules.entity.system.User;
 
 /**
@@ -18,4 +22,44 @@ public interface UserService extends IService<User> {
      * @return 指定用户
      */
     User findByUsername(String username);
+
+    /**
+     * 获取当前用户账号下的子用户
+     *
+     * @param userGetVo 请求体
+     * @return 信息
+     */
+    UserListDataModel findUserAllListToAccount(UserGetVo userGetVo);
+
+    /**
+     * 系统用户添加
+     *
+     * @param userModifyVo 请求体
+     * @return 信息
+     */
+    boolean userAdd(UserModifyVo userModifyVo);
+
+    /**
+     * 系统用户信息修改
+     *
+     * @param userModifyVo 请求体
+     * @return 信息
+     */
+    boolean userInfoUpdate(UserModifyVo userModifyVo);
+
+    /**
+     * 系统用户删除
+     *
+     * @param userAccountVo 请求体
+     * @return 信息
+     */
+    boolean userDeleteByAccount(UserAccountVo userAccountVo);
+
+    /**
+     * 系统用户删除
+     *
+     * @param userAccountVo 请求体
+     * @return 信息
+     */
+    boolean userPasswordResetByAccount(UserAccountVo userAccountVo);
 }

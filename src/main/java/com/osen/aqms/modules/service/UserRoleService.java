@@ -20,4 +20,20 @@ public interface UserRoleService extends IService<UserRole> {
      * @return 关联数据
      */
     List<UserRole> findByUserIdToRole(Integer uid);
+
+    /**
+     * 添加用户角色关联
+     *
+     * @param userRole 角色
+     * @return 信息
+     */
+    boolean addUserRole(UserRole userRole);
+
+    /**
+     * 批量删除用户角色关联数据
+     *
+     * @param uids 批量数据
+     * @return 信息
+     */
+    boolean deleteBatchByUid(List<Integer> uids);
 }

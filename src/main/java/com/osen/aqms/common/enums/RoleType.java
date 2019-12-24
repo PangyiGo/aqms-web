@@ -13,7 +13,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public enum RoleType {
 
-    SYSADMIN("ROLE_SYSADMIN", "系统超级管理员");
+    SYSADMIN("ROLE_SYSADMIN", "系统超级管理员"),
+
+    AQMSUSER("ROLE_AQMSUSER", "微型空气站普通用户"),
+
+    AQMSAGENT("ROLE_AQMSAGENT", "微型空气站设备代理商"),
+
+    AQMSMONITOR("ROLE_AQMSMONITOR", "微型空气站监管员"),;
 
     private String roleName;
 
