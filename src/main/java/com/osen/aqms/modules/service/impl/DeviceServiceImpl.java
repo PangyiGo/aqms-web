@@ -179,9 +179,6 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                 // 父节点
                 deviceTreeModels.add(provinceNode);
             }
-
-            // 保存数据缓存
-            redisOpsUtil.putToMap(TableNameUtil.DeviceTree_List, username, JSON.toJSONString(deviceTreeModels));
         }
         return deviceTreeModels;
     }
