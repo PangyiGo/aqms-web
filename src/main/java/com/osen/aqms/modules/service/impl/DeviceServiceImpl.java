@@ -336,9 +336,10 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             // 删除用户设备关联
             LambdaQueryWrapper<UserDevice> lambdaQueryWrapper = Wrappers.<UserDevice>lambdaQuery().eq(UserDevice::getUserId, SecurityUtil.getUserId()).eq(UserDevice::getDeviceId, device.getId());
             userDeviceService.remove(lambdaQueryWrapper);
-            if (remove)
+            if (remove) {
+                alarmControlService.deleteAlarmControl(deviceNo);
                 return "设备删除成功";
-            else
+            } else
                 return "设备删除失败";
         }
         List<String> usernames = new ArrayList<>(0);

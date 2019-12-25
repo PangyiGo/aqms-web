@@ -92,4 +92,10 @@ public class AlarmControlServiceImpl extends ServiceImpl<AlarmControlMapper, Ala
         alarmControl.setUpdateTime(LocalDateTime.now());
         super.save(alarmControl);
     }
+
+    @Override
+    public void deleteAlarmControl(String deviceNo) {
+        LambdaQueryWrapper<AlarmControl> wrapper = Wrappers.<AlarmControl>lambdaQuery().eq(AlarmControl::getDeviceNo, deviceNo);
+        super.remove(wrapper);
+    }
 }

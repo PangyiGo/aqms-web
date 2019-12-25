@@ -42,4 +42,11 @@ public interface AlarmControlService extends IService<AlarmControl> {
      * @param deviceNo 预警设备号
      */
     void addAlarmControl(String deviceNo);
+
+    /**
+     * 删除
+     *
+     * @param deviceNo 设备号
+     */
+    void deleteAlarmControl(String deviceNo);
 }
