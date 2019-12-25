@@ -95,9 +95,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userListDataModel.setTotal(userIPage.getTotal());
             List<User> users = new ArrayList<>(0);
             for (User record : userIPage.getRecords()) {
-                Role role = roleService.findRoleByName(record.getAccount());
-                List<Role> roles = new ArrayList<>(0);
-                roles.add(role);
+                List<Role> roles = roleService.findRoleByUserId(record.getId());
                 record.setRoles(roles);
                 users.add(record);
             }
