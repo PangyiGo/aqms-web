@@ -15,6 +15,7 @@ import com.osen.aqms.modules.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,5 +97,11 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
             }
         }
         return userIds;
+    }
+
+    @Override
+    public boolean addUserDevice(UserDevice userDevice) {
+        userDevice.setCreateTime(LocalDateTime.now());
+        return super.save(userDevice);
     }
 }

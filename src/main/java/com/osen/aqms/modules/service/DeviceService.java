@@ -81,4 +81,20 @@ public interface DeviceService extends IService<Device> {
      * @return 信息
      */
     String deleteToDeviceNo(String deviceNo);
+
+    /**
+     * 设备信息修改
+     *
+     * @param device 设备
+     * @return 信息
+     */
+    boolean deviceInfoUpdate(Device device);
+
+    /**
+     * 设备添加
+     *
+     * @param device 设备
+     * @return 信息
+     */
+    boolean deviceAdd(Device device);
 }

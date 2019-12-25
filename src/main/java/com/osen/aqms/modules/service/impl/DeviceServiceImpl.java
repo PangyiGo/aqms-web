@@ -27,6 +27,7 @@ import com.osen.aqms.modules.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -353,6 +354,35 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             usernames.add(user.getAccount());
         }
         return "设备存在关联，[ " + StrUtil.join(",", usernames.toArray()) + " ]";
+    }
+
+    @Override
+    public boolean deviceInfoUpdate(Device device) {
+        device.setUpdateTime(LocalDateTime.now());
+        LambdaQueryWrapper<Device> wrapper = Wrappers.<Device>lambdaQuery().eq(Device::getDeviceNo, device.getDeviceNo());
+        return super.update(device, wrapper);
+    }
+
+    @Override
+    public boolean deviceAdd(Device device) {
+        // 当前用户ID
+        Integer id = SecurityUtil.getUserId();
+        if (this.findOneDeviceToNo(device.getDeviceNo()) != null)
+            throw new ServiceException("设备已重复添加，操作失败");
+        if (device.getDeviceName() == null || "".equals(device.getDeviceName().trim()))
+            throw new ServiceException("设备名称不允许为空，操作失败");
+        device.setCreateTime(LocalDateTime.now());
+        device.setUpdateTime(LocalDateTime.now());
+        device.setStatus(ConstUtil.OPEN_STATUS);
+        device.setLive(ConstUtil.CLOSE_STATUS);
+        device.setType("AQMS");
+        if (super.save(device)) {
+            UserDevice userDevice = new UserDevice();
+            userDevice.setUserId(id);
+            userDevice.setDeviceId(device.getId());
+            return userDeviceService.addUserDevice(userDevice);
+        }
+        return false;
     }
 
 }

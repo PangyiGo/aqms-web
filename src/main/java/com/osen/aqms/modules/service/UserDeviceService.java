@@ -45,4 +45,12 @@ public interface UserDeviceService extends IService<UserDevice> {
      * @return 信息
      */
     List<Integer> findUserIdToDeviceId(Integer deviceId);
+
+    /**
+     * 添加用户设备关联
+     *
+     * @param userDevice 关联
+     * @return 信息
+     */
+    boolean addUserDevice(UserDevice userDevice);
 }

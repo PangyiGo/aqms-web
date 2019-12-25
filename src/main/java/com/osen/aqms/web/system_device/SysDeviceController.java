@@ -142,4 +142,32 @@ public class SysDeviceController {
         String delete = deviceService.deleteToDeviceNo(deviceNo);
         return RestResultUtil.success(delete);
     }
+
+    /**
+     * 设备信息修改
+     *
+     * @param device 设备
+     * @return 信息
+     */
+    @PostMapping("/device/infoUpdate")
+    public RestResult deviceInfoUpdateToDeviceNo(@RequestBody Device device) {
+        boolean infoUpdate = deviceService.deviceInfoUpdate(device);
+        if (infoUpdate)
+            return RestResultUtil.success("设备信息更新成功");
+        return RestResultUtil.success("设备信息更新失败");
+    }
+
+    /**
+     * 设备添加
+     *
+     * @param device 设备
+     * @return 信息
+     */
+    @PostMapping("/device/create")
+    public RestResult deviceAdd(@RequestBody Device device) {
+        boolean deviceAdd = deviceService.deviceAdd(device);
+        if (deviceAdd)
+            return RestResultUtil.success("设备新增成功");
+        return RestResultUtil.success("设备新增失败");
+    }
 }
