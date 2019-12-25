@@ -1,5 +1,6 @@
 package com.osen.aqms.web.system_device;
 
+import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.model.DeviceListDataModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
@@ -11,11 +12,13 @@ import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.service.DeviceService;
+import com.osen.aqms.modules.service.LogsOpsService;
 import com.osen.aqms.modules.service.UserDeviceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -34,6 +37,9 @@ public class SysDeviceController {
 
     @Autowired
     private UserDeviceService userDeviceService;
+
+    @Autowired
+    private LogsOpsService logsOpsService;
 
     /**
      * 根据登录用户获取设备的树形列表
@@ -138,7 +144,10 @@ public class SysDeviceController {
      * @return 信息
      */
     @PostMapping("/device/delete/{deviceNo}")
-    public RestResult deleteToDeviceNo(@PathVariable("deviceNo") String deviceNo) {
+    public RestResult deleteToDeviceNo(HttpServletRequest request, @PathVariable("deviceNo") String deviceNo) {
+
+        logsOpsService.addLogsOps(request, TipsMessage.DeleteDevice.getTips() + " " + deviceNo);
+
         String delete = deviceService.deleteToDeviceNo(deviceNo);
         return RestResultUtil.success(delete);
     }
@@ -154,7 +163,7 @@ public class SysDeviceController {
         boolean infoUpdate = deviceService.deviceInfoUpdate(device);
         if (infoUpdate)
             return RestResultUtil.success("设备信息更新成功");
-        return RestResultUtil.success("设备信息更新失败");
+        return RestResultUtil.failed("设备信息更新失败");
     }
 
     /**
@@ -164,10 +173,13 @@ public class SysDeviceController {
      * @return 信息
      */
     @PostMapping("/device/create")
-    public RestResult deviceAdd(@RequestBody Device device) {
+    public RestResult deviceAdd(HttpServletRequest request, @RequestBody Device device) {
+
+        logsOpsService.addLogsOps(request, TipsMessage.AddDevice.getTips() + " " + device.toString());
+
         boolean deviceAdd = deviceService.deviceAdd(device);
         if (deviceAdd)
             return RestResultUtil.success("设备新增成功");
-        return RestResultUtil.success("设备新增失败");
+        return RestResultUtil.failed("设备新增失败");
     }
 }

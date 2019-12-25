@@ -2,9 +2,10 @@ package com.osen.aqms.webSecurity.handler;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
+import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RedisOpsUtil;
-import com.osen.aqms.modules.service.DeviceService;
+import com.osen.aqms.modules.service.LogsLoginService;
 import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import com.osen.aqms.webSecurity.utils.JwtUser;
 import com.osen.aqms.webSecurity.utils.TransferUserToJwt;
@@ -35,7 +36,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private DeviceService deviceService;
+    private LogsLoginService logsLoginService;
 
     @Autowired
     private RedisOpsUtil redisOpsUtil;
@@ -46,6 +47,8 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         // 登录成功，逻辑处理代码....
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+
+        logsLoginService.saveLogs(request, TipsMessage.LoginSuccess.getTips());
 
         //生成token
         String token = jwtTokenUtil.generateToken(jwtUser);

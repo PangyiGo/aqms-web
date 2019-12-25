@@ -1,5 +1,6 @@
 package com.osen.aqms.web.system_user;
 
+import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.model.UserListDataModel;
 import com.osen.aqms.common.requestVo.UserAccountVo;
 import com.osen.aqms.common.requestVo.UserGetVo;
@@ -8,6 +9,7 @@ import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.modules.entity.system.User;
+import com.osen.aqms.modules.service.LogsOpsService;
 import com.osen.aqms.modules.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: PangYi
@@ -29,6 +33,9 @@ public class SysUserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LogsOpsService logsOpsService;
 
     /**
      * 获取用户详细信息
@@ -64,7 +71,10 @@ public class SysUserController {
      * @return 信息
      */
     @PostMapping("/user/create")
-    public RestResult userAdd(@RequestBody UserModifyVo userModifyVo) {
+    public RestResult userAdd(HttpServletRequest request, @RequestBody UserModifyVo userModifyVo) {
+
+        logsOpsService.addLogsOps(request, TipsMessage.AddUser.getTips() + " " + userModifyVo.toString());
+
         boolean userAdd = userService.userAdd(userModifyVo);
         if (userAdd)
             return RestResultUtil.success("新账号添加成功");
@@ -92,7 +102,10 @@ public class SysUserController {
      * @return 信息
      */
     @PostMapping("/user/delete")
-    public RestResult userDeleteByAccount(@RequestBody UserAccountVo userAccountVo) {
+    public RestResult userDeleteByAccount(HttpServletRequest request, @RequestBody UserAccountVo userAccountVo) {
+
+        logsOpsService.addLogsOps(request, TipsMessage.DeleteUser.getTips() + " " + userAccountVo.toString());
+
         boolean account = userService.userDeleteByAccount(userAccountVo);
         if (account)
             return RestResultUtil.success("已选用户删除成功");
@@ -106,7 +119,10 @@ public class SysUserController {
      * @return 信息
      */
     @PostMapping("/user/passwordReset")
-    public RestResult userPasswordResetByAccount(@RequestBody UserAccountVo userAccountVo) {
+    public RestResult userPasswordResetByAccount(HttpServletRequest request, @RequestBody UserAccountVo userAccountVo) {
+
+        logsOpsService.addLogsOps(request, TipsMessage.RestPassword.getTips() + " " + userAccountVo.toString());
+
         boolean account = userService.userPasswordResetByAccount(userAccountVo);
         if (account)
             return RestResultUtil.success("密码重置成功");

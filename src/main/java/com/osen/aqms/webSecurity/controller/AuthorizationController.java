@@ -1,8 +1,10 @@
 package com.osen.aqms.webSecurity.controller;
 
+import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.RestResultUtil;
+import com.osen.aqms.modules.service.LogsLoginService;
 import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class AuthorizationController {
     @Autowired
     private RedisOpsUtil redisOpsUtil;
 
+    @Autowired
+    private LogsLoginService logsLoginService;
+
     /**
      * 用户退出登录
      *
@@ -47,6 +52,9 @@ public class AuthorizationController {
         redisOpsUtil.deleteToMap(JwtTokenUtil.LOGIN_TOKEN, authToken);
         // 访问令牌
         redisOpsUtil.deleteToMap(JwtTokenUtil.ACCESS_TOKEN, access_token);
+
+        logsLoginService.saveLogs(request, TipsMessage.LogoutSuccess.getTips());
+
         // 返回
         return RestResultUtil.authorization(User_Logout_Success.getCode(), User_Logout_Success.getMessage());
     }

@@ -1,7 +1,10 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.requestVo.LogsVo;
 import com.osen.aqms.modules.entity.logs.LogsData;
+
+import java.util.Map;
 
 /**
  * User: PangYi
@@ -12,4 +15,5 @@ import com.osen.aqms.modules.entity.logs.LogsData;
 public interface LogsDataService extends IService<LogsData> {
 
 
+    Map<String,Object> getLogsDataHistory(LogsVo logsVo);
 }

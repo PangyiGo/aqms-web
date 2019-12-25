@@ -1,13 +1,17 @@
 package com.osen.aqms.web.data_air;
 
+import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.model.AlarmControlModel;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.modules.entity.alarm.AlarmControl;
 import com.osen.aqms.modules.service.AlarmControlService;
+import com.osen.aqms.modules.service.LogsOpsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: PangYi
@@ -22,6 +26,9 @@ public class AlarmControlController {
 
     @Autowired
     private AlarmControlService alarmControlService;
+
+    @Autowired
+    private LogsOpsService logsOpsService;
 
     /**
      * 根据设备号获取设备号的预警设置值
@@ -57,7 +64,10 @@ public class AlarmControlController {
      * @return 信息
      */
     @PostMapping("/control/update/data")
-    public RestResult updateAlarmControlData(@RequestBody AlarmControl alarmControl) {
+    public RestResult updateAlarmControlData(HttpServletRequest request, @RequestBody AlarmControl alarmControl) {
+
+        logsOpsService.addLogsOps(request, TipsMessage.SetWarning.getTips() + " " + alarmControl.toString());
+
         boolean b = alarmControlService.updateAlarmControlData(alarmControl);
         if (b)
             return RestResultUtil.success("更新预警值成功");
