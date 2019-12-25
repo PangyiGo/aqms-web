@@ -73,4 +73,12 @@ public interface DeviceService extends IService<Device> {
      * @return 信息
      */
     DeviceListDataModel findDeviceListPageToCurrentUser(UserGetVo userGetVo);
+
+    /**
+     * 删除指定设备号的设备
+     *
+     * @param deviceNo 设备号
+     * @return 信息
+     */
+    String deleteToDeviceNo(String deviceNo);
 }

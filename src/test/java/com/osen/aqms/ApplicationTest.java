@@ -1,10 +1,5 @@
 package com.osen.aqms;
 
-import com.osen.aqms.common.utils.TableNameUtil;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 /**
  * User: PangYi
  * Date: 2019-12-10
@@ -14,13 +9,8 @@ import java.util.List;
 public class ApplicationTest {
 
     public static void main(String[] args) {
-        List<String> strings = TableNameUtil.tableNameList(TableNameUtil.Air_history, "2019-11-11", "2020-12-12");
-
-        System.out.println(strings);
-
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println(now);
-
-        System.out.println(now.minusMonths(1));
+        for (int i = 0; i < 60; i++) {
+            System.out.println("INSERT INTO data_his1912(device_id,datetime,VOC) VALUES ('2019112903106001'," + "'2019-12-13 13:" + i + ":00',0.1);");
+        }
     }
 }

@@ -55,9 +55,9 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
     }
 
     @Override
-    public boolean deleteByUids(List<Integer> uids) {
+    public void deleteByUids(List<Integer> uids) {
         LambdaQueryWrapper<UserDevice> wrapper = Wrappers.<UserDevice>lambdaQuery().in(UserDevice::getUserId, uids);
-        return super.remove(wrapper);
+        super.remove(wrapper);
     }
 
     @Override
@@ -83,5 +83,18 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
         } else {
             return super.remove(wrapper);
         }
+    }
+
+    @Override
+    public List<Integer> findUserIdToDeviceId(Integer deviceId) {
+        LambdaQueryWrapper<UserDevice> wrapper = Wrappers.<UserDevice>lambdaQuery().select(UserDevice::getUserId).eq(UserDevice::getDeviceId, deviceId);
+        List<UserDevice> userDeviceList = super.list(wrapper);
+        List<Integer> userIds = new ArrayList<>(0);
+        if (userDeviceList != null && userDeviceList.size() > 0) {
+            for (UserDevice userDevice : userDeviceList) {
+                userIds.add(userDevice.getUserId());
+            }
+        }
+        return userIds;
     }
 }

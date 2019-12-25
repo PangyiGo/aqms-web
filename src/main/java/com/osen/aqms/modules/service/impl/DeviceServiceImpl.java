@@ -1,12 +1,14 @@
 package com.osen.aqms.modules.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.osen.aqms.common.exception.type.ServiceException;
 import com.osen.aqms.common.model.DeviceListDataModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
@@ -16,9 +18,12 @@ import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.common.utils.TableNameUtil;
 import com.osen.aqms.modules.entity.system.Device;
+import com.osen.aqms.modules.entity.system.User;
+import com.osen.aqms.modules.entity.system.UserDevice;
 import com.osen.aqms.modules.mapper.system.DeviceMapper;
 import com.osen.aqms.modules.service.DeviceService;
 import com.osen.aqms.modules.service.UserDeviceService;
+import com.osen.aqms.modules.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,145 +46,141 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Autowired
     private RedisOpsUtil redisOpsUtil;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public List<DeviceTreeModel> findDeviceTreeListToUsername(String username) {
         // 全局结果
         List<DeviceTreeModel> deviceTreeModels = new ArrayList<>(0);
 
-        // 从缓存中查询设备节点
-        boolean key = redisOpsUtil.hashKeyToMap(TableNameUtil.DeviceTree_List, username);
-        if (key) {
-            String dataJson = redisOpsUtil.getToMap(TableNameUtil.DeviceTree_List, username);
-            deviceTreeModels = JSON.parseObject(dataJson, List.class);
-        } else {
-            // 查询用户关联设备ID
-            List<Integer> deviceIds = userDeviceService.findDeviceIdToUserName(username);
-            if (deviceIds.size() > 0) {
-                // 查询设备全部列表
-                List<Device> deviceList = this.findDeviceToDeviceIds(deviceIds);
-                // 查询省级节点列表
-                List<Device> provinceList = this.findDeviceGroupByAddress(null, null, 1, deviceIds);
-                for (Device province : provinceList) {
-                    // 省级节点
-                    DeviceTreeModel provinceNode = new DeviceTreeModel();
-                    provinceNode.setLabel(province.getProvince().trim().equals("") ? "一级地区" : province.getProvince());
-                    provinceNode.setCode(province.getProvinceCode());
-                    provinceNode.setDeviceNo("province");
-                    List<DeviceTreeModel> provinceChild = new ArrayList<>(0);
-                    // 查询市级节点列表
-                    List<Device> cityList = this.findDeviceGroupByAddress(province.getProvince(), null, 2, deviceIds);
-                    for (Device city : cityList) {
-                        // 判断省级与市级名称是否相同
-                        if (province.getProvince().trim().equals(city.getCity().trim())) {
-                            // 查询区级节点列表
-                            List<Device> areaList = this.findDeviceGroupByAddress(province.getProvince(), city.getCity(), 3, deviceIds);
-                            for (Device area : areaList) {
-                                // 判断市级与区级名称是否相同
-                                if (city.getCity().trim().equals(area.getArea().trim())) {
-                                    // 具体区级下的设备列表
-                                    List<Device> devices = deviceList.stream() // 数据流
-                                            .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
-                                            .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
-                                            .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
-                                            .collect(Collectors.toList());
-                                    for (Device device : devices) {
-                                        DeviceTreeModel node = new DeviceTreeModel();
-                                        node.setLabel(device.getDeviceName());
-                                        node.setCode(device.getId().toString());
-                                        node.setDeviceNo(device.getDeviceNo());
-                                        // 添加设备
-                                        provinceChild.add(node);
-                                    }
-                                } else {
-                                    DeviceTreeModel areaNode = new DeviceTreeModel();
-                                    areaNode.setLabel(area.getArea().trim().equals("") ? "三级地区" : area.getArea());
-                                    areaNode.setCode(area.getAreaCode());
-                                    areaNode.setDeviceNo("area");
-                                    List<DeviceTreeModel> areaClid = new ArrayList<>(0);
-                                    // 具体区级下的设备列表
-                                    List<Device> devices = deviceList.stream() // 数据流
-                                            .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
-                                            .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
-                                            .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
-                                            .collect(Collectors.toList());
-                                    for (Device device : devices) {
-                                        DeviceTreeModel node = new DeviceTreeModel();
-                                        node.setLabel(device.getDeviceName());
-                                        node.setCode(device.getId().toString());
-                                        node.setDeviceNo(device.getDeviceNo());
-                                        // 添加设备
-                                        areaClid.add(node);
-                                    }
-                                    // 保存区级的设备列表
-                                    areaNode.setChildren(areaClid);
-                                    // 提升区域等级，添加区级节点
-                                    provinceChild.add(areaNode);
+        // 查询用户关联设备ID
+        List<Integer> deviceIds = userDeviceService.findDeviceIdToUserName(username);
+        if (deviceIds.size() > 0) {
+            // 查询设备全部列表
+            List<Device> deviceList = this.findDeviceToDeviceIds(deviceIds);
+            // 查询省级节点列表
+            List<Device> provinceList = this.findDeviceGroupByAddress(null, null, 1, deviceIds);
+            for (Device province : provinceList) {
+                // 省级节点
+                DeviceTreeModel provinceNode = new DeviceTreeModel();
+                provinceNode.setLabel(province.getProvince().trim().equals("") ? "一级地区" : province.getProvince());
+                provinceNode.setCode(province.getProvinceCode());
+                provinceNode.setDeviceNo("province");
+                List<DeviceTreeModel> provinceChild = new ArrayList<>(0);
+                // 查询市级节点列表
+                List<Device> cityList = this.findDeviceGroupByAddress(province.getProvince(), null, 2, deviceIds);
+                for (Device city : cityList) {
+                    // 判断省级与市级名称是否相同
+                    if (province.getProvince().trim().equals(city.getCity().trim())) {
+                        // 查询区级节点列表
+                        List<Device> areaList = this.findDeviceGroupByAddress(province.getProvince(), city.getCity(), 3, deviceIds);
+                        for (Device area : areaList) {
+                            // 判断市级与区级名称是否相同
+                            if (city.getCity().trim().equals(area.getArea().trim())) {
+                                // 具体区级下的设备列表
+                                List<Device> devices = deviceList.stream() // 数据流
+                                        .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
+                                        .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
+                                        .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
+                                        .collect(Collectors.toList());
+                                for (Device device : devices) {
+                                    DeviceTreeModel node = new DeviceTreeModel();
+                                    node.setLabel(device.getDeviceName());
+                                    node.setCode(device.getId().toString());
+                                    node.setDeviceNo(device.getDeviceNo());
+                                    // 添加设备
+                                    provinceChild.add(node);
                                 }
-                            }
-                        } else {
-                            // 市级节点
-                            DeviceTreeModel cityNode = new DeviceTreeModel();
-                            cityNode.setLabel(city.getCity().trim().equals("") ? "二级地区" : city.getCity());
-                            cityNode.setCode(city.getCityCode());
-                            cityNode.setDeviceNo("city");
-                            List<DeviceTreeModel> cityChild = new ArrayList<>(0);
-                            // 查询区级节点列表
-                            List<Device> areaList = this.findDeviceGroupByAddress(province.getProvince(), city.getCity(), 3, deviceIds);
-                            for (Device area : areaList) {
-                                // 判断市级与区级名称是否相同
-                                if (city.getCity().trim().equals(area.getArea().trim())) {
-                                    List<Device> devices = deviceList.stream() // 数据流
-                                            .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
-                                            .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
-                                            .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
-                                            .collect(Collectors.toList());
-                                    for (Device device : devices) {
-                                        DeviceTreeModel node = new DeviceTreeModel();
-                                        node.setLabel(device.getDeviceName());
-                                        node.setCode(device.getId().toString());
-                                        node.setDeviceNo(device.getDeviceNo());
-                                        // 添加市级设备
-                                        cityChild.add(node);
-                                    }
-                                } else {
-                                    DeviceTreeModel areaNode = new DeviceTreeModel();
-                                    areaNode.setLabel(area.getArea().trim().equals("") ? "三级地区" : area.getArea());
-                                    areaNode.setCode("");
-                                    areaNode.setDeviceNo("area");
-                                    List<DeviceTreeModel> areaClid = new ArrayList<>(0);
-                                    // 具体区级下的设备列表
-                                    List<Device> devices = deviceList.stream() // 数据流
-                                            .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
-                                            .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
-                                            .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
-                                            .collect(Collectors.toList());
-                                    for (Device device : devices) {
-                                        DeviceTreeModel node = new DeviceTreeModel();
-                                        node.setLabel(device.getDeviceName());
-                                        node.setCode(device.getId().toString());
-                                        node.setDeviceNo(device.getDeviceNo());
-                                        // 添加设备
-                                        areaClid.add(node);
-                                    }
-                                    // 保存区级的设备列表
-                                    areaNode.setChildren(areaClid);
-                                    // 添加市级
-                                    cityChild.add(areaNode);
+                            } else {
+                                DeviceTreeModel areaNode = new DeviceTreeModel();
+                                areaNode.setLabel(area.getArea().trim().equals("") ? "三级地区" : area.getArea());
+                                areaNode.setCode(area.getAreaCode());
+                                areaNode.setDeviceNo("area");
+                                List<DeviceTreeModel> areaClid = new ArrayList<>(0);
+                                // 具体区级下的设备列表
+                                List<Device> devices = deviceList.stream() // 数据流
+                                        .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
+                                        .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
+                                        .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
+                                        .collect(Collectors.toList());
+                                for (Device device : devices) {
+                                    DeviceTreeModel node = new DeviceTreeModel();
+                                    node.setLabel(device.getDeviceName());
+                                    node.setCode(device.getId().toString());
+                                    node.setDeviceNo(device.getDeviceNo());
+                                    // 添加设备
+                                    areaClid.add(node);
                                 }
+                                // 保存区级的设备列表
+                                areaNode.setChildren(areaClid);
+                                // 提升区域等级，添加区级节点
+                                provinceChild.add(areaNode);
                             }
-                            cityNode.setChildren(cityChild);
-                            // 添加市级节点
-                            provinceChild.add(cityNode);
                         }
+                    } else {
+                        // 市级节点
+                        DeviceTreeModel cityNode = new DeviceTreeModel();
+                        cityNode.setLabel(city.getCity().trim().equals("") ? "二级地区" : city.getCity());
+                        cityNode.setCode(city.getCityCode());
+                        cityNode.setDeviceNo("city");
+                        List<DeviceTreeModel> cityChild = new ArrayList<>(0);
+                        // 查询区级节点列表
+                        List<Device> areaList = this.findDeviceGroupByAddress(province.getProvince(), city.getCity(), 3, deviceIds);
+                        for (Device area : areaList) {
+                            // 判断市级与区级名称是否相同
+                            if (city.getCity().trim().equals(area.getArea().trim())) {
+                                List<Device> devices = deviceList.stream() // 数据流
+                                        .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
+                                        .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
+                                        .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
+                                        .collect(Collectors.toList());
+                                for (Device device : devices) {
+                                    DeviceTreeModel node = new DeviceTreeModel();
+                                    node.setLabel(device.getDeviceName());
+                                    node.setCode(device.getId().toString());
+                                    node.setDeviceNo(device.getDeviceNo());
+                                    // 添加市级设备
+                                    cityChild.add(node);
+                                }
+                            } else {
+                                DeviceTreeModel areaNode = new DeviceTreeModel();
+                                areaNode.setLabel(area.getArea().trim().equals("") ? "三级地区" : area.getArea());
+                                areaNode.setCode("");
+                                areaNode.setDeviceNo("area");
+                                List<DeviceTreeModel> areaClid = new ArrayList<>(0);
+                                // 具体区级下的设备列表
+                                List<Device> devices = deviceList.stream() // 数据流
+                                        .filter(dev -> dev.getProvince().equals(province.getProvince())) // 省级
+                                        .filter(dev -> dev.getCity().equals(city.getCity())) // 市级
+                                        .filter(dev -> dev.getArea().equals(area.getArea())) // 区级
+                                        .collect(Collectors.toList());
+                                for (Device device : devices) {
+                                    DeviceTreeModel node = new DeviceTreeModel();
+                                    node.setLabel(device.getDeviceName());
+                                    node.setCode(device.getId().toString());
+                                    node.setDeviceNo(device.getDeviceNo());
+                                    // 添加设备
+                                    areaClid.add(node);
+                                }
+                                // 保存区级的设备列表
+                                areaNode.setChildren(areaClid);
+                                // 添加市级
+                                cityChild.add(areaNode);
+                            }
+                        }
+                        cityNode.setChildren(cityChild);
+                        // 添加市级节点
+                        provinceChild.add(cityNode);
                     }
-                    provinceNode.setChildren(provinceChild);
-                    // 父节点
-                    deviceTreeModels.add(provinceNode);
                 }
-
-                // 保存数据缓存
-                redisOpsUtil.putToMap(TableNameUtil.DeviceTree_List, username, JSON.toJSONString(deviceTreeModels));
+                provinceNode.setChildren(provinceChild);
+                // 父节点
+                deviceTreeModels.add(provinceNode);
             }
+
+            // 保存数据缓存
+            redisOpsUtil.putToMap(TableNameUtil.DeviceTree_List, username, JSON.toJSONString(deviceTreeModels));
         }
         return deviceTreeModels;
     }
@@ -313,7 +314,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         LambdaQueryWrapper<Device> wrapper = Wrappers.<Device>lambdaQuery();
         wrapper.in(Device::getId, deviceIds);
         String search = userGetVo.getSearch();
-        if (search != null && "".equals(search.trim()))
+        if (search != null && !"".equals(search.trim()))
             wrapper.and(query -> query.like(Device::getDeviceNo, search).or().like(Device::getDeviceName, search).or().like(Device::getProvince, search).or().like(Device::getCity, search).or().like(Device::getArea, search).or().like(Device::getAddress, search).or().like(Device::getRemark, search));
         Page<Device> devicePage = new Page<>(Integer.valueOf(userGetVo.getNumber()), ConstUtil.PAGENUMBER);
         IPage<Device> deviceIPage = super.page(devicePage, wrapper);
@@ -322,6 +323,36 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             deviceListDataModel.setUserList(deviceIPage.getRecords());
         }
         return deviceListDataModel;
+    }
+
+    @Override
+    public String deleteToDeviceNo(String deviceNo) {
+        Device device = this.findOneDeviceToNo(deviceNo);
+        LambdaQueryWrapper<Device> wrapper = Wrappers.<Device>lambdaQuery().eq(Device::getDeviceNo, deviceNo);
+        if (device == null)
+            throw new ServiceException("无法查询指定设备");
+        // 获取设备绑定的用户列表
+        List<Integer> uids = userDeviceService.findUserIdToDeviceId(device.getId());
+        List<User> userList = userService.findUserToUserIds(uids);
+        if (userList == null || userList.size() == 0 || (userList.size() == 1 && userList.get(0).getId().equals(SecurityUtil.getUserId()))) {
+            // 删除设备
+            boolean remove = super.remove(wrapper);
+            // 删除用户设备关联
+            LambdaQueryWrapper<UserDevice> lambdaQueryWrapper = Wrappers.<UserDevice>lambdaQuery().eq(UserDevice::getUserId, SecurityUtil.getUserId()).eq(UserDevice::getDeviceId, device.getId());
+            userDeviceService.remove(lambdaQueryWrapper);
+            if (remove)
+                return "设备删除成功";
+            else
+                return "设备删除失败";
+        }
+        List<String> usernames = new ArrayList<>(0);
+        for (User user : userList) {
+            if (user.getAccount().equals(SecurityUtil.getUsername())) {
+                continue;
+            }
+            usernames.add(user.getAccount());
+        }
+        return "设备存在关联，[ " + StrUtil.join(",", usernames.toArray()) + " ]";
     }
 
 }

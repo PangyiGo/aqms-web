@@ -26,9 +26,8 @@ public interface UserDeviceService extends IService<UserDevice> {
      * 批量删除用户设备关联
      *
      * @param uids 用户IDs
-     * @return 信息
      */
-    boolean deleteByUids(List<Integer> uids);
+    void deleteByUids(List<Integer> uids);
 
     /**
      * 指定设备与指定账号关联或取消关联
@@ -38,4 +37,12 @@ public interface UserDeviceService extends IService<UserDevice> {
      * @return 信息
      */
     boolean updateUserToDeviceStatus(AccountDeviceVo accountDeviceVo, String type);
+
+    /**
+     * 根据用户名查询用户关联的用户ID
+     *
+     * @param deviceId 设备ID
+     * @return 信息
+     */
+    List<Integer> findUserIdToDeviceId(Integer deviceId);
 }

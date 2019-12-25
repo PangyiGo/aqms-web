@@ -7,6 +7,8 @@ import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.requestVo.UserModifyVo;
 import com.osen.aqms.modules.entity.system.User;
 
+import java.util.List;
+
 /**
  * User: PangYi
  * Date: 2019-11-30
@@ -62,4 +64,12 @@ public interface UserService extends IService<User> {
      * @return 信息
      */
     boolean userPasswordResetByAccount(UserAccountVo userAccountVo);
+
+    /**
+     * 根据设备ID批量获取设备信息列表
+     *
+     * @param uids 用户Ids
+     * @return 信息
+     */
+    List<User> findUserToUserIds(List<Integer> uids);
 }

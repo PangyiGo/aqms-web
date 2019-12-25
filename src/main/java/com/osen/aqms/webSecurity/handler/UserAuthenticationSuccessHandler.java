@@ -2,10 +2,8 @@ package com.osen.aqms.webSecurity.handler;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
-import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RedisOpsUtil;
-import com.osen.aqms.common.utils.TableNameUtil;
 import com.osen.aqms.modules.service.DeviceService;
 import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import com.osen.aqms.webSecurity.utils.JwtUser;
@@ -20,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 import static com.osen.aqms.common.enums.InfoMessage.User_Login_Success;
 
@@ -49,11 +46,6 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         // 登录成功，逻辑处理代码....
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
-
-        // 生成设备树形节点列表
-        String username = jwtUser.getUsername();
-        List<DeviceTreeModel> treeListToUsername = deviceService.findDeviceTreeListToUsername(username);
-        redisOpsUtil.putToMap(TableNameUtil.DeviceTree_List, username, JSON.toJSONString(treeListToUsername));
 
         //生成token
         String token = jwtTokenUtil.generateToken(jwtUser);

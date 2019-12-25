@@ -130,4 +130,16 @@ public class SysDeviceController {
         else
             return RestResultUtil.failed(tips + "失败");
     }
+
+    /**
+     * 删除指定设备号的设备
+     *
+     * @param deviceNo 设备号
+     * @return 信息
+     */
+    @PostMapping("/device/delete/{deviceNo}")
+    public RestResult deleteToDeviceNo(@PathVariable("deviceNo") String deviceNo) {
+        String delete = deviceService.deleteToDeviceNo(deviceNo);
+        return RestResultUtil.success(delete);
+    }
 }

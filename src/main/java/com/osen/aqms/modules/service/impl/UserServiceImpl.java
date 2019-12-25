@@ -157,16 +157,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery().select(User::getId).in(User::getAccount, userAccountVo.getAccounts());
         List<User> userList = super.list(wrapper);
         List<Integer> uids = new ArrayList<>(0);
+        if (userList.size() <= 0)
+            return false;
         for (User user : userList) {
             uids.add(user.getId());
         }
         // 删除
-        return super.removeByIds(uids) && userRoleService.deleteBatchByUid(uids) && userDeviceService.deleteByUids(uids);
+        userDeviceService.deleteByUids(uids);
+        return super.removeByIds(uids) && userRoleService.deleteBatchByUid(uids);
     }
 
     @Override
     public boolean userPasswordResetByAccount(UserAccountVo userAccountVo) {
         LambdaUpdateWrapper<User> wrapper = Wrappers.<User>lambdaUpdate().set(User::getPassword, ConstUtil.INIT_PASSWORD).in(User::getAccount, userAccountVo.getAccounts());
         return super.update(wrapper);
+    }
+
+    @Override
+    public List<User> findUserToUserIds(List<Integer> uids) {
+        if (uids == null || uids.size() <= 0)
+            return new ArrayList<>(0);
+        return new ArrayList<>(super.listByIds(uids));
     }
 }
