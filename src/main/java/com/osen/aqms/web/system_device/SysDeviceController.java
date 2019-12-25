@@ -78,4 +78,16 @@ public class SysDeviceController {
         DeviceStatusModel deviceStatus = deviceService.findDeviceStatus(number);
         return RestResultUtil.success(deviceStatus);
     }
+
+    /**
+     * 不分页查询指定账号的设备列表
+     *
+     * @param account 账号
+     * @return 信息
+     */
+    @PostMapping("/device/userList/{account}")
+    public RestResult getUserDeviceNoPage(@PathVariable("account") String account) {
+        List<Device> deviceList = deviceService.findDeviceAllToUsername(account);
+        return RestResultUtil.success(deviceList);
+    }
 }

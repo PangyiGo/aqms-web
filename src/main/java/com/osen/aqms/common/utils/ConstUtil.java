@@ -26,5 +26,5 @@ public class ConstUtil {
     public static Integer PAGENUMBER = 10;
 
     // 用户初始密码，123456
-    public static final String INIT_PASSWORD = "$2a$10$tDccCl7gp41EmDwuCmGDmuSDjPnqT0tdzE.9DG2.l6kxgcOwVlibe";
+    public static final String INIT_PASSWORD = "$2a$10$pR9dmgFC7HD8w8DHyNCC3ut1dfnrvLyoWTaKUHY8b7RS1EkhgLuQi";
 }
