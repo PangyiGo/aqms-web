@@ -104,10 +104,12 @@ public class MessageDeviceServiceImpl extends ServiceImpl<MessageDeviceMapper, M
                 query.eq(MessageDevice::getEventType, DeviceMessage.Device.getType()).in(MessageDevice::getDeviceNo, deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
                 break;
             case "alarm":
-                query.eq(MessageDevice::getEventType, DeviceMessage.Device.getType()).in(MessageDevice::getDeviceNo, deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+                query.eq(MessageDevice::getEventType, DeviceMessage.Alarm.getType()).in(MessageDevice::getDeviceNo,
+                        deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
                 break;
             case "warning":
-                query.eq(MessageDevice::getEventType, DeviceMessage.Device.getType()).in(MessageDevice::getDeviceNo, deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
+                query.eq(MessageDevice::getEventType, DeviceMessage.Warning.getType()).in(MessageDevice::getDeviceNo,
+                        deviceNos).between(MessageDevice::getDateTime, localDateTimes.get(0), localDateTimes.get(1));
                 break;
             default:
                 throw new ServiceException("请求参数类型异常");

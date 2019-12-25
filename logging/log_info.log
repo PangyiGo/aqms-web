@@ -613,3 +613,10 @@
 2019-12-25 15:04:25.820 log message -> User login successful......
 2019-12-25 15:05:13.434 log message -> User login successful......
 2019-12-25 15:15:08.557 log message -> User is not logged in, please log in
+2019-12-25 15:30:41.958 log message -> User is not logged in, please log in
+2019-12-25 15:30:42.052 log message -> Reconnecting, last destination was /47.107.103.35:6379
+2019-12-25 15:30:42.071 log message -> Reconnected to 47.107.103.35:6379
+2019-12-25 15:33:46.047 log message -> Shutting down ExecutorService 'taskScheduler'
+2019-12-25 15:33:46.049 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2019-12-25 15:33:46.052 log message -> DatebookHikariCP - Shutdown initiated...
+2019-12-25 15:33:46.056 log message -> DatebookHikariCP - Shutdown completed.
