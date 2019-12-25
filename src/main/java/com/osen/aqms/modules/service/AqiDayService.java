@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.AqiCompareDataModel;
 import com.osen.aqms.common.model.AqiHistoryToDay;
 import com.osen.aqms.common.model.AqiReportToDayModel;
+import com.osen.aqms.common.model.LevelDayModel;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AqiCompareVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
@@ -42,4 +43,12 @@ public interface AqiDayService extends IService<AqiDay> {
      * @return 信息
      */
     AqiCompareDataModel getAqiDayToCompare(AqiCompareVo aqiCompareVo);
+
+    /**
+     * 计算当月的空气比天数
+     *
+     * @param airQueryVo 请求体
+     * @return 信息
+     */
+    LevelDayModel getLevelNumber(AirQueryVo airQueryVo);
 }

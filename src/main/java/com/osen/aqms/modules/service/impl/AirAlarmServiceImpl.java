@@ -42,7 +42,7 @@ public class AirAlarmServiceImpl extends ServiceImpl<AirAlarmMapper, AirAlarm> i
     public List<AqiDataToMapModel> getAirAlarmRealtime(AddressVo addressVo) {
         List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
         List<Device> deviceList;
-        if (addressVo == null) {
+        if (addressVo.getAddress() == null || addressVo.getLevel() == null) {
             // 查询全部设备列表数据
             String username = SecurityUtil.getUsername();
             deviceList = deviceService.findDeviceAllToUsername(username);

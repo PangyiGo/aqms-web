@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.config.MybatisPlusConfig;
-import com.osen.aqms.common.model.AqiCompareDataModel;
-import com.osen.aqms.common.model.AqiHistoryToDay;
-import com.osen.aqms.common.model.AqiHistoryToHour;
-import com.osen.aqms.common.model.AqiReportToDayModel;
+import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AqiCompareVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
@@ -137,8 +134,7 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
         List<AqiDay> first = new ArrayList<>(0);
         List<AqiDay> second = new ArrayList<>(0);
         // 查询
-        LambdaQueryWrapper<AqiDay> wrapper1 = Wrappers.<AqiDay>lambdaQuery().select(AqiDay::getDeviceNo,
-                AqiDay::getAqi, AqiDay::getDateTime, AqiDay::getPm25, AqiDay::getPm10, AqiDay::getSo2, AqiDay::getNo2, AqiDay::getCo, AqiDay::getO3, AqiDay::getVoc);
+        LambdaQueryWrapper<AqiDay> wrapper1 = Wrappers.<AqiDay>lambdaQuery().select(AqiDay::getDeviceNo, AqiDay::getAqi, AqiDay::getDateTime, AqiDay::getPm25, AqiDay::getPm10, AqiDay::getSo2, AqiDay::getNo2, AqiDay::getCo, AqiDay::getO3, AqiDay::getVoc);
         LambdaQueryWrapper<AqiDay> wrapper2 = Wrappers.<AqiDay>lambdaQuery().select(AqiDay::getDeviceNo, AqiDay::getAqi, AqiDay::getDateTime, AqiDay::getPm25, AqiDay::getPm10, AqiDay::getSo2, AqiDay::getNo2, AqiDay::getCo, AqiDay::getO3, AqiDay::getVoc);
         for (String name : nameList) {
             MybatisPlusConfig.TableName.set(name);
@@ -168,5 +164,40 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
         aqiCompareDataModel.setFirstDeviceData(d1);
         aqiCompareDataModel.setSecondDeviceData(d2);
         return aqiCompareDataModel;
+    }
+
+    @Override
+    public LevelDayModel getLevelNumber(AirQueryVo airQueryVo) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        LocalDate localDate = LocalDate.now();
+        LocalDate start = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), 1);
+        LocalDate end = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), localDate.getMonth().maxLength());
+        airQueryVo.setStartTime(start.format(formatter));
+        airQueryVo.setEndTime(end.format(formatter));
+        List<AqiHistoryToDay> aqiDayHistory = this.getAqiDayHistory(airQueryVo);
+        LevelDayModel levelDayModel = new LevelDayModel();
+        for (AqiHistoryToDay history : aqiDayHistory) {
+            switch (history.getLevel()) {
+                case 1:
+                    levelDayModel.setLv1(levelDayModel.getLv1() + 1);
+                    break;
+                case 2:
+                    levelDayModel.setLv2(levelDayModel.getLv2() + 1);
+                    break;
+                case 3:
+                    levelDayModel.setLv3(levelDayModel.getLv3() + 1);
+                    break;
+                case 4:
+                    levelDayModel.setLv4(levelDayModel.getLv4() + 1);
+                    break;
+                case 5:
+                    levelDayModel.setLv5(levelDayModel.getLv5() + 1);
+                    break;
+                case 6:
+                    levelDayModel.setLv6(levelDayModel.getLv6() + 1);
+                    break;
+            }
+        }
+        return levelDayModel;
     }
 }

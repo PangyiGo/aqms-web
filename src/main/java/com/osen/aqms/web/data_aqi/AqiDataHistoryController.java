@@ -3,6 +3,7 @@ package com.osen.aqms.web.data_aqi;
 import com.osen.aqms.common.model.AqiHistoryToDay;
 import com.osen.aqms.common.model.AqiHistoryToHour;
 import com.osen.aqms.common.model.AqiHistoryToMonth;
+import com.osen.aqms.common.model.LevelDayModel;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
@@ -70,4 +71,15 @@ public class AqiDataHistoryController {
         return RestResultUtil.success(aqiMonthHistory);
     }
 
+    /**
+     * 根据设备号获取当月天数的等级分布
+     *
+     * @param airQueryVo 请求体
+     * @return 信息
+     */
+    @PostMapping("/aqiDay/level")
+    public RestResult getLevelDayNumber(@RequestBody AirQueryVo airQueryVo) {
+        LevelDayModel levelNumber = aqiDayService.getLevelNumber(airQueryVo);
+        return RestResultUtil.success(levelNumber);
+    }
 }
