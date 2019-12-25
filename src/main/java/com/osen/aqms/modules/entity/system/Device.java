@@ -55,11 +55,11 @@ public class Device extends Model<Device> implements Serializable {
 
     private String remark;
 
-    private int live;
+    private Integer live;
 
     private String type;
 
-    private int status;
+    private Integer status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
