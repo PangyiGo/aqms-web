@@ -24,6 +24,7 @@ import com.osen.aqms.modules.service.UserDeviceService;
 import com.osen.aqms.modules.service.UserRoleService;
 import com.osen.aqms.modules.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,6 +48,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private UserDeviceService userDeviceService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User findByUsername(String username) {
@@ -146,6 +150,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         // 属性复制
         BeanUtil.copyProperties(userModifyVo, user);
+        if (user.getPassword() != null && "".equals(user.getPassword().trim()))
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUpdateTime(LocalDateTime.now());
         LambdaUpdateWrapper<User> wrapper = Wrappers.<User>lambdaUpdate().eq(User::getAccount, user.getAccount());
         return super.update(user, wrapper);

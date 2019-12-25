@@ -19,6 +19,8 @@ public class UserModifyVo {
 
     private String account;
 
+    private String password;
+
     private String customer = "";
 
     private String phone = "";
