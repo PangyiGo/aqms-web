@@ -3,6 +3,7 @@ package com.osen.aqms.web.system_device;
 import com.osen.aqms.common.model.DeviceListDataModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
+import com.osen.aqms.common.requestVo.AccountDeviceVo;
 import com.osen.aqms.common.requestVo.AddressVo;
 import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.result.RestResult;
@@ -10,6 +11,7 @@ import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.service.DeviceService;
+import com.osen.aqms.modules.service.UserDeviceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,9 @@ public class SysDeviceController {
 
     @Autowired
     private DeviceService deviceService;
+
+    @Autowired
+    private UserDeviceService userDeviceService;
 
     /**
      * 根据登录用户获取设备的树形列表
@@ -103,5 +108,26 @@ public class SysDeviceController {
     public RestResult getDeviceListPageToCurrentUser(@RequestBody UserGetVo userGetVo) {
         DeviceListDataModel pageToCurrentUser = deviceService.findDeviceListPageToCurrentUser(userGetVo);
         return RestResultUtil.success(pageToCurrentUser);
+    }
+
+    /**
+     * 指定设备与指定账号关联或取消关联
+     *
+     * @param accountDeviceVo 请求体
+     * @param type            conn 表示关联 cancel 表示取消关联
+     * @return 信息
+     */
+    @PostMapping("/userDevice/{type}")
+    public RestResult updateUserToDeviceStatus(@RequestBody AccountDeviceVo accountDeviceVo, @PathVariable("type") String type) {
+        boolean status = userDeviceService.updateUserToDeviceStatus(accountDeviceVo, type);
+        String tips;
+        if (type.equals("conn"))
+            tips = "账号与设备绑定";
+        else
+            tips = "账号与设备解除绑定";
+        if (status)
+            return RestResultUtil.success(tips + "成功");
+        else
+            return RestResultUtil.failed(tips + "失败");
     }
 }

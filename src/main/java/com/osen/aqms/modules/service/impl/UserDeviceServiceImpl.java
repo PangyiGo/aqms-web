@@ -3,9 +3,13 @@ package com.osen.aqms.modules.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.osen.aqms.common.exception.type.ServiceException;
+import com.osen.aqms.common.requestVo.AccountDeviceVo;
+import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.entity.system.User;
 import com.osen.aqms.modules.entity.system.UserDevice;
 import com.osen.aqms.modules.mapper.system.UserDeviceMapper;
+import com.osen.aqms.modules.service.DeviceService;
 import com.osen.aqms.modules.service.UserDeviceService;
 import com.osen.aqms.modules.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,9 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DeviceService deviceService;
 
     @Override
     public List<Integer> findDeviceIdToUserName(String username) {
@@ -51,5 +58,30 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
     public boolean deleteByUids(List<Integer> uids) {
         LambdaQueryWrapper<UserDevice> wrapper = Wrappers.<UserDevice>lambdaQuery().in(UserDevice::getUserId, uids);
         return super.remove(wrapper);
+    }
+
+    @Override
+    public boolean updateUserToDeviceStatus(AccountDeviceVo accountDeviceVo, String type) {
+        // 用户账号 & 设备账号
+        String username = accountDeviceVo.getAccount();
+        String deviceNo = accountDeviceVo.getDeviceNo();
+        // 查询
+        User byUsername = userService.findByUsername(username);
+        Device deviceToNo = deviceService.findOneDeviceToNo(deviceNo);
+        if (byUsername == null || deviceToNo == null)
+            throw new ServiceException("绑定用户账号或设备错误，操作失败");
+        LambdaQueryWrapper<UserDevice> wrapper = Wrappers.<UserDevice>lambdaQuery().eq(UserDevice::getUserId, byUsername.getId()).eq(UserDevice::getDeviceId, deviceToNo.getId());
+        if (type.equals("conn")) {
+            UserDevice userDevice = new UserDevice();
+            userDevice.setUserId(byUsername.getId());
+            userDevice.setDeviceId(deviceToNo.getId());
+            // 是否重复添加
+            UserDevice device = super.getOne(wrapper);
+            if (device != null)
+                throw new ServiceException("账号与设备已重复绑定，操作失败");
+            return super.save(userDevice);
+        } else {
+            return super.remove(wrapper);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.osen.aqms.common.requestVo.AccountDeviceVo;
 import com.osen.aqms.modules.entity.system.UserDevice;
 
 import java.util.List;
@@ -28,4 +29,13 @@ public interface UserDeviceService extends IService<UserDevice> {
      * @return 信息
      */
     boolean deleteByUids(List<Integer> uids);
+
+    /**
+     * 指定设备与指定账号关联或取消关联
+     *
+     * @param accountDeviceVo 请求体
+     * @param type            conn 表示关联 cancel 表示取消关联
+     * @return 信息
+     */
+    boolean updateUserToDeviceStatus(AccountDeviceVo accountDeviceVo, String type);
 }
