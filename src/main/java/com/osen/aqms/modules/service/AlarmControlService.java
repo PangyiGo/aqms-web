@@ -35,4 +35,11 @@ public interface AlarmControlService extends IService<AlarmControl> {
      * @return 信息
      */
     boolean updateAlarmControlData(AlarmControl alarmControl);
+
+    /**
+     * 添加
+     *
+     * @param deviceNo 预警设备号
+     */
+    void addAlarmControl(String deviceNo);
 }

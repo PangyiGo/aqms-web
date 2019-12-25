@@ -13,12 +13,12 @@ import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.utils.ConstUtil;
-import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.entity.system.User;
 import com.osen.aqms.modules.entity.system.UserDevice;
 import com.osen.aqms.modules.mapper.system.DeviceMapper;
+import com.osen.aqms.modules.service.AlarmControlService;
 import com.osen.aqms.modules.service.DeviceService;
 import com.osen.aqms.modules.service.UserDeviceService;
 import com.osen.aqms.modules.service.UserService;
@@ -43,7 +43,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     private UserDeviceService userDeviceService;
 
     @Autowired
-    private RedisOpsUtil redisOpsUtil;
+    private AlarmControlService alarmControlService;
 
     @Autowired
     private UserService userService;
@@ -372,6 +372,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         device.setLive(ConstUtil.CLOSE_STATUS);
         device.setType("AQMS");
         if (super.save(device)) {
+
+            alarmControlService.addAlarmControl(device.getDeviceNo());
+
             UserDevice userDevice = new UserDevice();
             userDevice.setUserId(id);
             userDevice.setDeviceId(device.getId());

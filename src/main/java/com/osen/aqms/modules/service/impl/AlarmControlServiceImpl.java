@@ -16,6 +16,7 @@ import com.osen.aqms.modules.service.AlarmControlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -74,5 +75,21 @@ public class AlarmControlServiceImpl extends ServiceImpl<AlarmControlMapper, Ala
         wrapper.eq(AlarmControl::getDeviceNo, alarmControl.getDeviceNo());
         alarmControl.setUpdateTime(LocalDateTime.now());
         return super.update(alarmControl, wrapper);
+    }
+
+    @Override
+    public void addAlarmControl(String deviceNo) {
+        AlarmControl alarmControl = new AlarmControl();
+        alarmControl.setDeviceNo(deviceNo);
+        alarmControl.setPm25(new BigDecimal(0));
+        alarmControl.setPm10(new BigDecimal(0));
+        alarmControl.setSo2(new BigDecimal(0));
+        alarmControl.setNo2(new BigDecimal(0));
+        alarmControl.setCo(new BigDecimal(0));
+        alarmControl.setO3(new BigDecimal(0));
+        alarmControl.setVoc(new BigDecimal(0));
+        alarmControl.setCreateTime(LocalDateTime.now());
+        alarmControl.setUpdateTime(LocalDateTime.now());
+        super.save(alarmControl);
     }
 }
