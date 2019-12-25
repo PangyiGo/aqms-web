@@ -93,7 +93,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         IPage<User> userIPage = super.page(userPage, wrapper);
         if (userIPage.getTotal() > 0) {
             userListDataModel.setTotal(userIPage.getTotal());
-            userListDataModel.setUserList(userIPage.getRecords());
+            List<User> users = new ArrayList<>(0);
+            for (User record : userIPage.getRecords()) {
+                Role role = roleService.findRoleByName(record.getAccount());
+                List<Role> roles = new ArrayList<>(0);
+                roles.add(role);
+                record.setRoles(roles);
+                users.add(record);
+            }
+            userListDataModel.setUserList(users);
         }
         return userListDataModel;
     }
