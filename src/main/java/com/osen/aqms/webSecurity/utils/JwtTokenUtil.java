@@ -35,7 +35,7 @@ public class JwtTokenUtil {
     public static String LOGIN_TOKEN = "LoginToken_db";
 
     // 有效时间，默认1小时
-    private static final long EXPIRATION = 60 * 60 * 1000;
+    private static final long EXPIRATION = 60 * 60 * 3000;
 
     /**
      * 从数据声明生成令牌
