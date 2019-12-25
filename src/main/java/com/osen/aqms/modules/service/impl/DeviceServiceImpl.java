@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.osen.aqms.common.model.DeviceListDataModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
+import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.utils.ConstUtil;
 import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -297,6 +299,29 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         deviceStatusModel.setOffline(offline);
         deviceStatusModel.setDeviceList(deviceList);
         return deviceStatusModel;
+    }
+
+    @Override
+    public DeviceListDataModel findDeviceListPageToCurrentUser(UserGetVo userGetVo) {
+        DeviceListDataModel deviceListDataModel = new DeviceListDataModel();
+        // 当前用户名
+        String username = SecurityUtil.getUsername();
+        List<Integer> deviceIds = this.userDeviceService.findDeviceIdToUserName(username);
+        if (deviceIds.size() <= 0)
+            return deviceListDataModel;
+        // 查询条件
+        LambdaQueryWrapper<Device> wrapper = Wrappers.<Device>lambdaQuery();
+        wrapper.in(Device::getId, deviceIds);
+        String search = userGetVo.getSearch();
+        if (search != null && "".equals(search.trim()))
+            wrapper.and(query -> query.like(Device::getDeviceNo, search).or().like(Device::getDeviceName, search).or().like(Device::getProvince, search).or().like(Device::getCity, search).or().like(Device::getArea, search).or().like(Device::getAddress, search).or().like(Device::getRemark, search));
+        Page<Device> devicePage = new Page<>(Integer.valueOf(userGetVo.getNumber()), ConstUtil.PAGENUMBER);
+        IPage<Device> deviceIPage = super.page(devicePage, wrapper);
+        if (deviceIPage.getTotal() > 0) {
+            deviceListDataModel.setTotal(deviceIPage.getTotal());
+            deviceListDataModel.setUserList(deviceIPage.getRecords());
+        }
+        return deviceListDataModel;
     }
 
 }

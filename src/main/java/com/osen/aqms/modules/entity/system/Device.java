@@ -53,6 +53,8 @@ public class Device extends Model<Device> implements Serializable {
 
     private String latitude;
 
+    private String remark;
+
     private int live;
 
     private String type;

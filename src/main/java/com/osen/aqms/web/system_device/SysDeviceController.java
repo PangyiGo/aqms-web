@@ -1,8 +1,10 @@
 package com.osen.aqms.web.system_device;
 
+import com.osen.aqms.common.model.DeviceListDataModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.common.requestVo.AddressVo;
+import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -89,5 +91,17 @@ public class SysDeviceController {
     public RestResult getUserDeviceNoPage(@PathVariable("account") String account) {
         List<Device> deviceList = deviceService.findDeviceAllToUsername(account);
         return RestResultUtil.success(deviceList);
+    }
+
+    /**
+     * 分页查询当前设备列表
+     *
+     * @param userGetVo 请求体
+     * @return 信息
+     */
+    @PostMapping("/device/currentUser")
+    public RestResult getDeviceListPageToCurrentUser(@RequestBody UserGetVo userGetVo) {
+        DeviceListDataModel pageToCurrentUser = deviceService.findDeviceListPageToCurrentUser(userGetVo);
+        return RestResultUtil.success(pageToCurrentUser);
     }
 }
