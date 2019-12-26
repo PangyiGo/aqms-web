@@ -84,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         int userPid = user.getParentId();
         if (userPid != 0) {
             // 非系统管理员
-            wrapper.eq(User::getParentId, userPid).ne(User::getId, user.getId());
+            wrapper.eq(User::getParentId, user.getId()).ne(User::getId, user.getId());
         } else {
             // 系统管理员
             wrapper.ne(User::getId, user.getId());
