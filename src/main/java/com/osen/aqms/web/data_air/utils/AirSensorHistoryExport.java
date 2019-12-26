@@ -44,8 +44,8 @@ public class AirSensorHistoryExport {
                 head.createCell(2).setCellValue("PM10(μg/m³)");
                 head.createCell(3).setCellValue("SO2(μg/m³)");
                 head.createCell(4).setCellValue("NO2(μg/m³)");
-                head.createCell(5).setCellValue("O3(μg/m³)");
-                head.createCell(6).setCellValue("CO(mg/m³)");
+                head.createCell(5).setCellValue("CO(mg/m³)");
+                head.createCell(6).setCellValue("O3(μg/m³)");
                 head.createCell(7).setCellValue("TVOC(mg/m³)");
 
                 // 导出的数据

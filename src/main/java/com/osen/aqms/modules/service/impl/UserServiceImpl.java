@@ -150,7 +150,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         // 属性复制
         BeanUtil.copyProperties(userModifyVo, user);
-        if (user.getPassword() != null && "".equals(user.getPassword().trim()))
+        if (user.getPassword() != null && !"".equals(user.getPassword().trim()))
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUpdateTime(LocalDateTime.now());
         LambdaUpdateWrapper<User> wrapper = Wrappers.<User>lambdaUpdate().eq(User::getAccount, user.getAccount());
