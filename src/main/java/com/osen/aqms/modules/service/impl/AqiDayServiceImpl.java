@@ -9,6 +9,7 @@ import com.osen.aqms.common.model.*;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.common.requestVo.AqiCompareVo;
 import com.osen.aqms.common.requestVo.AqiReportVo;
+import com.osen.aqms.common.requestVo.PolluteMapVo;
 import com.osen.aqms.common.utils.ConstUtil;
 import com.osen.aqms.common.utils.DateTimeUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -25,7 +26,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * User: PangYi
@@ -199,5 +203,64 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
             }
         }
         return levelDayModel;
+    }
+
+    @Override
+    public List<PolluteMapResultModel> getSensorData(PolluteMapVo polluteMapVo, String sensor) {
+        List<PolluteMapResultModel> mapResultModel = new ArrayList<>(0);
+        // 当前用户设备列表
+        String username = SecurityUtil.getUsername();
+        List<Device> deviceList = deviceService.findDeviceAllToUsername(username);
+        if (deviceList.size() <= 0)
+            return mapResultModel;
+        // 设备号列表
+        List<String> deviceNos = new ArrayList<>(0);
+        deviceList.forEach(device -> deviceNos.add(device.getDeviceNo()));
+        // 时间格式化
+        List<LocalDateTime> dateTimes = DateTimeUtil.queryTimeFormatter(polluteMapVo.getStartTime(), polluteMapVo.getEndTime());
+        LocalDateTime startTime = dateTimes.get(0);
+        LocalDateTime endTime = dateTimes.get(1);
+        LocalDateTime initTime = LocalDateTime.of(2019, 12, 1, 0, 0, 0);
+        if (startTime.isBefore(initTime))
+            startTime = initTime;
+        LocalDateTime tempTime = startTime;
+        while (tempTime.isBefore(endTime)) {
+            PolluteMapResultModel model = new PolluteMapResultModel();
+            // 数据表
+            String tableName = TableNameUtil.Aqi_day + "_" + tempTime.getYear() + ((tempTime.getMonthValue() < 10) ?
+                    "0" + tempTime.getMonthValue() : "" + tempTime.getMonthValue());
+            // 查询数据
+            List<SensorMapperModel> sensorModel = baseMapper.getSensorModel(tableName, deviceNos, sensor, tempTime);
+            if (sensorModel == null || sensorModel.size() <= 0) {
+                tempTime = tempTime.plusDays(1);
+                continue;
+            }
+            // 最大值
+            int maxValue = Objects.requireNonNull(sensorModel.stream().filter(Objects::nonNull).max(Comparator.comparing(SensorMapperModel::getNumber)).orElse(null)).getNumber();
+            SensorTimeModel sensorTimeModel = new SensorTimeModel();
+            List<SensorDataModel> sensorDataModels = new ArrayList<>(0);
+            for (SensorMapperModel sensorMapperModel : sensorModel) {
+                SensorDataModel sensorDataModel = new SensorDataModel();
+                // 查询设备
+                List<Device> list = deviceList.stream().filter(device -> device.getDeviceNo().equals(sensorMapperModel.getDeviceNo())).collect(Collectors.toList());
+                if (list.size() != 1)
+                    continue;
+                sensorDataModel.setLng(list.get(0).getLongitude());
+                sensorDataModel.setLat(list.get(0).getLatitude());
+                sensorDataModel.setCount(sensorMapperModel.getNumber());
+                sensorDataModels.add(sensorDataModel);
+            }
+            sensorTimeModel.setMax(maxValue);
+            sensorTimeModel.setSensorDataModels(sensorDataModels);
+
+            // 时间 数据
+            model.setDateTime(tempTime);
+            model.setSensorTimeModel(sensorTimeModel);
+
+            mapResultModel.add(model);
+
+            tempTime = tempTime.plusDays(1);
+        }
+        return mapResultModel;
     }
 }

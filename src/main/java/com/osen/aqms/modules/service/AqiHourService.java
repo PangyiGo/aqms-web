@@ -2,10 +2,7 @@ package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.*;
-import com.osen.aqms.common.requestVo.AirQueryVo;
-import com.osen.aqms.common.requestVo.AqiCompareVo;
-import com.osen.aqms.common.requestVo.AqiReportVo;
-import com.osen.aqms.common.requestVo.FeatureVo;
+import com.osen.aqms.common.requestVo.*;
 import com.osen.aqms.modules.entity.data.AqiHour;
 
 import java.util.List;
@@ -73,4 +70,14 @@ public interface AqiHourService extends IService<AqiHour> {
      * @return 信息
      */
     AqiCompareDataModel getAqiMonthToCompare(AqiCompareVo aqiCompareVo);
+
+
+    /**
+     * 获取污染物地图数据
+     *
+     * @param polluteMapVo 请求体
+     * @param sensor       参数因子
+     * @return 信息
+     */
+    List<PolluteMapResultModel> getSensorData(PolluteMapVo polluteMapVo, String sensor);
 }

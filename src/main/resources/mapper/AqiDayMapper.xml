@@ -2,5 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.osen.aqms.modules.mapper.data.AqiDayMapper">
 
+    <select id="getSensorModel" resultType="com.osen.aqms.common.model.SensorMapperModel">
+        SELECT
+        device_no,
+        ${sensor} AS number
+        FROM
+        ${tableName}
+        WHERE
+        device_no IN
+        <foreach collection="devices" item="deviceNo" index="index"
+                 open="(" close=")" separator=",">
+            #{deviceNo}
+        </foreach>
+        AND date_time = "${time}"
+    </select>
 
 </mapper>

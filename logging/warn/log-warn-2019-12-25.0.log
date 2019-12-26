@@ -1,0 +1,26 @@
+2019-12-25 08:38:59.219 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 08:42:29.123 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 08:53:05.855 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 08:56:29.411 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 09:11:58.499 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 09:32:21.690 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 09:58:55.706 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 10:00:33.735 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 10:01:43.536 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 11:55:34.394 log message -> DatebookHikariCP - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6ae5e43b (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2019-12-25 12:42:06.666 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 12:43:56.142 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 14:36:46.251 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 14:43:47.151 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 14:47:20.416 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 14:48:17.886 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 15:35:03.837 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 16:05:24.772 log message -> DatebookHikariCP - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@684f2bac (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2019-12-25 16:25:01.982 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 17:10:07.938 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 17:18:19.143 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 18:33:24.162 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 18:42:37.923 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 18:43:58.392 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 18:59:38.736 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-25 19:04:05.174 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
