@@ -90,8 +90,8 @@ public class AirSensorHistoryExport {
                 }
 
                 // 设置默认表格列宽
-                sheet.setDefaultColumnWidth(40);
-                sheet.setDefaultRowHeight((short) (18.5 * 22));
+                sheet.setDefaultColumnWidth(80);
+                sheet.setDefaultRowHeight((short) (19 * 23));
                 //列宽自适应
                 for (int a = 0; a <= 8; a++) {
                     sheet.autoSizeColumn(a);

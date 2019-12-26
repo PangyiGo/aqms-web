@@ -268,3 +268,5 @@ Caused by: java.io.IOException: 您的主机中的软件中止了一个已建立
 2019-12-26 13:40:54.456 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
 2019-12-26 13:55:00.550 log message -> Encoded password does not look like BCrypt
 2019-12-26 13:55:12.525 log message -> Encoded password does not look like BCrypt
+2019-12-26 13:56:40.964 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-12-26 14:07:25.092 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
