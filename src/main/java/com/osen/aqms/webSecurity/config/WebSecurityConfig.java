@@ -132,6 +132,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers(HttpMethod.GET, "/*.html", "/**/*.html", "/**/*.css", "/**/*.js").anonymous()
 
                 // 忽略地址 start
+                .antMatchers(HttpMethod.GET).permitAll().antMatchers("/wechat/validate/**").permitAll()
                 // 忽略地址 end
 
                 // 其他接口认证
