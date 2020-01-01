@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.osen.aqms.modules.mapper.data.AirHistoryMapper">
+
+    <select id="getAvgToDay" resultType="com.osen.aqms.common.model.AirAvgModel">
+        SELECT
+            AVG(pm25) AS pm25_avg,
+            AVG(pm10) AS pm10_avg,
+            AVG(so2) AS so2_avg,
+            AVG(no2) AS no2_avg,
+            AVG(co) AS co_avg,
+            AVG(o3) AS o3_avg,
+            AVG(voc) AS voc_avg
+        FROM
+            ${tableName}
+        WHERE
+            (
+                device_no = ${deviceNo}
+                AND date_time BETWEEN "${start}"
+                AND "${end}"
+            )
+    </select>
+    <select id="getAirAccord" resultType="com.osen.aqms.common.model.AirAccordMapperModel">
+        SELECT
+            COUNT(1) AS count,
+            MAX(pm25) AS pm25_max,
+            MIN(pm25) AS pm25_min,
+            AVG(pm25) AS pm25_avg,
+            MAX(pm10) AS pm10_max,
+            MIN(pm10) AS pm10_min,
+            AVG(pm10) AS pm10_avg,
+            MAX(so2) AS so2_max,
+            MIN(so2) AS so2_min,
+            AVG(so2) AS so2_avg,
+            MAX(no2) AS no2_max,
+            MIN(no2) AS no2_min,
+            AVG(no2) AS no2_avg,
+            MAX(co) AS co_max,
+            MIN(co) AS co_min,
+            AVG(co) AS co_avg,
+            MAX(o3) AS o3_max,
+            MIN(o3) AS o3_min,
+            AVG(o3) AS o3_avg,
+            MAX(voc) AS voc_max,
+            MIN(voc) AS voc_min,
+            AVG(voc) AS voc_avg
+        FROM
+             ${tableName}
+        WHERE
+            device_no = ${deviceNo}
+            AND (
+                date_time BETWEEN "${start}"
+                AND "${end}"
+            )
+    </select>
+</mapper>
