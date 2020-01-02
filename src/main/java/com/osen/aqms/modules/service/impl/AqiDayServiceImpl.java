@@ -22,6 +22,7 @@ import com.osen.aqms.modules.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -262,5 +263,56 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
             tempTime = tempTime.plusDays(1);
         }
         return mapResultModel;
+    }
+
+    @Override
+    public List<AqiSensorDayModel> getAqiSensorHistory(String deviceNo, String type, String sensor) {
+        List<AqiSensorDayModel> aqiSensorDayModels = new ArrayList<>(0);
+        // 时间格式化
+        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime startTime = null;
+        LocalDateTime endTime;
+        // 判断时间类型
+        endTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 0, 0, 0);
+        if (Integer.parseInt(type) + 1 == 2) {
+            startTime = endTime.minusWeeks(1);
+        }
+        if (Integer.parseInt(type) + 1 == 3) {
+            startTime = endTime.minusMonths(1);
+        }
+        // 生成数据表
+        assert startTime != null;
+        List<String> tableNameList = TableNameUtil.tableNameList(TableNameUtil.Aqi_day, startTime, endTime);
+        for (String tableName : tableNameList) {
+            List<AqiSensorDayModel> sensorHistory = baseMapper.getSensorHistory(tableName, deviceNo, startTime, endTime, sensor);
+            aqiSensorDayModels.addAll(sensorHistory);
+        }
+
+        int number = 0;
+        if (Integer.parseInt(type) + 1 == 2) {
+            number = 7;
+        } else {
+            number = 30;
+        }
+        List<AqiSensorDayModel> res = new ArrayList<>(0);
+        LocalDateTime temp = startTime.plusDays(1);
+        for (int i = 0; i < number; i++) {
+            AqiSensorDayModel aqiDataModel = new AqiSensorDayModel();
+            LocalDateTime finalTemp = temp;
+            List<AqiSensorDayModel> modelList = aqiSensorDayModels.stream().filter(aqiSensorModel -> aqiSensorModel.getDateTime().isEqual(finalTemp)).collect(Collectors.toList());
+            if (modelList.size() == 1) {
+                AqiSensorDayModel model = modelList.get(0);
+                aqiDataModel.setDateTime(model.getDateTime());
+                aqiDataModel.setNumber(model.getNumber());
+            } else {
+                aqiDataModel.setDateTime(temp);
+                aqiDataModel.setNumber(new BigDecimal(0));
+            }
+            res.add(aqiDataModel);
+            // 时间修改
+            temp = temp.plusDays(1);
+        }
+
+        return res;
     }
 }

@@ -21,7 +21,7 @@ public class AqiSensorModel {
 
     private BigDecimal number = new BigDecimal(0);
 
-    @JsonFormat(pattern = "MM/dd HH")
+    @JsonFormat(pattern = "MM-dd HH")
     private LocalDateTime dateTime;
 
 }

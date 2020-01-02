@@ -17,4 +17,18 @@
         AND date_time = "${time}"
     </select>
 
+    <select id="getSensorHistory" resultType="com.osen.aqms.common.model.AqiSensorDayModel">
+        SELECT
+            date_time,
+            ${sensor} AS number
+        FROM
+            ${tableName}
+        WHERE
+            (
+                device_no = ${deviceNo}
+                AND date_time BETWEEN "${start}"
+                AND "${end}"
+            );
+    </select>
+
 </mapper>
