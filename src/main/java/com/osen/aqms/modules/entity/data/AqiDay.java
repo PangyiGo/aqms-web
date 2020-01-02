@@ -49,19 +49,19 @@ public class AqiDay extends Model<AqiDay> implements Serializable {
 
     private String tips;
 
-    private BigDecimal pm25;
+    private BigDecimal pm25 = new BigDecimal(0);
 
-    private BigDecimal pm10;
+    private BigDecimal pm10= new BigDecimal(0);
 
-    private BigDecimal so2;
+    private BigDecimal so2= new BigDecimal(0);
 
-    private BigDecimal no2;
+    private BigDecimal no2= new BigDecimal(0);
 
-    private BigDecimal co;
+    private BigDecimal co= new BigDecimal(0);
 
-    private BigDecimal o3;
+    private BigDecimal o3= new BigDecimal(0);
 
-    private BigDecimal voc;
+    private BigDecimal voc= new BigDecimal(0);
 
     private int pm25Index;
 

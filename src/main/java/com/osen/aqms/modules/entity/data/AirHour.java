@@ -37,47 +37,47 @@ public class AirHour extends Model<AirHour> implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
 
-    private BigDecimal pm25;
+    private BigDecimal pm25 = new BigDecimal(0);
 
-    private BigDecimal pm25Max;
+    private BigDecimal pm25Max = new BigDecimal(0);
 
-    private BigDecimal pm25Min;
+    private BigDecimal pm25Min= new BigDecimal(0);
 
-    private BigDecimal pm10;
+    private BigDecimal pm10= new BigDecimal(0);
 
-    private BigDecimal pm10Max;
+    private BigDecimal pm10Max= new BigDecimal(0);
 
-    private BigDecimal pm10Min;
+    private BigDecimal pm10Min= new BigDecimal(0);
 
-    private BigDecimal so2;
+    private BigDecimal so2= new BigDecimal(0);
 
-    private BigDecimal so2Max;
+    private BigDecimal so2Max= new BigDecimal(0);
 
-    private BigDecimal so2Min;
+    private BigDecimal so2Min= new BigDecimal(0);
 
-    private BigDecimal no2;
+    private BigDecimal no2= new BigDecimal(0);
 
-    private BigDecimal no2Max;
+    private BigDecimal no2Max= new BigDecimal(0);
 
-    private BigDecimal no2Min;
+    private BigDecimal no2Min= new BigDecimal(0);
 
-    private BigDecimal co;
+    private BigDecimal co= new BigDecimal(0);
 
-    private BigDecimal coMax;
+    private BigDecimal coMax= new BigDecimal(0);
 
-    private BigDecimal coMin;
+    private BigDecimal coMin= new BigDecimal(0);
 
-    private BigDecimal o3;
+    private BigDecimal o3= new BigDecimal(0);
 
-    private BigDecimal o3Max;
+    private BigDecimal o3Max= new BigDecimal(0);
 
-    private BigDecimal o3Min;
+    private BigDecimal o3Min= new BigDecimal(0);
 
-    private BigDecimal voc;
+    private BigDecimal voc= new BigDecimal(0);
 
-    private BigDecimal vocMax;
+    private BigDecimal vocMax= new BigDecimal(0);
 
-    private BigDecimal vocMin;
+    private BigDecimal vocMin= new BigDecimal(0);
 
     private String pm25Flag;
 
