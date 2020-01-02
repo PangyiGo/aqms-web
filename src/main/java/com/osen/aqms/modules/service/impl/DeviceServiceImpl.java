@@ -11,6 +11,7 @@ import com.osen.aqms.common.exception.type.ServiceException;
 import com.osen.aqms.common.model.DeviceListDataModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
+import com.osen.aqms.common.requestVo.DeviceSearchVo;
 import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.utils.ConstUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
@@ -384,4 +385,21 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return false;
     }
 
+    @Override
+    public List<Device> findDeviceListBySearch(DeviceSearchVo deviceSearchVo) {
+        List<Device> deviceList = new ArrayList<>(0);
+        String username = SecurityUtil.getUsername();
+        List<Integer> deviceIds = userDeviceService.findDeviceIdToUserName(username);
+        if (deviceIds.size() <= 0)
+            return deviceList;
+        // 查询条件
+        LambdaQueryWrapper<Device> wrapper = Wrappers.<Device>lambdaQuery();
+        wrapper.in(Device::getId, deviceIds);
+        if (deviceSearchVo != null && !"".equals(deviceSearchVo.getSearch()))
+            wrapper.and(query -> query.like(Device::getDeviceNo, deviceSearchVo.getSearch()).or().like(Device::getDeviceName, deviceSearchVo.getSearch()).or().like(Device::getProvince, deviceSearchVo.getSearch()).or().like(Device::getCity, deviceSearchVo.getSearch()).or().like(Device::getArea, deviceSearchVo.getSearch()).or().like(Device::getAddress, deviceSearchVo.getSearch()).or().like(Device::getRemark, deviceSearchVo.getSearch()));
+        List<Device> devices = super.list(wrapper);
+        if (devices != null)
+            deviceList = devices;
+        return deviceList;
+    }
 }

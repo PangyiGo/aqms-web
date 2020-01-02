@@ -6,6 +6,7 @@ import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
 import com.osen.aqms.common.requestVo.AccountDeviceVo;
 import com.osen.aqms.common.requestVo.AddressVo;
+import com.osen.aqms.common.requestVo.DeviceSearchVo;
 import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
@@ -181,5 +182,17 @@ public class SysDeviceController {
         if (deviceAdd)
             return RestResultUtil.success("设备新增成功");
         return RestResultUtil.failed("设备新增失败");
+    }
+
+    /**
+     * 不分页查询当前用户的设备列表
+     *
+     * @param deviceSearchVo 请求体
+     * @return 信息
+     */
+    @PostMapping("/device/search")
+    public RestResult getDeviceListBySearch(@RequestBody(required = false) DeviceSearchVo deviceSearchVo) {
+        List<Device> deviceListBySearch = deviceService.findDeviceListBySearch(deviceSearchVo);
+        return RestResultUtil.success(deviceListBySearch);
     }
 }
