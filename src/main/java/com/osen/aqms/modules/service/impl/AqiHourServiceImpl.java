@@ -439,4 +439,20 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         }
         return mapResultModel;
     }
+
+    @Override
+    public List<AqiSensorModel> getAqiSensorModel(String deviceNo, String type, String sensor) {
+        List<AqiSensorModel> aqiSensorModels = new ArrayList<>(0);
+        // 时间
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime endTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), 0, 0);
+        LocalDateTime startTime = endTime.minusHours(23);
+        // 获取表名
+        List<String> nameList = TableNameUtil.tableNameList(TableNameUtil.Aqi_hour, startTime, endTime);
+        for (String tableName : nameList) {
+            List<AqiSensorModel> history = baseMapper.getSensorHistory(tableName, deviceNo, startTime, endTime, sensor);
+            aqiSensorModels.addAll(history);
+        }
+        return aqiSensorModels;
+    }
 }

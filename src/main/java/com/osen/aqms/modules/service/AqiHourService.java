@@ -80,4 +80,13 @@ public interface AqiHourService extends IService<AqiHour> {
      * @return 信息
      */
     List<PolluteMapResultModel> getSensorData(PolluteMapVo polluteMapVo, String sensor);
+
+    /**
+     * 获取
+     * @param deviceNo
+     * @param type
+     * @param sensor
+     * @return
+     */
+    List<AqiSensorModel> getAqiSensorModel(String deviceNo,String type,String sensor);
 }
