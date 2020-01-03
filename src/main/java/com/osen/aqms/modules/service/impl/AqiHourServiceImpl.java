@@ -474,4 +474,64 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         }
         return res;
     }
+
+    @Override
+    public List<AqiSensorRankModel> getAqiSensorRank(String order, String type, String sensor) {
+        List<AqiSensorRankModel> aqiSensorRankModels = new ArrayList<>(0);
+        // 当前用户设备列表
+        String username = SecurityUtil.getUsername();
+        List<Device> deviceList = deviceService.findDeviceAllToUsername(username);
+        if (deviceList.size() <= 0)
+            return aqiSensorRankModels;
+        // 时间格式化
+        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        if (Integer.parseInt(type) == 1) {
+            // 实时
+            startTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), 0, 0);
+            endTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), 59, 59);
+        } else if (Integer.parseInt(type) == 2) {
+            // 昨日
+            dateTime = dateTime.minusDays(1);
+            startTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 0, 0, 0);
+            endTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 23, 59, 59);
+        } else {
+            // 当月
+            startTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), 1, 0, 0, 0);
+            endTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getMonth().maxLength(), 23, 59, 59);
+        }
+        // 设备号列表
+        List<String> deviceNos = new ArrayList<>();
+        deviceList.forEach(device -> deviceNos.add(device.getDeviceNo()));
+        // 表名
+        LocalDate date = startTime.toLocalDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        String tableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_day, date.format(formatter), ConstUtil.QUERY_DATE);
+        // 查询
+        List<SensorMapperModel> aqiSensorRank = baseMapper.getAqiSensorRank(tableName, deviceNos, sensor, startTime, endTime);
+        for (Device device : deviceList) {
+            AqiSensorRankModel aqiSensorRankModel = new AqiSensorRankModel();
+            aqiSensorRankModel.setDeviceNo(device.getDeviceNo());
+            aqiSensorRankModel.setDeviceName(device.getDeviceName());
+            List<SensorMapperModel> list = aqiSensorRank.stream().filter(aqiRank -> aqiRank.getDeviceNo().equals(device.getDeviceNo())).collect(Collectors.toList());
+            if (list.size() == 1) {
+                aqiSensorRankModel.setNumber(new BigDecimal(list.get(0).getNumber()));
+            } else {
+                aqiSensorRankModel.setNumber(new BigDecimal(0));
+            }
+            aqiSensorRankModels.add(aqiSensorRankModel);
+        }
+        List<AqiSensorRankModel> modelList = new ArrayList<>(0);
+        // 排名
+        if ("asc".equals(order)) {
+            // 升序
+            modelList = aqiSensorRankModels.stream().sorted(Comparator.comparing(AqiSensorRankModel::getNumber)).collect(Collectors.toList());
+        }
+        if ("desc".equals(order)) {
+            // 降序
+            modelList = aqiSensorRankModels.stream().sorted(Comparator.comparing(AqiSensorRankModel::getNumber).reversed()).collect(Collectors.toList());
+        }
+        return modelList;
+    }
 }

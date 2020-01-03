@@ -115,8 +115,17 @@ public class AqiDataHistoryController {
         }
     }
 
-    @PostMapping("/sensorRank/{type}/")
-    public RestResult getSensorRank() {
-        return null;
+    /**
+     * 排名
+     *
+     * @param order  asc升序，desc降序
+     * @param type   1表示实时，2表示昨天，3表示当月
+     * @param sensor 参数 "aqi", "pm25", "pm10", "so2", "no2", "co", "o3", "voc"
+     * @return 信息
+     */
+    @PostMapping("/sensorRank/{order}/{type}/{sensor}")
+    public RestResult getSensorRank(@PathVariable("order") String order, @PathVariable("type") String type, @PathVariable("sensor") String sensor) {
+        List<AqiSensorRankModel> aqiSensorRank = aqiHourService.getAqiSensorRank(order, type, sensor);
+        return RestResultUtil.success(aqiSensorRank);
     }
 }

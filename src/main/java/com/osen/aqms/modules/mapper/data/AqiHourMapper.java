@@ -59,4 +59,14 @@ public interface AqiHourMapper extends BaseMapper<AqiHour> {
      * @return 信息
      */
     List<AqiSensorModel> getSensorHistory(@Param("tableName") String tableName, @Param("deviceNo") String deviceNo, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("sensor") String sensor);
+
+    /**
+     * @param tableName 表名
+     * @param devices   设备号列表
+     * @param sensor    参数
+     * @param start     时间
+     * @param end       时间
+     * @return 信息
+     */
+    List<SensorMapperModel> getAqiSensorRank(@Param("tableName") String tableName, @Param("devices") List<String> devices, @Param("sensor") String sensor, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

@@ -71,7 +71,6 @@ public interface AqiHourService extends IService<AqiHour> {
      */
     AqiCompareDataModel getAqiMonthToCompare(AqiCompareVo aqiCompareVo);
 
-
     /**
      * 获取污染物地图数据
      *
@@ -82,11 +81,22 @@ public interface AqiHourService extends IService<AqiHour> {
     List<PolluteMapResultModel> getSensorData(PolluteMapVo polluteMapVo, String sensor);
 
     /**
-     * 获取
-     * @param deviceNo
-     * @param type
-     * @param sensor
-     * @return
+     * 获取历史数据
+     *
+     * @param deviceNo 设备号
+     * @param type     类型
+     * @param sensor   参数因子
+     * @return 信息
      */
-    List<AqiSensorModel> getAqiSensorModel(String deviceNo,String type,String sensor);
+    List<AqiSensorModel> getAqiSensorModel(String deviceNo, String type, String sensor);
+
+    /**
+     * 获取当前用户的数据排名
+     *
+     * @param order  排名顺序
+     * @param type   类型
+     * @param sensor 参数因子
+     * @return 信息
+     */
+    List<AqiSensorRankModel> getAqiSensorRank(String order, String type, String sensor);
 }
