@@ -228,8 +228,7 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
         while (tempTime.isBefore(endTime)) {
             PolluteMapResultModel model = new PolluteMapResultModel();
             // 数据表
-            String tableName = TableNameUtil.Aqi_day + "_" + tempTime.getYear() + ((tempTime.getMonthValue() < 10) ?
-                    "0" + tempTime.getMonthValue() : "" + tempTime.getMonthValue());
+            String tableName = TableNameUtil.Aqi_day + "_" + tempTime.getYear() + ((tempTime.getMonthValue() < 10) ? "0" + tempTime.getMonthValue() : "" + tempTime.getMonthValue());
             // 查询数据
             List<SensorMapperModel> sensorModel = baseMapper.getSensorModel(tableName, deviceNos, sensor, tempTime);
             if (sensorModel == null || sensorModel.size() <= 0) {
@@ -274,10 +273,10 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
         LocalDateTime endTime;
         // 判断时间类型
         endTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 0, 0, 0);
-        if (Integer.parseInt(type) + 1 == 2) {
+        if (Integer.parseInt(type) == 2) {
             startTime = endTime.minusWeeks(1);
         }
-        if (Integer.parseInt(type) + 1 == 3) {
+        if (Integer.parseInt(type) == 3) {
             startTime = endTime.minusMonths(1);
         }
         // 生成数据表
