@@ -507,7 +507,8 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         // 表名
         LocalDate date = startTime.toLocalDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
-        String tableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_day, date.format(formatter), ConstUtil.QUERY_DATE);
+        String tableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, date.format(formatter),
+                ConstUtil.QUERY_DATE);
         // 查询
         List<SensorMapperModel> aqiSensorRank = baseMapper.getAqiSensorRank(tableName, deviceNos, sensor, startTime, endTime);
         for (Device device : deviceList) {
