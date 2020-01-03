@@ -29,13 +29,10 @@ public class JwtTokenUtil {
     private static final String SECRET = "osen";
 
     // 保存jwt与jwtuser
-    public static String ACCESS_TOKEN = "AccessToken_db";
-
-    // 登录令牌
-    public static String LOGIN_TOKEN = "LoginToken_db";
+    public static String ACCESS_TOKEN = "AccessToken_";
 
     // 有效时间，默认1小时
-    private static final long EXPIRATION = 60 * 60 * 3000;
+    public static final long EXPIRATION = 60 * 60 * 6000;
 
     /**
      * 从数据声明生成令牌

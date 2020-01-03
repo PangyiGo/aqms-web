@@ -1,6 +1,5 @@
 package com.osen.aqms.webSecurity.handler;
 
-import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
 import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.result.RestResult;
@@ -11,6 +10,7 @@ import com.osen.aqms.webSecurity.utils.JwtUser;
 import com.osen.aqms.webSecurity.utils.TransferUserToJwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import static com.osen.aqms.common.enums.InfoMessage.User_Login_Success;
 
@@ -41,6 +42,9 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
     @Autowired
     private RedisOpsUtil redisOpsUtil;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("User login successful......");
@@ -55,12 +59,9 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         TransferUserToJwt transferUserToJwt = JwtTokenUtil.toUser(jwtUser);
 
-        // 登录令牌
-        String randomUUID = IdUtil.randomUUID();
-        redisOpsUtil.putToMap(JwtTokenUtil.LOGIN_TOKEN, randomUUID, token);
         // 登录主体信息
         String principal = JSON.toJSONString(transferUserToJwt);
-        redisOpsUtil.putToMap(JwtTokenUtil.ACCESS_TOKEN, token, principal);
+        stringRedisTemplate.boundValueOps(JwtTokenUtil.ACCESS_TOKEN+token).set(principal,JwtTokenUtil.EXPIRATION, TimeUnit.MILLISECONDS);
 
         response.setContentType("application/json;charset=utf-8");
 
@@ -68,7 +69,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         RestResult<String> restResult = new RestResult<>();
         restResult.setCode(User_Login_Success.getCode());
         restResult.setMessage(User_Login_Success.getMessage());
-        restResult.setData(randomUUID);
+        restResult.setData(token);
 
         response.getWriter().write(JSON.toJSONString(restResult));
     }

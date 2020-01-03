@@ -2,12 +2,12 @@ package com.osen.aqms.webSecurity.controller;
 
 import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.result.RestResult;
-import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.modules.service.LogsLoginService;
 import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +29,10 @@ import static com.osen.aqms.common.enums.InfoMessage.User_Logout_Success;
 public class AuthorizationController {
 
     @Autowired
-    private RedisOpsUtil redisOpsUtil;
+    private LogsLoginService logsLoginService;
 
     @Autowired
-    private LogsLoginService logsLoginService;
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 用户退出登录
@@ -46,12 +46,11 @@ public class AuthorizationController {
         // 登录令牌
         String authToken = authorization.substring(7);
 
-        String access_token = redisOpsUtil.getToMap(JwtTokenUtil.LOGIN_TOKEN, authToken);
+        String access_token = stringRedisTemplate.boundValueOps(JwtTokenUtil.ACCESS_TOKEN + authToken).get();
         if (access_token == null)
             RestResultUtil.failed("无效登录令牌");
-        redisOpsUtil.deleteToMap(JwtTokenUtil.LOGIN_TOKEN, authToken);
-        // 访问令牌
-        redisOpsUtil.deleteToMap(JwtTokenUtil.ACCESS_TOKEN, access_token);
+        // 删除
+        stringRedisTemplate.delete(JwtTokenUtil.ACCESS_TOKEN + authToken);
 
         logsLoginService.saveLogs(request, TipsMessage.LogoutSuccess.getTips());
 
