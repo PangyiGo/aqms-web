@@ -58,4 +58,14 @@ public interface AqiDayService extends IService<AqiDay> {
      * @return 信息
      */
     List<PolluteMapResultModel> getSensorData(PolluteMapVo polluteMapVo, String sensor);
+
+    /**
+     * 获取七天或三十天的污染物历史数据
+     *
+     * @param deviceNo 设备号
+     * @param type     类型 2表示七天，3表示30天
+     * @param sensor   参数因子
+     * @return 信息
+     */
+    List<AqiSensorDayModel> getAqiSensorHistory(String deviceNo, String type, String sensor);
 }

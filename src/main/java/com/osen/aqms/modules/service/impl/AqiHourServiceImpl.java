@@ -453,6 +453,25 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
             List<AqiSensorModel> history = baseMapper.getSensorHistory(tableName, deviceNo, startTime, endTime, sensor);
             aqiSensorModels.addAll(history);
         }
-        return aqiSensorModels;
+
+        List<AqiSensorModel> res = new ArrayList<>(0);
+        LocalDateTime temp = startTime;
+        for (int i = 0; i < 24; i++) {
+            AqiSensorModel aqiDataModel = new AqiSensorModel();
+            LocalDateTime finalTemp = temp;
+            List<AqiSensorModel> modelList = aqiSensorModels.stream().filter(aqiSensorModel -> aqiSensorModel.getDateTime().isEqual(finalTemp)).collect(Collectors.toList());
+            if (modelList.size() == 1) {
+                AqiSensorModel model = modelList.get(0);
+                aqiDataModel.setDateTime(model.getDateTime());
+                aqiDataModel.setNumber(model.getNumber());
+            } else {
+                aqiDataModel.setDateTime(temp);
+                aqiDataModel.setNumber(new BigDecimal(0));
+            }
+            res.add(aqiDataModel);
+            // 时间修改
+            temp = temp.plusHours(1);
+        }
+        return res;
     }
 }

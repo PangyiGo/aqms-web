@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AqiSensorModel {
+public class AqiSensorDayModel {
 
     private BigDecimal number = new BigDecimal(0);
 
-    @JsonFormat(pattern = "MM-dd HH")
+    @JsonFormat(pattern = "MM-dd")
     private LocalDateTime dateTime;
 
 }

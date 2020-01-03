@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.DeviceListDataModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
+import com.osen.aqms.common.requestVo.DeviceSearchVo;
 import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.modules.entity.system.Device;
 
@@ -97,4 +98,12 @@ public interface DeviceService extends IService<Device> {
      * @return 信息
      */
     boolean deviceAdd(Device device);
+
+    /**
+     * 不分页查询当前账号设备列表
+     *
+     * @param deviceSearchVo 查询条件
+     * @return 信息
+     */
+    List<Device> findDeviceListBySearch(DeviceSearchVo deviceSearchVo);
 }

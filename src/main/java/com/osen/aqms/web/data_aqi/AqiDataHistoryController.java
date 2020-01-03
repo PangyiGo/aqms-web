@@ -106,10 +106,12 @@ public class AqiDataHistoryController {
      */
     @PostMapping("/aqiSensor/{deviceNo}/{type}/{sensor}")
     public RestResult getSensorData(@PathVariable("type") String type, @PathVariable("sensor") String sensor, @PathVariable("deviceNo") String deviceNo) {
-        if (Integer.valueOf(type) + 1 == 0) {
+        if (Integer.parseInt(type) + 1 == 1) {
             List<AqiSensorModel> aqiSensorModel = aqiHourService.getAqiSensorModel(deviceNo, type, sensor);
             return RestResultUtil.success(aqiSensorModel);
+        } else {
+            List<AqiSensorDayModel> aqiSensorHistory = aqiDayService.getAqiSensorHistory(deviceNo, type, sensor);
+            return RestResultUtil.success(aqiSensorHistory);
         }
-        return null;
     }
 }
