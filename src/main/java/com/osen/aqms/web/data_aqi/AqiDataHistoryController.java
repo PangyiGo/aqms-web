@@ -100,14 +100,14 @@ public class AqiDataHistoryController {
     /**
      * 获取aiq的选项数据
      *
-     * @param type   时间类型 1表示24 2表示7日 3表示30日
+     * @param type   时间类型 1表示24小时 2表示48小时 3表示72小时 4表示7日 5表示30日
      * @param sensor 参数 "aqi", "pm25", "pm10", "so2", "no2", "co", "o3", "voc"
      * @return 信息
      */
     @PostMapping("/aqiSensor/{deviceNo}/{type}/{sensor}")
     public RestResult getSensorData(@PathVariable("type") String type, @PathVariable("sensor") String sensor, @PathVariable("deviceNo") String deviceNo) {
-        if (Integer.parseInt(type) == 1) {
-            List<AqiSensorModel> aqiSensorModel = aqiHourService.getAqiSensorModel(deviceNo, type, sensor);
+        if (Integer.parseInt(type) == 1 || Integer.parseInt(type) == 2 || Integer.parseInt(type) == 3) {
+            List<AqiSensorModel> aqiSensorModel = aqiHourService.getAqiSensorModel(deviceNo,  Integer.parseInt(type), sensor);
             return RestResultUtil.success(aqiSensorModel);
         } else {
             List<AqiSensorDayModel> aqiSensorHistory = aqiDayService.getAqiSensorHistory(deviceNo, type, sensor);

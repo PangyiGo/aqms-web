@@ -441,12 +441,23 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
     }
 
     @Override
-    public List<AqiSensorModel> getAqiSensorModel(String deviceNo, String type, String sensor) {
+    public List<AqiSensorModel> getAqiSensorModel(String deviceNo, int type, String sensor) {
         List<AqiSensorModel> aqiSensorModels = new ArrayList<>(0);
         // 时间
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), 0, 0);
-        LocalDateTime startTime = endTime.minusHours(23);
+        LocalDateTime startTime = null;
+        int number = 0;
+        if (type == 1) {
+            startTime = endTime.minusHours(23);
+            number = 24;
+        } else if (type == 2) {
+            startTime = endTime.minusHours(47);
+            number = 48;
+        } else {
+            startTime = endTime.minusHours(71);
+            number = 72;
+        }
         // 获取表名
         List<String> nameList = TableNameUtil.tableNameList(TableNameUtil.Aqi_hour, startTime, endTime);
         for (String tableName : nameList) {
@@ -456,7 +467,7 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
 
         List<AqiSensorModel> res = new ArrayList<>(0);
         LocalDateTime temp = startTime;
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < number; i++) {
             AqiSensorModel aqiDataModel = new AqiSensorModel();
             LocalDateTime finalTemp = temp;
             List<AqiSensorModel> modelList = aqiSensorModels.stream().filter(aqiSensorModel -> aqiSensorModel.getDateTime().isEqual(finalTemp)).collect(Collectors.toList());
@@ -507,8 +518,7 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         // 表名
         LocalDate date = startTime.toLocalDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
-        String tableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, date.format(formatter),
-                ConstUtil.QUERY_DATE);
+        String tableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, date.format(formatter), ConstUtil.QUERY_DATE);
         // 查询
         List<SensorMapperModel> aqiSensorRank = baseMapper.getAqiSensorRank(tableName, deviceNos, sensor, startTime, endTime);
         for (Device device : deviceList) {

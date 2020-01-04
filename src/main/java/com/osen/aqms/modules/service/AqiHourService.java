@@ -88,7 +88,7 @@ public interface AqiHourService extends IService<AqiHour> {
      * @param sensor   参数因子
      * @return 信息
      */
-    List<AqiSensorModel> getAqiSensorModel(String deviceNo, String type, String sensor);
+    List<AqiSensorModel> getAqiSensorModel(String deviceNo, int type, String sensor);
 
     /**
      * 获取当前用户的数据排名

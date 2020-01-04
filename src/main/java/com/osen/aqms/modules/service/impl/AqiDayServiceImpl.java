@@ -273,10 +273,10 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
         LocalDateTime endTime;
         // 判断时间类型
         endTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 0, 0, 0);
-        if (Integer.parseInt(type) == 2) {
+        if (Integer.parseInt(type) == 4) {
             startTime = endTime.minusWeeks(1);
         }
-        if (Integer.parseInt(type) == 3) {
+        if (Integer.parseInt(type) == 5) {
             startTime = endTime.minusMonths(1);
         }
         // 生成数据表
