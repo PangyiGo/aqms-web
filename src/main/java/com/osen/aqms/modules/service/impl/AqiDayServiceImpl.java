@@ -288,7 +288,7 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
         }
 
         int number = 0;
-        if (Integer.parseInt(type) == 2) {
+        if (Integer.parseInt(type) == 4) {
             number = 7;
         } else {
             number = 30;
