@@ -42,7 +42,7 @@ public class AirRemoteController {
             AirResponseModel entityBody = entity.getBody();
             assert entityBody != null;
             if (ConstUtil.OK.equals(entityBody.getCode()))
-                return RestResultUtil.success(entityBody.getMsg());
+                return RestResultUtil.success((Object) entityBody.getMsg());
             else
                 return RestResultUtil.failed(entityBody.getMsg());
         }
