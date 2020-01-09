@@ -26,22 +26,36 @@ import java.io.Serializable;
 @TableName("web_address")
 public class WebAddress extends Model<WebAddress> implements Serializable {
 
-    @TableId(type = IdType.AUTO)
+    // 主键
+    @TableId(type = IdType.INPUT)
     private Integer id;
 
-    private String code;
-
+    // 省市区名称
     private String name;
 
-    private int level;
+    // 上级ID
+    private int parentid;
 
-    private String fullName;
+    // 简称
+    private String shortname;
 
-    private String longitude;
+    // 级别:0,中国；1，省分；2，市；3，区、县
+    private int leveltype;
 
-    private String latitude;
+    // 城市代码
+    private String webAddresscode;
 
-    private String parentId;
+    // 邮编
+    private String zipcode;
 
+    // 经度
+    private String lng;
+
+    // 纬度
+    private String lat;
+
+    // 拼音
     private String pinyin;
+
+    private int status;
 }
