@@ -39,12 +39,12 @@ public class WebAddressServiceImpl extends ServiceImpl<WebAddressMapper, WebAddr
         if (deviceIds.size() <= 0)
             return webAddressList;
         // 分组查询省份
-        LambdaQueryWrapper<Device> queryWrapper = Wrappers.<Device>lambdaQuery().in(Device::getId, deviceIds).isNotNull(Device::getProvinceCode).groupBy(Device::getProvinceCode).select(Device::getProvinceCode);
+        LambdaQueryWrapper<Device> queryWrapper = Wrappers.<Device>lambdaQuery().in(Device::getId, deviceIds).isNotNull(Device::getProvince).groupBy(Device::getProvince).select(Device::getProvince);
         List<Device> deviceList = deviceService.list(queryWrapper);
         // 省份名称编号
-        List<Integer> ids = new ArrayList<>(0);
-        deviceList.forEach(device -> ids.add(Integer.parseInt(device.getProvinceCode())));
-        LambdaQueryWrapper<WebAddress> wrapper = Wrappers.<WebAddress>lambdaQuery().in(WebAddress::getId, ids);
+        List<String> names = new ArrayList<>(0);
+        deviceList.forEach(device -> names.add(device.getProvince()));
+        LambdaQueryWrapper<WebAddress> wrapper = Wrappers.<WebAddress>lambdaQuery().in(WebAddress::getName, names);
         List<WebAddress> addressList = super.list(wrapper);
         if (addressList != null && addressList.size() > 0)
             webAddressList = addressList;
