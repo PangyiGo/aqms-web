@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddressVo {
 
-    private String address;
+    private String address = "";
 
-    private String level;
+    private String level = "";
 }
