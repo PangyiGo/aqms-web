@@ -9,12 +9,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.exception.type.ServiceException;
 import com.osen.aqms.common.model.DeviceListDataModel;
+import com.osen.aqms.common.model.DeviceNumberModel;
 import com.osen.aqms.common.model.DeviceStatusModel;
 import com.osen.aqms.common.model.DeviceTreeModel;
+import com.osen.aqms.common.requestVo.AddressVo;
 import com.osen.aqms.common.requestVo.DeviceSearchVo;
 import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.utils.ConstUtil;
+import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.common.utils.SecurityUtil;
+import com.osen.aqms.common.utils.TableNameUtil;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.entity.system.User;
 import com.osen.aqms.modules.entity.system.UserDevice;
@@ -48,6 +52,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisOpsUtil redisOpsUtil;
 
     @Override
     public List<DeviceTreeModel> findDeviceTreeListToUsername(String username) {
@@ -401,5 +408,43 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         if (devices != null)
             deviceList = devices;
         return deviceList;
+    }
+
+    @Override
+    public DeviceNumberModel findDeviceNumber(AddressVo addressVo) {
+        DeviceNumberModel deviceNumberModel = new DeviceNumberModel();
+        // 当前用户的省份设备列表
+        List<Device> deviceList = this.findDeviceGroupByAddress(addressVo.getAddress(), addressVo.getLevel());
+        if (deviceList.size() <= 0)
+            return deviceNumberModel;
+        // 总数
+        int allTotal = deviceList.size();
+        // 在线设备
+        List<Device> online = deviceList.stream().filter(device -> device.getLive().equals(ConstUtil.OPEN_STATUS)).collect(Collectors.toList());
+        int onlineNumber = online.size();
+        // 离线设备
+        List<Device> offline = deviceList.stream().filter(device -> device.getLive().equals(ConstUtil.CLOSE_STATUS)).collect(Collectors.toList());
+        int offlineNumber = offline.size();
+        // 报警设备
+        List<Device> alarmDevice = new ArrayList<>(0);
+        for (Device device : deviceList) {
+            boolean key = redisOpsUtil.hashKeyToMap(TableNameUtil.Air_Alarm, device.getDeviceNo());
+            if (key)
+                alarmDevice.add(device);
+        }
+        int alarmNumber = alarmDevice.size();
+
+        deviceNumberModel.setAllDevice(allTotal);
+
+        deviceNumberModel.setOnlineDevice(onlineNumber);
+        deviceNumberModel.setOnlineDevices(online);
+
+        deviceNumberModel.setOfflineDevice(offlineNumber);
+        deviceNumberModel.setOfflineDevices(offline);
+
+        deviceNumberModel.setAlarmDevice(alarmNumber);
+        deviceNumberModel.setAlarmDevices(alarmDevice);
+
+        return deviceNumberModel;
     }
 }
