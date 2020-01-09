@@ -421,3 +421,7 @@
 2020-01-09 16:35:47.155 log message -> Starting without optional kqueue library
 2020-01-09 16:35:47.940 log message -> DatebookHikariCP - Starting...
 2020-01-09 16:35:48.492 log message -> DatebookHikariCP - Start completed.
+2020-01-09 16:57:17.775 log message -> Shutting down ExecutorService 'taskScheduler'
+2020-01-09 16:57:17.778 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2020-01-09 16:57:17.782 log message -> DatebookHikariCP - Shutdown initiated...
+2020-01-09 16:57:17.787 log message -> DatebookHikariCP - Shutdown completed.
