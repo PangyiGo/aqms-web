@@ -849,3 +849,5 @@ Caused by: java.sql.SQLException: HikariDataSource HikariDataSource (DatebookHik
 	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:116)
 	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:79)
 	... 116 common frames omitted
+2020-01-09 16:33:42.224 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2020-01-09 16:35:47.939 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
