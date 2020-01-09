@@ -99,4 +99,12 @@ public interface AqiHourService extends IService<AqiHour> {
      * @return 信息
      */
     List<AqiSensorRankModel> getAqiSensorRank(String order, String type, String sensor);
+
+    /**
+     * 根据省份分组获取设备当月的aqi排名平均值统计
+     *
+     * @param addressVo 请求体
+     * @return 信息
+     */
+    List<AqiRankModel> getAqiRankModelToMoth(AddressVo addressVo);
 }

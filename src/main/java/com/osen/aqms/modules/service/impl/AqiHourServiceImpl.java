@@ -545,4 +545,31 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         }
         return modelList;
     }
+
+    @Override
+    public List<AqiRankModel> getAqiRankModelToMoth(AddressVo addressVo) {
+        List<AqiRankModel> aqiRankModelList = new ArrayList<>(0);
+        List<Device> deviceList = deviceService.findDeviceGroupByAddress(addressVo.getAddress(), addressVo.getLevel());
+        if (deviceList.size() <= 0)
+            return aqiRankModelList;
+        // 获取当前时间
+        LocalDateTime endTime = LocalDateTime.now();
+        LocalDateTime startTime = LocalDateTime.of(endTime.getYear(), endTime.getMonthValue(), 1, 0, 0, 0);
+        // 数据表
+        LocalDate date = startTime.toLocalDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
+        String tableName = TableNameUtil.generateTableName(TableNameUtil.Aqi_hour, date.format(formatter), ConstUtil.QUERY_DATE);
+        // 查询
+        for (Device device : deviceList) {
+            AqiRankModel aqiRankModel = new AqiRankModel();
+            aqiRankModel.setDeviceNo(device.getDeviceNo());
+            aqiRankModel.setDeviceName(device.getDeviceName());
+            AqiAvgModel feature = baseMapper.getAvgToFeature(tableName, device.getDeviceNo(), startTime, endTime);
+            if (feature != null)
+                aqiRankModel.setApi(feature.getAqi());
+            aqiRankModelList.add(aqiRankModel);
+        }
+        aqiRankModelList = aqiRankModelList.stream().sorted(Comparator.comparing(AqiRankModel::getApi)).collect(Collectors.toList());
+        return aqiRankModelList;
+    }
 }
