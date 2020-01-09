@@ -527,4 +527,77 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         }
         return airSensorHistoryExport.exportToAirHistory(listMap);
     }
+
+    @Override
+    public AirSensorMaxModel getAirSensorMax(AddressVo addressVo) {
+        AirSensorMaxModel airSensorMaxModel = new AirSensorMaxModel();
+        List<Device> deviceList = deviceService.findDeviceGroupByAddress(addressVo.getAddress(), addressVo.getLevel());
+        if (deviceList.size() <= 0)
+            return airSensorMaxModel;
+        // 数据最大值
+        String pm25 = null;
+        BigDecimal pm25Data = new BigDecimal(0);
+        String pm10 = null;
+        BigDecimal pm10Data = new BigDecimal(0);
+        String so2 = null;
+        BigDecimal so2Data = new BigDecimal(0);
+        String no2 = null;
+        BigDecimal no2Data = new BigDecimal(0);
+        String o3 = null;
+        BigDecimal o3Data = new BigDecimal(0);
+        String co = null;
+        BigDecimal coData = new BigDecimal(0);
+        String voc = null;
+        BigDecimal vocData = new BigDecimal(0);
+        for (Device device : deviceList) {
+            // 获取实时数据
+            String dataJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, device.getDeviceNo());
+            if (dataJson == null)
+                continue;
+            AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(dataJson, AqiRealtimeModel.class);
+            if (aqiRealtimeModel.getPm25().compareTo(pm25Data) > 0) {
+                pm25 = device.getDeviceName();
+                pm25Data = aqiRealtimeModel.getPm25();
+            }
+            if (aqiRealtimeModel.getPm10().compareTo(pm10Data) > 0) {
+                pm10 = device.getDeviceName();
+                pm10Data = aqiRealtimeModel.getPm10();
+            }
+            if (aqiRealtimeModel.getSo2().compareTo(so2Data) > 0) {
+                so2 = device.getDeviceName();
+                so2Data = aqiRealtimeModel.getSo2();
+            }
+            if (aqiRealtimeModel.getNo2().compareTo(no2Data) > 0) {
+                no2 = device.getDeviceName();
+                no2Data = aqiRealtimeModel.getNo2();
+            }
+            if (aqiRealtimeModel.getCo().compareTo(coData) > 0) {
+                co = device.getDeviceName();
+                coData = aqiRealtimeModel.getCo();
+            }
+            if (aqiRealtimeModel.getO3().compareTo(o3Data) > 0) {
+                o3 = device.getDeviceName();
+                o3Data = aqiRealtimeModel.getO3();
+            }
+            if (aqiRealtimeModel.getVoc().compareTo(vocData) > 0) {
+                voc = device.getDeviceName();
+                vocData = aqiRealtimeModel.getVoc();
+            }
+        }
+        airSensorMaxModel.setPm25(pm25);
+        airSensorMaxModel.setPm25Data(pm25Data);
+        airSensorMaxModel.setPm10(pm10);
+        airSensorMaxModel.setPm10Data(pm10Data);
+        airSensorMaxModel.setSo2(so2);
+        airSensorMaxModel.setSo2Data(so2Data);
+        airSensorMaxModel.setNo2(no2);
+        airSensorMaxModel.setNo2Data(no2Data);
+        airSensorMaxModel.setCo(co);
+        airSensorMaxModel.setCoData(coData);
+        airSensorMaxModel.setO3(o3);
+        airSensorMaxModel.setO3Data(o3Data);
+        airSensorMaxModel.setVoc(voc);
+        airSensorMaxModel.setVocData(vocData);
+        return airSensorMaxModel;
+    }
 }

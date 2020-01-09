@@ -1,11 +1,13 @@
 package com.osen.aqms.web.monitor;
 
+import com.osen.aqms.common.model.AirSensorMaxModel;
 import com.osen.aqms.common.model.AqiRankModel;
 import com.osen.aqms.common.model.DeviceNumberModel;
 import com.osen.aqms.common.requestVo.AddressVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.modules.entity.address.WebAddress;
+import com.osen.aqms.modules.service.AirHistoryService;
 import com.osen.aqms.modules.service.AqiHourService;
 import com.osen.aqms.modules.service.DeviceService;
 import com.osen.aqms.modules.service.WebAddressService;
@@ -39,6 +41,9 @@ public class MonitorController {
 
     @Autowired
     private AqiHourService aqiHourService;
+
+    @Autowired
+    private AirHistoryService airHistoryService;
 
     /**
      * 获取当前用户的分组省份
@@ -99,6 +104,7 @@ public class MonitorController {
      */
     @PostMapping("/monitor/sensorMax")
     public RestResult getSensorMax(@RequestBody AddressVo addressVo){
-        return null;
+        AirSensorMaxModel airSensorMax = airHistoryService.getAirSensorMax(addressVo);
+        return RestResultUtil.success(airSensorMax);
     }
 }

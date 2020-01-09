@@ -97,4 +97,12 @@ public interface AirHistoryService extends IService<AirHistory> {
      * @return 信息
      */
     HSSFWorkbook getAirSensorToExport(AirExportVo airExportVo);
+
+    /**
+     * 根据省份分组获取实时数据的各个参数最大值
+     *
+     * @param addressVo 请求体
+     * @return 信息
+     */
+    AirSensorMaxModel getAirSensorMax(AddressVo addressVo);
 }
