@@ -1,5 +1,7 @@
 package com.osen.aqms;
 
+import com.osen.aqms.modules.entity.address.WebAddress;
+import com.osen.aqms.modules.service.WebAddressService;
 import com.osen.aqms.web.restful.model.AirResponseModel;
 import com.osen.aqms.web.restful.model.AirSensorVo;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @SpringBootTest
 class AqmsWebApplicationTests {
 
@@ -20,6 +24,9 @@ class AqmsWebApplicationTests {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private WebAddressService webAddressService;
 
     @Test
     void contextLoads() {
@@ -50,4 +57,10 @@ class AqmsWebApplicationTests {
         System.out.println(entity.getBody());
     }
 
+    @Test
+    void test02(){
+        List<WebAddress> list = webAddressService.list();
+
+        list.forEach(System.out::println);
+    }
 }
