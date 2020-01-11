@@ -100,7 +100,7 @@ public class AirAlarmServiceImpl extends ServiceImpl<AirAlarmMapper, AirAlarm> i
         AqiViewModel aqiViewModel = new AqiViewModel();
         // 时间
         LocalDateTime end = LocalDateTime.now();
-        LocalDateTime start = LocalDateTime.of(end.getYear(), end.getMonthValue(), 0, 0, 0, 0);
+        LocalDateTime start = LocalDateTime.of(end.getYear(), end.getMonthValue(), 1, 0, 0, 0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // 请求体
         AirQueryVo airQueryVo = new AirQueryVo();
@@ -116,52 +116,52 @@ public class AirAlarmServiceImpl extends ServiceImpl<AirAlarmMapper, AirAlarm> i
 
         int pm25 = 0, pm10 = 0, so2 = 0, no2 = 0, co = 0, o3 = 0, tvoc = 0;
         String sensor = "";
-        int maxData = 0;
+        int maxData = -1;
         for (AirAlarm airAlarm : airAlarmHistory) {
             if (!airAlarm.getPm25Flag().equals("N")) {
-                pm25 += pm25;
+                pm25++;
                 if (pm25 > maxData) {
                     maxData = pm25;
                     sensor = "pm2.5";
                 }
             }
             if (!airAlarm.getPm10Flag().equals("N")) {
-                pm10 += pm10;
+                pm10++;
                 if (pm10 > maxData) {
                     maxData = pm10;
                     sensor = "pm10";
                 }
             }
             if (!airAlarm.getSo2Flag().equals("N")) {
-                so2 += so2;
+                so2++;
                 if (so2 > maxData) {
                     maxData = so2;
                     sensor = "so2";
                 }
             }
             if (!airAlarm.getNo2Flag().equals("N")) {
-                no2 += no2;
+                no2++;
                 if (no2 > maxData) {
                     maxData = no2;
                     sensor = "no2";
                 }
             }
             if (!airAlarm.getCoFlag().equals("N")) {
-                co += co;
+                co++;
                 if (co > maxData) {
                     maxData = co;
                     sensor = "co";
                 }
             }
             if (!airAlarm.getO3Flag().equals("N")) {
-                o3 += o3;
+                o3++;
                 if (pm25 > maxData) {
                     maxData = pm25;
                     sensor = "o3";
                 }
             }
             if (!airAlarm.getVocFlag().equals("N")) {
-                tvoc += tvoc;
+                tvoc++;
                 if (tvoc > maxData) {
                     maxData = tvoc;
                     sensor = "tvoc";
