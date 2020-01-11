@@ -314,4 +314,38 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
 
         return res;
     }
+
+    @Override
+    public AqiViewModel getAqiNumber(String deviceNo) {
+        AqiViewModel aqiViewModel = new AqiViewModel();
+        // 时间
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.of(end.getYear(), end.getMonthValue(), 0, 0, 0, 0);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 请求体
+        AirQueryVo airQueryVo = new AirQueryVo();
+        airQueryVo.setDeviceNo(deviceNo);
+        airQueryVo.setStartTime(start.format(formatter));
+        airQueryVo.setEndTime(end.format(formatter));
+        // 历史记录
+        List<AqiHistoryToDay> aqiDayHistory = this.getAqiDayHistory(airQueryVo);
+        if (aqiDayHistory.size() <= 0)
+            return aqiViewModel;
+        int number = 0;
+        for (AqiHistoryToDay history : aqiDayHistory) {
+            if (history.getAqi() != 0) {
+                if (history.getLevel() == 1 || history.getLevel() == 2) {
+                    number += number;
+                }
+            }
+        }
+        aqiDayHistory =
+                aqiDayHistory.stream().sorted(Comparator.comparing(AqiHistoryToDay::getAqi).reversed()).collect(Collectors.toList());
+        AqiHistoryToDay history = aqiDayHistory.get(0);
+
+        aqiViewModel.setBadDay(history.getDateTime());
+        aqiViewModel.setPerfect(number);
+
+        return aqiViewModel;
+    }
 }

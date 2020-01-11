@@ -2,6 +2,7 @@ package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.model.AqiViewModel;
 import com.osen.aqms.common.requestVo.AddressVo;
 import com.osen.aqms.common.requestVo.AirQueryVo;
 import com.osen.aqms.modules.entity.alarm.AirAlarm;
@@ -31,4 +32,12 @@ public interface AirAlarmService extends IService<AirAlarm> {
      * @return 信息
      */
     List<AirAlarm> getAirAlarmHistory(AirQueryVo airQueryVo);
+
+    /**
+     * 根据设备号获取当月报警次数
+     *
+     * @param deviceNo 设备号
+     * @return 信息
+     */
+    AqiViewModel getAlarmNumber(String deviceNo);
 }

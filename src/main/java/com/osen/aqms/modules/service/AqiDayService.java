@@ -68,4 +68,12 @@ public interface AqiDayService extends IService<AqiDay> {
      * @return 信息
      */
     List<AqiSensorDayModel> getAqiSensorHistory(String deviceNo, String type, String sensor);
+
+    /**
+     * 根据设备号获取当月报警次数
+     *
+     * @param deviceNo 设备号
+     * @return 信息
+     */
+    AqiViewModel getAqiNumber(String deviceNo);
 }

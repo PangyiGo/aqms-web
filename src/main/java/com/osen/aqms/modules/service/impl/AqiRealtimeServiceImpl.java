@@ -3,6 +3,8 @@ package com.osen.aqms.modules.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.model.AqiDataToMapModel;
 import com.osen.aqms.common.model.AqiRankMapModel;
@@ -19,6 +21,7 @@ import com.osen.aqms.modules.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -137,5 +140,19 @@ public class AqiRealtimeServiceImpl extends ServiceImpl<AqiRealtimeMapper, AqiRe
         aqiRankMapModel.setMapModel(firstMapModel);
         aqiRankMapModel.setMapModels(aqiRealtimeMapModels);
         return aqiRankMapModel;
+    }
+
+    @Override
+    public List<AqiRealtime> getAqiRealtime(String deviceNo) {
+        List<AqiRealtime> aqiRealtimeList = new ArrayList<>(0);
+        // 时间格式化
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.of(end.getYear(), end.getMonthValue(), end.getDayOfMonth(), end.getHour(), 0, 0);
+        LambdaQueryWrapper<AqiRealtime> wrapper = Wrappers.<AqiRealtime>lambdaQuery().eq(AqiRealtime::getDeviceNo, deviceNo).between(AqiRealtime::getDateTime, start, end);
+        List<AqiRealtime> list = super.list(wrapper);
+        if (list != null) {
+            aqiRealtimeList = list;
+        }
+        return aqiRealtimeList;
     }
 }

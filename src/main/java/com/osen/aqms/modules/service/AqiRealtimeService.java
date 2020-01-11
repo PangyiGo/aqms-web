@@ -40,4 +40,12 @@ public interface AqiRealtimeService extends IService<AqiRealtime> {
      * @return 信息
      */
     AqiRankMapModel getAqiRankToAddress(String address, String level);
+
+    /**
+     * 获取AQi实时历史数据
+     *
+     * @param deviceNo 设备号
+     * @return 信息
+     */
+    List<AqiRealtime> getAqiRealtime(String deviceNo);
 }
