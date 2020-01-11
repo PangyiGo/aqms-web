@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.osen.aqms.common.config.MybatisPlusConfig;
 import com.osen.aqms.common.model.AqiDataToMapModel;
 import com.osen.aqms.common.model.AqiRankMapModel;
 import com.osen.aqms.common.model.AqiRealtimeMapModel;
@@ -149,6 +150,7 @@ public class AqiRealtimeServiceImpl extends ServiceImpl<AqiRealtimeMapper, AqiRe
         LocalDateTime end = LocalDateTime.now();
         LocalDateTime start = LocalDateTime.of(end.getYear(), end.getMonthValue(), end.getDayOfMonth(), end.getHour(), 0, 0);
         LambdaQueryWrapper<AqiRealtime> wrapper = Wrappers.<AqiRealtime>lambdaQuery().eq(AqiRealtime::getDeviceNo, deviceNo).between(AqiRealtime::getDateTime, start, end);
+        MybatisPlusConfig.TableName.set(TableNameUtil.nowTableName(TableNameUtil.Aqi_realtime));
         List<AqiRealtime> list = super.list(wrapper);
         if (list != null) {
             aqiRealtimeList = list;
