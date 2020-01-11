@@ -177,19 +177,19 @@ public class AirAlarmServiceImpl extends ServiceImpl<AirAlarmMapper, AirAlarm> i
 
         // 报警参数因子
         StringBuilder builder = new StringBuilder();
-        if (!airAlarm.getPm25Flag().equals("N"))
+        if (airAlarm.getPm25Flag() != null &&!airAlarm.getPm25Flag().equals("N"))
             builder.append("pm2.5 ");
-        if (!airAlarm.getPm10Flag().equals("N"))
+        if (airAlarm.getPm10Flag() != null &&!airAlarm.getPm10Flag().equals("N"))
             builder.append("pm10 ");
-        if (!airAlarm.getSo2Flag().equals("N"))
+        if (airAlarm.getSo2Flag() != null &&!airAlarm.getSo2Flag().equals("N"))
             builder.append("so2 ");
-        if (!airAlarm.getNo2Flag().equals("N"))
+        if (airAlarm.getNo2Flag() != null &&!airAlarm.getNo2Flag().equals("N"))
             builder.append("no2 ");
-        if (!airAlarm.getCoFlag().equals("N"))
+        if (airAlarm.getCoFlag() != null &&!airAlarm.getCoFlag().equals("N"))
             builder.append("co ");
-        if (!airAlarm.getO3Flag().equals("N"))
+        if (airAlarm.getO3Flag() != null &&!airAlarm.getO3Flag().equals("N"))
             builder.append("o3 ");
-        if (!airAlarm.getVocFlag().equals("N"))
+        if (airAlarm.getVocFlag() != null &&!airAlarm.getVocFlag().equals("N"))
             builder.append("tvoc ");
         String alarmSensor = builder.toString();
 
