@@ -7,9 +7,11 @@ import com.osen.aqms.webSecurity.utils.JwtUser;
 import com.osen.aqms.webSecurity.utils.TransferUserToJwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -36,6 +38,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Qualifier("jwtUserDetailsService")
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -55,25 +61,31 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Boolean key = stringRedisTemplate.hasKey(JwtTokenUtil.ACCESS_TOKEN + authToken);
-            // 通过访问令牌，获取登录认证主体信息
-            if (key != null && key) {
-                // 从 redis 缓存中获取认证主体
-                String jwtUserJson = stringRedisTemplate.boundValueOps(JwtTokenUtil.ACCESS_TOKEN + authToken).get();
 
-                TransferUserToJwt transferUserToJwt = JSON.parseObject(jwtUserJson, TransferUserToJwt.class);
+            // 从数据库获取用户信息
+            JwtUser userDetails = (JwtUser) this.userDetailsService.loadUserByUsername(username);
 
-                assert transferUserToJwt != null;
-                JwtUser userDetails = JwtTokenUtil.toJwt(transferUserToJwt);
+            // Boolean key = stringRedisTemplate.hasKey(JwtTokenUtil.ACCESS_TOKEN + authToken);
+            // // 通过访问令牌，获取登录认证主体信息
+            // if (key != null && key) {
+            //     // 从 redis 缓存中获取认证主体
+            //     String jwtUserJson = stringRedisTemplate.boundValueOps(JwtTokenUtil.ACCESS_TOKEN + authToken).get();
+            //
+            //     TransferUserToJwt transferUserToJwt = JSON.parseObject(jwtUserJson, TransferUserToJwt.class);
+            //
+            //     assert transferUserToJwt != null;
+            //     JwtUser userDetails = JwtTokenUtil.toJwt(transferUserToJwt);
 
-                if (userDetails != null) {
-                    // 验证token是否有效
-                    if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+            if (userDetails != null) {
+
+                // 验证token是否有效
+                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
+
+                // }
             }
         }
 

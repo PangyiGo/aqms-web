@@ -31,8 +31,8 @@ public class JwtTokenUtil {
     // 保存jwt与jwtuser
     public static String ACCESS_TOKEN = "AccessToken_";
 
-    // 有效时间，默认1小时
-    public static final long EXPIRATION = 60 * 60 * 6000;
+    // 有效时间，默认6小时
+    public static final long EXPIRATION = 60 * 60 * 6000 * 6;
 
     /**
      * 从数据声明生成令牌

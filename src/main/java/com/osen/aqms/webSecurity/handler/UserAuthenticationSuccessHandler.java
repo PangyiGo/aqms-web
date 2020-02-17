@@ -57,11 +57,11 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         //生成token
         String token = jwtTokenUtil.generateToken(jwtUser);
 
-        TransferUserToJwt transferUserToJwt = JwtTokenUtil.toUser(jwtUser);
+        // TransferUserToJwt transferUserToJwt = JwtTokenUtil.toUser(jwtUser);
 
         // 登录主体信息
-        String principal = JSON.toJSONString(transferUserToJwt);
-        stringRedisTemplate.boundValueOps(JwtTokenUtil.ACCESS_TOKEN+token).set(principal,JwtTokenUtil.EXPIRATION, TimeUnit.MILLISECONDS);
+        // String principal = JSON.toJSONString(transferUserToJwt);
+        // stringRedisTemplate.boundValueOps(JwtTokenUtil.ACCESS_TOKEN+token).set(principal,JwtTokenUtil.EXPIRATION, TimeUnit.MILLISECONDS);
 
         response.setContentType("application/json;charset=utf-8");
 
