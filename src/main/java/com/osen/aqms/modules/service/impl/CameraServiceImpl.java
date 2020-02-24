@@ -1,14 +1,20 @@
 package com.osen.aqms.modules.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.exception.type.ServiceException;
+import com.osen.aqms.common.model.DeviceListDataModel;
+import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.modules.entity.system.Camera;
+import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.mapper.system.CameraMapper;
 import com.osen.aqms.modules.service.CameraService;
+import com.osen.aqms.modules.service.DeviceService;
 import com.osen.aqms.web.camera.model.AccessTokenModel;
+import com.osen.aqms.web.camera.model.UserCameraModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * User: PangYi
@@ -48,6 +55,9 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
     private StringRedisTemplate stringRedisTemplate;
 
     private static final String ACCESSTOKEN = "ACCESSTOKEN";
+
+    @Autowired
+    private DeviceService deviceService;
 
     @Override
     public String getAccessToken() {
@@ -109,5 +119,36 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
             return new ArrayList<Camera>(0);
         }
         return cameraList;
+    }
+
+    @Override
+    public List<UserCameraModel> getUserCameraList(UserGetVo userGetVo) {
+        List<UserCameraModel> userCameraModelList = new ArrayList<>(0);
+        // 获取用户设备列表
+        DeviceListDataModel pageToCurrentUser = deviceService.findDeviceListPageToCurrentUser(userGetVo);
+        if (pageToCurrentUser.getTotal() == 0)
+            return userCameraModelList;
+        List<String> deviceNos = new ArrayList<>(0);
+        pageToCurrentUser.getUserList().forEach(device -> {
+            deviceNos.add(device.getDeviceNo());
+        });
+        // 查询摄像头列表
+        LambdaQueryWrapper<Camera> wrapper = Wrappers.<Camera>lambdaQuery().in(Camera::getDeviceNo, deviceNos);
+        List<Camera> cameraList = super.list(wrapper);
+        if (cameraList == null)
+            return userCameraModelList;
+        for (Device device : pageToCurrentUser.getUserList()) {
+            // 设备是有摄像头
+            List<Camera> cameras = cameraList.stream().filter(camera -> camera.getDeviceNo().equals(device.getDeviceNo())).collect(Collectors.toList());
+            if (cameras.size() > 0) {
+                cameras.forEach(camera -> {
+                    UserCameraModel model = new UserCameraModel();
+                    BeanUtil.copyProperties(device, model);
+                    model.setSerial(camera.getSerial());
+                    userCameraModelList.add(model);
+                });
+            }
+        }
+        return userCameraModelList;
     }
 }

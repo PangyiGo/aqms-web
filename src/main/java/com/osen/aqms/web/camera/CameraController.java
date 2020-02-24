@@ -1,9 +1,11 @@
 package com.osen.aqms.web.camera;
 
+import com.osen.aqms.common.requestVo.UserGetVo;
 import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.modules.entity.system.Camera;
 import com.osen.aqms.modules.service.CameraService;
+import com.osen.aqms.web.camera.model.UserCameraModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -73,5 +75,16 @@ public class CameraController {
     public RestResult getCameraList(@PathVariable("deviceNo") String deviceNo) {
         List<Camera> cameraList = cameraService.getCameraList(deviceNo);
         return RestResultUtil.success(cameraList);
+    }
+
+    /**
+     * 获取当前用户的设备摄像头列表
+     *
+     * @return 信息
+     */
+    @PostMapping("/camera/userList")
+    public RestResult getUserCameraList(@RequestBody UserGetVo userGetVo) {
+        List<UserCameraModel> userCameraList = cameraService.getUserCameraList(userGetVo);
+        return RestResultUtil.success(userCameraList);
     }
 }
