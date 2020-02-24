@@ -159,7 +159,7 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
             }
         }
         if (userCameraModelList.size() > 0) {
-            map.put("total", userCameraModelList.size());
+            map.put("total", cameraList.size());
             map.put("cameras", userCameraModelList);
         } else {
             map.put("total", 0);
