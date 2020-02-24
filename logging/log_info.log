@@ -306,3 +306,40 @@
 2020-02-24 11:55:43.352 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
 2020-02-24 11:55:43.357 log message -> DatebookHikariCP - Shutdown initiated...
 2020-02-24 11:55:43.364 log message -> DatebookHikariCP - Shutdown completed.
+2020-02-24 13:34:48.248 log message -> Starting AqmsWebApplication on PC-20190708MDDO with PID 9252 (E:\gitworkspace\aqms-web\target\classes started by Administrator in E:\gitworkspace\aqms-web)
+2020-02-24 13:34:48.254 log message -> The following profiles are active: dev
+2020-02-24 13:34:49.892 log message -> Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-02-24 13:34:49.897 log message -> Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-02-24 13:34:49.989 log message -> Finished Spring Data repository scanning in 67ms. Found 0 Redis repository interfaces.
+2020-02-24 13:34:50.529 log message -> Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-02-24 13:34:50.537 log message -> Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-02-24 13:34:50.585 log message -> Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-02-24 13:34:50.588 log message -> Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@2fcd7d3f' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-02-24 13:34:50.590 log message -> Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-02-24 13:34:50.598 log message -> Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-02-24 13:34:51.021 log message -> Tomcat initialized with port(s): 8989 (http)
+2020-02-24 13:34:51.037 log message -> Initializing ProtocolHandler ["http-nio-8989"]
+2020-02-24 13:34:51.038 log message -> Starting service [Tomcat]
+2020-02-24 13:34:51.038 log message -> Starting Servlet engine: [Apache Tomcat/9.0.29]
+2020-02-24 13:34:51.182 log message -> Initializing Spring embedded WebApplicationContext
+2020-02-24 13:34:51.183 log message -> Root WebApplicationContext: initialization completed in 2836 ms
+2020-02-24 13:34:53.941 log message -> Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@99c4993, org.springframework.security.web.context.SecurityContextPersistenceFilter@7f1f60a0, org.springframework.security.web.header.HeaderWriterFilter@5e98032e, org.springframework.security.web.authentication.logout.LogoutFilter@cfd5cd2, com.osen.aqms.webSecurity.config.JwtAuthenticationTokenFilter@5520f675, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@762bf32d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@71b26880, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@afee63, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@38089dae, org.springframework.security.web.session.SessionManagementFilter@591be8aa, org.springframework.security.web.access.ExceptionTranslationFilter@3e151e1f, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@16bbaab3]
+2020-02-24 13:34:54.189 log message -> Initializing ExecutorService 'applicationTaskExecutor'
+2020-02-24 13:34:54.702 log message -> Initializing ExecutorService 'taskScheduler'
+2020-02-24 13:34:54.818 log message -> Starting ProtocolHandler ["http-nio-8989"]
+2020-02-24 13:34:54.857 log message -> Tomcat started on port(s): 8989 (http) with context path ''
+2020-02-24 13:34:54.861 log message -> Started AqmsWebApplication in 7.759 seconds (JVM running for 9.002)
+2020-02-24 13:34:56.307 log message -> Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-02-24 13:34:56.307 log message -> Initializing Servlet 'dispatcherServlet'
+2020-02-24 13:34:56.322 log message -> Completed initialization in 15 ms
+2020-02-24 13:34:56.884 log message -> DatebookHikariCP - Starting...
+2020-02-24 13:34:57.173 log message -> DatebookHikariCP - Start completed.
+2020-02-24 13:34:57.628 log message -> User login successful......
+2020-02-24 13:35:02.410 log message -> Starting without optional epoll library
+2020-02-24 13:35:02.412 log message -> Starting without optional kqueue library
+2020-02-24 13:44:02.195 log message -> Shutting down ExecutorService 'taskScheduler'
+2020-02-24 13:44:02.197 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2020-02-24 13:44:02.200 log message -> DatebookHikariCP - Shutdown initiated...
+2020-02-24 13:44:02.206 log message -> DatebookHikariCP - Shutdown completed.
+2020-02-24 13:56:56.304 log message -> Starting AqmsWebApplication on PC-20190708MDDO with PID 8220 (E:\gitworkspace\aqms-web\target\classes started by Administrator in E:\gitworkspace\aqms-web)
+2020-02-24 13:56:56.309 log message -> The following profiles are active: dev

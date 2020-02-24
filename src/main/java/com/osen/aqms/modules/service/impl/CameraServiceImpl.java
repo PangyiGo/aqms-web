@@ -6,8 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.osen.aqms.common.exception.type.ServiceException;
-import com.osen.aqms.common.model.DeviceListDataModel;
-import com.osen.aqms.common.requestVo.UserGetVo;
+import com.osen.aqms.common.requestVo.DeviceSearchVo;
 import com.osen.aqms.modules.entity.system.Camera;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.mapper.system.CameraMapper;
@@ -29,9 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -124,29 +121,22 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
     }
 
     @Override
-    public Map<String, Object> getUserCameraList(UserGetVo userGetVo) {
-        Map<String, Object> map = new HashMap<>(0);
+    public List<UserCameraModel> getUserCameraList(DeviceSearchVo deviceSearchVo) {
         List<UserCameraModel> userCameraModelList = new ArrayList<>(0);
         // 获取用户设备列表
-        DeviceListDataModel pageToCurrentUser = deviceService.findDeviceListPageToCurrentUser(userGetVo);
-        if (pageToCurrentUser.getTotal() == 0) {
-            map.put("total", 0);
-            map.put("cameras", userCameraModelList);
-            return map;
-        }
+        List<Device> allToUsername = deviceService.findDeviceListBySearch(deviceSearchVo);
+        if (allToUsername.size() == 0)
+            return userCameraModelList;
         List<String> deviceNos = new ArrayList<>(0);
-        pageToCurrentUser.getUserList().forEach(device -> {
+        allToUsername.forEach(device -> {
             deviceNos.add(device.getDeviceNo());
         });
         // 查询摄像头列表
         LambdaQueryWrapper<Camera> wrapper = Wrappers.<Camera>lambdaQuery().in(Camera::getDeviceNo, deviceNos);
         List<Camera> cameraList = super.list(wrapper);
-        if (cameraList == null) {
-            map.put("total", 0);
-            map.put("cameras", userCameraModelList);
-            return map;
-        }
-        for (Device device : pageToCurrentUser.getUserList()) {
+        if (cameraList == null)
+            return userCameraModelList;
+        for (Device device : allToUsername) {
             // 设备是有摄像头
             List<Camera> cameras = cameraList.stream().filter(camera -> camera.getDeviceNo().equals(device.getDeviceNo())).collect(Collectors.toList());
             if (cameras.size() > 0) {
@@ -158,13 +148,6 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
                 });
             }
         }
-        if (userCameraModelList.size() > 0) {
-            map.put("total", pageToCurrentUser.getTotal());
-            map.put("cameras", userCameraModelList);
-        } else {
-            map.put("total", 0);
-            map.put("cameras", userCameraModelList);
-        }
-        return map;
+        return userCameraModelList;
     }
 }

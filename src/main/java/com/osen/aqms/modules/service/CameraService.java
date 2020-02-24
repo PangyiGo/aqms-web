@@ -1,11 +1,11 @@
 package com.osen.aqms.modules.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.osen.aqms.common.requestVo.UserGetVo;
+import com.osen.aqms.common.requestVo.DeviceSearchVo;
 import com.osen.aqms.modules.entity.system.Camera;
+import com.osen.aqms.web.camera.model.UserCameraModel;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: PangYi
@@ -51,5 +51,5 @@ public interface CameraService extends IService<Camera> {
      *
      * @return 信息
      */
-    Map<String, Object> getUserCameraList(UserGetVo userGetVo);
+    List<UserCameraModel> getUserCameraList(DeviceSearchVo deviceSearchVo);
 }
