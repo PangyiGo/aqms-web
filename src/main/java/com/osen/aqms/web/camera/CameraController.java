@@ -83,7 +83,7 @@ public class CameraController {
      * @return 信息
      */
     @PostMapping("/camera/userList")
-    public RestResult getUserCameraList(@RequestBody DeviceSearchVo deviceSearchVo) {
+    public RestResult getUserCameraList(@RequestBody(required = false) DeviceSearchVo deviceSearchVo) {
         List<UserCameraModel> userCameraList = cameraService.getUserCameraList(deviceSearchVo);
         return RestResultUtil.success(userCameraList);
     }
