@@ -1,7 +1,7 @@
 ## 系统开发配置
 spring:
   profiles:
-    active: pro
+    active: dev
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -44,3 +44,8 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
+
+# 摄像头参数
+camera:
+  appKey: 571a93842998454b947f93538983a2d2
+  appSecret: a1b7067be638011f7fd43a0888e7b9da

@@ -1,20 +1,21 @@
 package com.osen.aqms;
 
-import com.osen.aqms.modules.entity.address.WebAddress;
 import com.osen.aqms.modules.service.WebAddressService;
+import com.osen.aqms.web.camera.model.AccessTokenModel;
 import com.osen.aqms.web.restful.model.AirResponseModel;
 import com.osen.aqms.web.restful.model.AirSensorVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 @SpringBootTest
 class AqmsWebApplicationTests {
@@ -27,6 +28,12 @@ class AqmsWebApplicationTests {
 
     @Autowired
     private WebAddressService webAddressService;
+
+    @Value("${camera.appKey}")
+    private String appKey;
+
+    @Value("${camera.appSecret}")
+    private String appSecret;
 
     @Test
     void contextLoads() {
@@ -58,9 +65,20 @@ class AqmsWebApplicationTests {
     }
 
     @Test
-    void test02(){
-        List<WebAddress> list = webAddressService.list();
+    void test02() {
+        String url = "https://open.ys7.com/api/lapp/token/get";
 
-        list.forEach(System.out::println);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String,Object> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.set("appKey", appKey);
+        multiValueMap.set("appSecret",appSecret);
+
+        HttpEntity<MultiValueMap<String,Object>> httpEntity = new HttpEntity<>(multiValueMap, headers);
+
+        ResponseEntity<AccessTokenModel> responseEntity = restTemplate.postForEntity(url, httpEntity, AccessTokenModel.class);
+
+        System.out.println(responseEntity.getBody());
     }
 }
