@@ -267,3 +267,7 @@
 2020-02-24 10:21:25.519 log message -> DatebookHikariCP - Start completed.
 2020-02-24 10:21:25.839 log message -> Starting without optional epoll library
 2020-02-24 10:21:25.842 log message -> Starting without optional kqueue library
+2020-02-24 10:59:03.637 log message -> Shutting down ExecutorService 'taskScheduler'
+2020-02-24 10:59:03.641 log message -> Shutting down ExecutorService 'applicationTaskExecutor'
+2020-02-24 10:59:03.647 log message -> DatebookHikariCP - Shutdown initiated...
+2020-02-24 10:59:03.653 log message -> DatebookHikariCP - Shutdown completed.
