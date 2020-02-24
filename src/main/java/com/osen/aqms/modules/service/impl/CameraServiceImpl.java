@@ -29,7 +29,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -122,12 +124,16 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
     }
 
     @Override
-    public List<UserCameraModel> getUserCameraList(UserGetVo userGetVo) {
+    public Map<String, Object> getUserCameraList(UserGetVo userGetVo) {
+        Map<String, Object> map = new HashMap<>(0);
         List<UserCameraModel> userCameraModelList = new ArrayList<>(0);
         // 获取用户设备列表
         DeviceListDataModel pageToCurrentUser = deviceService.findDeviceListPageToCurrentUser(userGetVo);
-        if (pageToCurrentUser.getTotal() == 0)
-            return userCameraModelList;
+        if (pageToCurrentUser.getTotal() == 0) {
+            map.put("total", 0);
+            map.put("cameras", userCameraModelList);
+            return map;
+        }
         List<String> deviceNos = new ArrayList<>(0);
         pageToCurrentUser.getUserList().forEach(device -> {
             deviceNos.add(device.getDeviceNo());
@@ -135,8 +141,11 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
         // 查询摄像头列表
         LambdaQueryWrapper<Camera> wrapper = Wrappers.<Camera>lambdaQuery().in(Camera::getDeviceNo, deviceNos);
         List<Camera> cameraList = super.list(wrapper);
-        if (cameraList == null)
-            return userCameraModelList;
+        if (cameraList == null) {
+            map.put("total", 0);
+            map.put("cameras", userCameraModelList);
+            return map;
+        }
         for (Device device : pageToCurrentUser.getUserList()) {
             // 设备是有摄像头
             List<Camera> cameras = cameraList.stream().filter(camera -> camera.getDeviceNo().equals(device.getDeviceNo())).collect(Collectors.toList());
@@ -149,6 +158,13 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
                 });
             }
         }
-        return userCameraModelList;
+        if (userCameraModelList.size() > 0) {
+            map.put("total", userCameraModelList.size());
+            map.put("cameras", userCameraModelList);
+        } else {
+            map.put("total", 0);
+            map.put("cameras", userCameraModelList);
+        }
+        return map;
     }
 }

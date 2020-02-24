@@ -5,12 +5,12 @@ import com.osen.aqms.common.result.RestResult;
 import com.osen.aqms.common.utils.RestResultUtil;
 import com.osen.aqms.modules.entity.system.Camera;
 import com.osen.aqms.modules.service.CameraService;
-import com.osen.aqms.web.camera.model.UserCameraModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: PangYi
@@ -84,7 +84,7 @@ public class CameraController {
      */
     @PostMapping("/camera/userList")
     public RestResult getUserCameraList(@RequestBody UserGetVo userGetVo) {
-        List<UserCameraModel> userCameraList = cameraService.getUserCameraList(userGetVo);
+        Map<String, Object> userCameraList = cameraService.getUserCameraList(userGetVo);
         return RestResultUtil.success(userCameraList);
     }
 }
