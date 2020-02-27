@@ -1,6 +1,7 @@
 package com.osen.aqms.web.data_air.utils;
 
 import com.osen.aqms.common.model.AirQueryDataModel;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,6 +21,7 @@ import java.util.Set;
  * Description:
  */
 @Component
+@Slf4j
 public class AirSensorHistoryExport {
 
     /**
@@ -100,6 +102,7 @@ public class AirSensorHistoryExport {
             // 返回
             return hssfWorkbook;
         } catch (Exception e) {
+            log.error("export excel exception {}", e.getMessage());
             return null;
         }
     }
