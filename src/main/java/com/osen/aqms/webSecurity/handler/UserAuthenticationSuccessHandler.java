@@ -3,14 +3,11 @@ package com.osen.aqms.webSecurity.handler;
 import com.alibaba.fastjson.JSON;
 import com.osen.aqms.common.enums.TipsMessage;
 import com.osen.aqms.common.result.RestResult;
-import com.osen.aqms.common.utils.RedisOpsUtil;
 import com.osen.aqms.modules.service.LogsLoginService;
 import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import com.osen.aqms.webSecurity.utils.JwtUser;
-import com.osen.aqms.webSecurity.utils.TransferUserToJwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -19,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import static com.osen.aqms.common.enums.InfoMessage.User_Login_Success;
 
@@ -39,12 +35,6 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
     @Autowired
     private LogsLoginService logsLoginService;
 
-    @Autowired
-    private RedisOpsUtil redisOpsUtil;
-
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("User login successful......");
@@ -54,8 +44,10 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         logsLoginService.saveLogs(request, TipsMessage.LoginSuccess.getTips());
 
-        //生成token
-        String token = jwtTokenUtil.generateToken(jwtUser);
+        // 生成token
+        // String token = jwtTokenUtil.generateToken(jwtUser);
+
+        String jiami = jwtTokenUtil.jiami2username(jwtUser.getUsername());
 
         // TransferUserToJwt transferUserToJwt = JwtTokenUtil.toUser(jwtUser);
 
@@ -69,7 +61,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         RestResult<String> restResult = new RestResult<>();
         restResult.setCode(User_Login_Success.getCode());
         restResult.setMessage(User_Login_Success.getMessage());
-        restResult.setData(token);
+        restResult.setData(jiami);
 
         response.getWriter().write(JSON.toJSONString(restResult));
     }

@@ -4,6 +4,7 @@ import com.osen.aqms.modules.service.WebAddressService;
 import com.osen.aqms.web.camera.model.AccessTokenModel;
 import com.osen.aqms.web.restful.model.AirResponseModel;
 import com.osen.aqms.web.restful.model.AirSensorVo;
+import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,9 @@ class AqmsWebApplicationTests {
 
     @Value("${camera.appSecret}")
     private String appSecret;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Test
     void contextLoads() {
@@ -80,5 +84,18 @@ class AqmsWebApplicationTests {
         ResponseEntity<AccessTokenModel> responseEntity = restTemplate.postForEntity(url, httpEntity, AccessTokenModel.class);
 
         System.out.println(responseEntity.getBody());
+    }
+
+    @Test
+    void test03(){
+        for (int i = 0; i < 10; i++) {
+            String osen_2019 = jwtTokenUtil.jiami2username("OSEN_2019");
+            System.out.println(osen_2019);
+
+            String jiemi = jwtTokenUtil.jiemi2username(osen_2019);
+            System.out.println(jiemi);
+
+            System.out.println("++++++++++++++++++++++++++++++++");
+        }
     }
 }

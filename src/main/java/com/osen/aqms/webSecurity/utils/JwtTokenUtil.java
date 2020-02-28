@@ -1,8 +1,15 @@
 package com.osen.aqms.webSecurity.utils;
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.netty.util.CharsetUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +24,7 @@ import java.util.*;
  * Description: jwt token令牌工具类
  */
 @Component
+@Slf4j
 public class JwtTokenUtil {
 
     // 授权头
@@ -33,6 +41,33 @@ public class JwtTokenUtil {
 
     // 有效时间，默认6小时
     public static final long EXPIRATION = 60 * 60 * 6000 * 6;
+
+    @Autowired
+    private SymmetricCrypto symmetricCrypto;
+
+    public String jiami2username(String username) {
+        try {
+            String simpleUUID = IdUtil.fastSimpleUUID() + "-";
+            String data = simpleUUID + username;
+            String encode = Base64.encode(data, CharsetUtil.UTF_8);
+            return symmetricCrypto.encryptBase64(encode);
+        } catch (Exception e) {
+            log.error("jiami error ", e);
+            return null;
+        }
+    }
+
+    public String jiemi2username(String secret) {
+        try {
+            String decryptStr = symmetricCrypto.decryptStr(secret, CharsetUtil.UTF_8);
+            String decodeStr = Base64.decodeStr(decryptStr, CharsetUtil.UTF_8);
+            int index = StrUtil.indexOfIgnoreCase(decodeStr, "-");
+            return StrUtil.sub(decodeStr, index + 1, decodeStr.length());
+        } catch (Exception e) {
+            log.error("jiemi error ", e);
+            return null;
+        }
+    }
 
     /**
      * 从数据声明生成令牌

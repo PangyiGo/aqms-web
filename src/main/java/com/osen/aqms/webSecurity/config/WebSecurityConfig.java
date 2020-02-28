@@ -1,5 +1,8 @@
 package com.osen.aqms.webSecurity.config;
 
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import com.osen.aqms.webSecurity.handler.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,13 +56,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserAuthenticationFailureHandler userAuthenticationFailureHandler;
 
-    // 注销成功返回的 JSON 格式数据给前端（否则为 登录时的 html）
-    @Autowired
-    private UserLogoutSuccessHandler userLogoutSuccessHandler;
-
     // 无权访问返回的 JSON 格式数据给前端（否则为 403 html 页面）
     @Autowired
     private UserAccessDeniedHandler userAccessDeniedHandler;
+
+    /**
+     * 用户名加密 -AES对称加密算法
+     *
+     * @return 加密器
+     */
+    @Bean
+    public SymmetricCrypto symmetricCrypto() {
+        //随机生成密钥
+        byte[] key = SecureUtil.generateKey(SymmetricAlgorithm.AES.getValue()).getEncoded();
+        //构建
+        return new SymmetricCrypto(SymmetricAlgorithm.AES, key);
+    }
 
     /**
      * 密码加密
@@ -144,6 +156,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 禁用缓存
                 .and().headers().cacheControl();
 
+        http.addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

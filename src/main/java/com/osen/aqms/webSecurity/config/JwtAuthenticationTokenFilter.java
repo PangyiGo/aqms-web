@@ -1,14 +1,11 @@
 package com.osen.aqms.webSecurity.config;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.osen.aqms.webSecurity.utils.JwtTokenUtil;
 import com.osen.aqms.webSecurity.utils.JwtUser;
-import com.osen.aqms.webSecurity.utils.TransferUserToJwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,9 +32,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
     @Qualifier("jwtUserDetailsService")
     @Autowired
     private UserDetailsService userDetailsService;
@@ -49,12 +43,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String header = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
 
         String username = null;
-        String authToken = null;
+        String authToken;
         if (StringUtils.isNotEmpty(header) && header.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
             // 获取登录令牌-jwtToken
             authToken = header.substring(7);
             try {
-                username = jwtTokenUtil.getUsernameFromToken(authToken);
+                username = jwtTokenUtil.jiemi2username(authToken);
             } catch (Exception e) {
                 log.error("Token parse failed");
             }
@@ -77,14 +71,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             //     JwtUser userDetails = JwtTokenUtil.toJwt(transferUserToJwt);
 
             if (userDetails != null) {
-
                 // 验证token是否有效
-                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                if (username.equals(userDetails.getUsername())) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
-
                 // }
             }
         }
