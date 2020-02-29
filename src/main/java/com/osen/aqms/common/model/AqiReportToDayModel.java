@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 /**
  * User: PangYi
- * Date: 2019-12-20
+ * Date: 2019Null12Null20
  * Time: 9:57
  * Description:
  */
@@ -25,41 +25,41 @@ public class AqiReportToDayModel {
     @JsonFormat(pattern = "yyyy年MM月dd日")
     private LocalDateTime dateTime;
 
-    private String aqi = "NA";
+    private String aqi = "Null";
 
-    private String quality = "NA";
+    private String quality = "Null";
 
-    private String level = "NA";
+    private String level = "Null";
 
-    private String pollute = "NA";
+    private String pollute = "Null";
 
-    private String data = "NA";
+    private String data = "Null";
 
-    private String tips = "NA";
+    private String tips = "Null";
 
-    private String pm25 = "NA";
+    private String pm25 = "Null";
 
-    private String pm10 = "NA";
+    private String pm10 = "Null";
 
-    private String so2 = "NA";
+    private String so2 = "Null";
 
-    private String no2 = "NA";
+    private String no2 = "Null";
 
-    private String co = "NA";
+    private String co = "Null";
 
-    private String o3 = "NA";
+    private String o3 = "Null";
 
-    private String voc = "NA";
+    private String voc = "Null";
 
-    private String pm25Index = "NA";
+    private String pm25Index = "Null";
 
-    private String pm10Index = "NA";
+    private String pm10Index = "Null";
 
-    private String so2Index = "NA";
+    private String so2Index = "Null";
 
-    private String no2Index = "NA";
+    private String no2Index = "Null";
 
-    private String coIndex = "NA";
+    private String coIndex = "Null";
 
-    private String o3Index = "NA";
+    private String o3Index = "Null";
 }

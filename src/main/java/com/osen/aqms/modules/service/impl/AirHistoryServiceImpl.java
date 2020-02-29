@@ -14,7 +14,6 @@ import com.osen.aqms.common.requestVo.*;
 import com.osen.aqms.common.utils.*;
 import com.osen.aqms.modules.entity.data.AirHistory;
 import com.osen.aqms.modules.entity.data.AqiDay;
-import com.osen.aqms.modules.entity.data.AqiHour;
 import com.osen.aqms.modules.entity.system.Device;
 import com.osen.aqms.modules.mapper.data.AirHistoryMapper;
 import com.osen.aqms.modules.service.AirHistoryService;
@@ -198,7 +197,6 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
 
     @Override
     public List<AqiDataToMapModel> getAirRealtimeList(Map<String, Object> params) {
-        List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
         List<Device> deviceList;
         if (params == null) {
             // 查询全部设备列表数据
@@ -211,13 +209,11 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
             deviceList = deviceService.findDeviceGroupByAddress(address, level);
         }
         // 数据获取
-        this.aqiDataWrapper(deviceList, aqiDataToMapModels);
-        return aqiDataToMapModels;
+        return this.aqiDataWrapper(deviceList);
     }
 
     @Override
     public List<AqiDataToMapModel> getAirRankToRealtime(AirRankVo airRankVo) {
-        List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
         List<Device> deviceList;
         if (airRankVo == null) {
             // 默认查询全部
@@ -227,37 +223,25 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
             deviceList = deviceService.findDeviceGroupByAddress(airRankVo.getAddress(), airRankVo.getLevel());
         }
         // 数据获取
-        this.aqiDataWrapper(deviceList, aqiDataToMapModels);
+        List<AqiDataToMapModel> mapModels = this.aqiDataWrapper(deviceList);
         // AQI升序排名
-        aqiDataToMapModels = aqiDataToMapModels.stream().sorted(Comparator.comparing(AqiDataToMapModel::getAqi)).collect(Collectors.toList());
-        return aqiDataToMapModels;
+        mapModels = mapModels.stream().sorted(Comparator.comparing(AqiDataToMapModel::getAqi)).collect(Collectors.toList());
+        return mapModels;
     }
 
     /**
      * 数据封装
      *
-     * @param deviceList         设备列表
-     * @param aqiDataToMapModels 参数
+     * @param deviceList 设备列表
      */
-    private void aqiDataWrapper(List<Device> deviceList, List<AqiDataToMapModel> aqiDataToMapModels) {
+    private List<AqiDataToMapModel> aqiDataWrapper(List<Device> deviceList) {
+        List<AqiDataToMapModel> aqiDataToMapModels = new ArrayList<>(0);
         for (Device device : deviceList) {
-            AqiDataToMapModel aqiDataToMapModel = new AqiDataToMapModel();
-            aqiDataToMapModel.setDeviceName(device.getDeviceName());
-            aqiDataToMapModel.setDeviceNo(device.getDeviceNo());
-            String ade = (StrUtil.isNotEmpty(device.getProvince()) ? device.getProvince() : "") + (StrUtil.isNotEmpty(device.getCity()) ? device.getCity() : "") + (StrUtil.isNotEmpty(device.getArea()) ? device.getArea() : "");
-            aqiDataToMapModel.setAddress(ade);
-            aqiDataToMapModel.setInstallAddress((StrUtil.isNotEmpty(device.getAddress()) ? device.getAddress() : ""));
-            aqiDataToMapModel.setLive(device.getLive() == ConstUtil.OPEN_STATUS ? "在线" : "离线");
-            aqiDataToMapModel.setLongitude(device.getLongitude());
-            aqiDataToMapModel.setLatitude(device.getLatitude());
-            // 获取实时数据
-            String dataJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, device.getDeviceNo());
-            if (dataJson != null) {
-                AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(dataJson, AqiRealtimeModel.class);
-                BeanUtil.copyProperties(aqiRealtimeModel, aqiDataToMapModel);
-            }
-            aqiDataToMapModels.add(aqiDataToMapModel);
+            AqiDataToMapModel aqiDataModel = airSensorHistoryExport.getAqiDataModel(device);
+            aqiDataToMapModels.add(aqiDataModel);
         }
+        // 除去aqi为0的数据
+        return aqiDataToMapModels.stream().filter(aqiDataToMapModel -> aqiDataToMapModel.getAqi() != 0 && aqiDataToMapModel.getLevel() != 0).collect(Collectors.toList());
     }
 
     @Override
@@ -277,40 +261,30 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         String month = (time.getMonthValue() < 10) ? "0" + time.getMonthValue() : "" + time.getMonthValue();
         String tableName = TableNameUtil.Air_history + "_" + year + month;
         for (Device device : deviceList) {
-            AqiDataToMapModel aqiDataToMapModel = new AqiDataToMapModel();
-            aqiDataToMapModel.setDeviceName(device.getDeviceName());
-            aqiDataToMapModel.setDeviceNo(device.getDeviceNo());
-            String ade = (StrUtil.isNotEmpty(device.getProvince()) ? device.getProvince() : "") + (StrUtil.isNotEmpty(device.getCity()) ? device.getCity() : "") + (StrUtil.isNotEmpty(device.getArea()) ? device.getArea() : "");
-            aqiDataToMapModel.setAddress(ade);
-            aqiDataToMapModel.setInstallAddress((StrUtil.isNotEmpty(device.getAddress()) ? device.getAddress() : ""));
-            aqiDataToMapModel.setLive(device.getLive() == ConstUtil.OPEN_STATUS ? "在线" : "离线");
-            aqiDataToMapModel.setLongitude(device.getLongitude());
-            aqiDataToMapModel.setLatitude(device.getLatitude());
+            AqiDataToMapModel aqiDataModel = airSensorHistoryExport.getAqiDataModel(device);
             // 数据
             LocalDateTime startTime = LocalDateTime.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth(), 0, 0, 0);
             LocalDateTime endTime = LocalDateTime.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth(), 23, 59, 59);
             AirAvgModel avgToDay = baseMapper.getAvgToDay(tableName, device.getDeviceNo(), startTime, endTime);
-            if (avgToDay == null) {
-                aqiDataToMapModels.add(aqiDataToMapModel);
-            } else {
-                AqiHour aqiHour = AQIComputedUtil.computedAqiToHour(device.getDeviceNo(), startTime, avgToDay);
-                aqiDataToMapModel.setPm25(aqiHour.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
-                aqiDataToMapModel.setPm10(aqiHour.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
-                aqiDataToMapModel.setSo2(aqiHour.getSo2().setScale(1, BigDecimal.ROUND_DOWN));
-                aqiDataToMapModel.setNo2(aqiHour.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
-                aqiDataToMapModel.setCo(aqiHour.getCo().setScale(1, BigDecimal.ROUND_DOWN));
-                aqiDataToMapModel.setO3(aqiHour.getO3().setScale(1, BigDecimal.ROUND_DOWN));
-                aqiDataToMapModel.setVoc(aqiHour.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
-                aqiDataToMapModel.setAqi(aqiHour.getAqi());
-                aqiDataToMapModel.setPollute(aqiHour.getPollute());
-                aqiDataToMapModel.setLevel(aqiHour.getLevel());
-                aqiDataToMapModel.setQuality(aqiHour.getQuality());
-                aqiDataToMapModel.setDateTime(aqiHour.getDateTime());
-                aqiDataToMapModels.add(aqiDataToMapModel);
+            if (avgToDay != null) {
+                AqiDay aqiDay = AQIComputedUtil.computedAqiToDay(device.getDeviceNo(), startTime, avgToDay);
+                aqiDataModel.setPm25(aqiDay.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataModel.setPm10(aqiDay.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataModel.setSo2(aqiDay.getSo2().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataModel.setNo2(aqiDay.getNo2().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataModel.setCo(aqiDay.getCo().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataModel.setO3(aqiDay.getO3().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataModel.setVoc(aqiDay.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
+                aqiDataModel.setAqi(aqiDay.getAqi());
+                aqiDataModel.setPollute(aqiDay.getPollute());
+                aqiDataModel.setLevel(aqiDay.getLevel());
+                aqiDataModel.setQuality(aqiDay.getQuality());
+                aqiDataModel.setDateTime(aqiDay.getDateTime());
+                aqiDataToMapModels.add(aqiDataModel);
             }
         }
         // AQI升序排名
-        aqiDataToMapModels = aqiDataToMapModels.stream().sorted(Comparator.comparing(AqiDataToMapModel::getAqi)).collect(Collectors.toList());
+        aqiDataToMapModels = aqiDataToMapModels.stream().filter(aqiDataToMapModel -> aqiDataToMapModel.getAqi() != 0 && aqiDataToMapModel.getLevel() != 0).sorted(Comparator.comparing(AqiDataToMapModel::getAqi)).collect(Collectors.toList());
         return aqiDataToMapModels;
     }
 
@@ -341,23 +315,19 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
 
     @Override
     public List<AirAccordModel> getAirAccordToDay(AirAccordVo airAccordVo) {
-        List<AirAccordModel> airAccordModels = new ArrayList<>(0);
-        List<Device> deviceList;
-        if ((airAccordVo.getAddress() == null && airAccordVo.getLevel() == null) || ("".equals(airAccordVo.getAddress().trim()) && "".equals(airAccordVo.getLevel().trim()))) {
-            // 获取全部设备
-            deviceList = deviceService.findDeviceAllToUsername(SecurityUtil.getUsername());
-        } else {
-            deviceList = deviceService.findDeviceGroupByAddress(airAccordVo.getAddress(), airAccordVo.getLevel());
-        }
-        for (Device device : deviceList) {
-            AirAccordModel accordModel = this.warpperModel(device, airAccordVo.getTime(), 1);
-            airAccordModels.add(accordModel);
-        }
-        return airAccordModels;
+        return this.warpperModel(1, airAccordVo);
     }
 
     @Override
     public List<AirAccordModel> getAirAccordToMonth(AirAccordVo airAccordVo) {
+        return this.warpperModel(2, airAccordVo);
+    }
+
+    /**
+     * @param type 1表示day报表，2表示month报表
+     * @return 信息
+     */
+    private List<AirAccordModel> warpperModel(int type, AirAccordVo airAccordVo) {
         List<AirAccordModel> airAccordModels = new ArrayList<>(0);
         List<Device> deviceList;
         if ((airAccordVo.getAddress() == null && airAccordVo.getLevel() == null) || ("".equals(airAccordVo.getAddress().trim()) && "".equals(airAccordVo.getLevel().trim()))) {
@@ -366,44 +336,38 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         } else {
             deviceList = deviceService.findDeviceGroupByAddress(airAccordVo.getAddress(), airAccordVo.getLevel());
         }
-        for (Device device : deviceList) {
-            AirAccordModel accordModel = this.warpperModel(device, airAccordVo.getTime(), 2);
-            airAccordModels.add(accordModel);
-        }
-        return airAccordModels;
-    }
-
-    /**
-     * @param device 设备
-     * @param time   时间
-     * @param type   1表示day报表，2表示month报表
-     * @return 信息
-     */
-    private AirAccordModel warpperModel(Device device, String time, int type) {
-        // 表名
-        String tableName = TableNameUtil.generateTableName(TableNameUtil.Air_history, time, ConstUtil.QUERY_DATE);
         LocalDateTime startTime = null;
         LocalDateTime endTime = null;
         if (type == 1) {
             // 计算日时间，格式化
-            List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(time, time);
+            List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(airAccordVo.getTime(), airAccordVo.getTime());
             startTime = localDateTimes.get(0);
             endTime = localDateTimes.get(1);
         }
         if (type == 2) {
             // 时间
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstUtil.QUERY_DATE);
-            LocalDate localDate = LocalDate.parse(time, formatter);
+            LocalDate localDate = LocalDate.parse(airAccordVo.getTime(), formatter);
             startTime = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), 1, 0, 0, 0);
             endTime = LocalDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getMonth().maxLength(), 23, 59, 59);
         }
+        for (Device device : deviceList) {
+            AirAccordModel accordModel = this.wrapperAirAccordModel(device, airAccordVo.getTime(), startTime, endTime);
+            airAccordModels.add(accordModel);
+        }
+        airAccordModels = airAccordModels.stream().sorted(Comparator.comparing(AirAccordModel::getCount).reversed()).collect(Collectors.toList());
+        return airAccordModels;
+    }
+
+    private AirAccordModel wrapperAirAccordModel(Device device, String time, LocalDateTime startTime, LocalDateTime endTime) {
+        // 表名
+        String tableName = TableNameUtil.generateTableName(TableNameUtil.Air_history, time, ConstUtil.QUERY_DATE);
+        // 数据
         AirAccordModel accordModel = new AirAccordModel();
         accordModel.setDeviceNo(device.getDeviceNo());
         accordModel.setDeviceName(device.getDeviceName());
         AirAccordMapperModel airAccord = baseMapper.getAirAccord(tableName, device.getDeviceNo(), startTime, endTime);
-        if (airAccord == null || airAccord.getPm25Avg() == null || airAccord.getPm10Avg() == null) {
-            return accordModel;
-        } else {
+        if (airAccord != null && airAccord.getPm25Avg() != null && airAccord.getPm10Avg() != null) {
             AirAvgModel airAvgModel = new AirAvgModel();
             BeanUtil.copyProperties(airAccord, airAvgModel);
             // 计算AQI
@@ -434,8 +398,8 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
             accordModel.setVocAvg(airAccord.getVocAvg().setScale(1, BigDecimal.ROUND_DOWN));
             accordModel.setVocMax(airAccord.getVocMax().setScale(1, BigDecimal.ROUND_DOWN));
             accordModel.setVocMin(airAccord.getVocMin().setScale(1, BigDecimal.ROUND_DOWN));
-            return accordModel;
         }
+        return accordModel;
     }
 
     @Override
@@ -451,9 +415,12 @@ public class AirHistoryServiceImpl extends ServiceImpl<AirHistoryMapper, AirHist
         }
         for (Device device : deviceList) {
             Map<String, Object> map = new HashMap<>(0);
+            List<LocalDateTime> localDateTimes = DateTimeUtil.queryTimeFormatter(airMonitorVo.getTime(), airMonitorVo.getTime());
+            LocalDateTime startTime = localDateTimes.get(0);
+            LocalDateTime endTime = localDateTimes.get(1);
             // 平均值，最大值，最小值
-            AirAccordModel accordModel = this.warpperModel(device, airMonitorVo.getTime(), 1);
-            if (accordModel.getAqi().equals("NA")) {
+            AirAccordModel accordModel = this.wrapperAirAccordModel(device, airMonitorVo.getTime(), startTime, endTime);
+            if (accordModel.getAqi().equals("Null")) {
                 map.put("deviceNo", device.getDeviceNo());
                 map.put("aqi", 0);
             } else {

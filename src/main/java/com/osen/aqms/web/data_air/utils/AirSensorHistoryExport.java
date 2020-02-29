@@ -1,12 +1,22 @@
 package com.osen.aqms.web.data_air.utils;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.osen.aqms.common.model.AirQueryDataModel;
+import com.osen.aqms.common.model.AqiDataToMapModel;
+import com.osen.aqms.common.model.AqiRealtimeModel;
+import com.osen.aqms.common.utils.ConstUtil;
+import com.osen.aqms.common.utils.RedisOpsUtil;
+import com.osen.aqms.common.utils.TableNameUtil;
+import com.osen.aqms.modules.entity.system.Device;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
@@ -23,6 +33,9 @@ import java.util.Set;
 @Component
 @Slf4j
 public class AirSensorHistoryExport {
+
+    @Autowired
+    private RedisOpsUtil redisOpsUtil;
 
     /**
      * 导出空气站实时数据报表
@@ -105,5 +118,30 @@ public class AirSensorHistoryExport {
             log.error("export excel exception {}", e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 数据封装
+     *
+     * @param device 设备
+     * @return 信息
+     */
+    public AqiDataToMapModel getAqiDataModel(Device device) {
+        AqiDataToMapModel aqiDataToMapModel = new AqiDataToMapModel();
+        aqiDataToMapModel.setDeviceName(device.getDeviceName());
+        aqiDataToMapModel.setDeviceNo(device.getDeviceNo());
+        String ade = (StrUtil.isNotEmpty(device.getProvince()) ? device.getProvince() : "") + (StrUtil.isNotEmpty(device.getCity()) ? device.getCity() : "") + (StrUtil.isNotEmpty(device.getArea()) ? device.getArea() : "");
+        aqiDataToMapModel.setAddress(ade);
+        aqiDataToMapModel.setInstallAddress((StrUtil.isNotEmpty(device.getAddress()) ? device.getAddress() : ""));
+        aqiDataToMapModel.setLive(ConstUtil.OPEN_STATUS.equals(device.getLive()) ? "在线" : "离线");
+        aqiDataToMapModel.setLongitude(device.getLongitude());
+        aqiDataToMapModel.setLatitude(device.getLatitude());
+        // 获取实时数据
+        String dataJson = redisOpsUtil.getToMap(TableNameUtil.Air_Realtime, device.getDeviceNo());
+        if (dataJson != null) {
+            AqiRealtimeModel aqiRealtimeModel = JSON.parseObject(dataJson, AqiRealtimeModel.class);
+            BeanUtil.copyProperties(aqiRealtimeModel, aqiDataToMapModel);
+        }
+        return aqiDataToMapModel;
     }
 }

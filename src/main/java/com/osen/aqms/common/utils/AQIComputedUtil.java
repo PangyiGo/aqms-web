@@ -24,6 +24,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int pm25_24h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 30) {
@@ -49,6 +51,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int pm10_24h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 50) {
@@ -74,6 +78,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int so2_24h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 50) {
@@ -99,6 +105,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int so2_1h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         if (temp > 800)
             return 0;
@@ -120,6 +128,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int no2_24h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 40) {
@@ -145,6 +155,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int no2_1h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 100) {
@@ -170,6 +182,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int co_24h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 2) {
@@ -195,6 +209,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int co_1h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 5) {
@@ -220,6 +236,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int o3_8h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         if (temp > 800)
             return 0;
@@ -243,6 +261,8 @@ public class AQIComputedUtil {
      * @return IAQI值，对应分指数
      */
     private static int o3_1h(BigDecimal data) {
+        if (data == null)
+            return 0;
         int temp = data.intValue();
         double res = 0;
         if (temp >= 0 && temp < 160) {

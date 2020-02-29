@@ -43,12 +43,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String header = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
 
         String username = null;
-        String authToken;
+        String authToken = null;
         if (StringUtils.isNotEmpty(header) && header.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
             // 获取登录令牌-jwtToken
             authToken = header.substring(7);
             try {
-                username = jwtTokenUtil.jiemi2username(authToken);
+                username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (Exception e) {
                 log.error("Token parse failed");
             }
@@ -72,7 +72,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
             if (userDetails != null) {
                 // 验证token是否有效
-                if (username.equals(userDetails.getUsername())) {
+                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -80,7 +80,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 // }
             }
         }
-
         // 请求过滤器链
         filterChain.doFilter(request, response);
     }

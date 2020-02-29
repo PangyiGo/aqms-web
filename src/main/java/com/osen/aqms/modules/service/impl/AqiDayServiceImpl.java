@@ -96,10 +96,7 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
             MybatisPlusConfig.TableName.set(tableName);
             query.eq(AqiDay::getDeviceNo, device.getDeviceNo()).between(AqiDay::getDateTime, start, end);
             AqiDay aqiDay = super.getOne(query);
-            if (aqiDay == null) {
-                // 添加
-                aqiReportToDayModels.add(hourModel);
-            } else {
+            if (aqiDay != null) {
                 hourModel.setAqi(aqiDay.getAqi() + "");
                 hourModel.setQuality(aqiDay.getQuality());
                 hourModel.setLevel(aqiDay.getLevel() + "");
@@ -119,11 +116,11 @@ public class AqiDayServiceImpl extends ServiceImpl<AqiDayMapper, AqiDay> impleme
                 hourModel.setNo2Index(aqiDay.getNo2Index() + "");
                 hourModel.setCoIndex(aqiDay.getCoIndex() + "");
                 hourModel.setO3Index(aqiDay.getO3Index() + "");
-                // 添加
-                aqiReportToDayModels.add(hourModel);
             }
+            // 添加
+            aqiReportToDayModels.add(hourModel);
         }
-        return aqiReportToDayModels;
+        return aqiReportToDayModels.stream().sorted(Comparator.comparing(AqiReportToDayModel::getAqi).reversed()).collect(Collectors.toList());
     }
 
     @Override

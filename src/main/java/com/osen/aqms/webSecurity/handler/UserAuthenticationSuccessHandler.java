@@ -45,9 +45,9 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         logsLoginService.saveLogs(request, TipsMessage.LoginSuccess.getTips());
 
         // 生成token
-        // String token = jwtTokenUtil.generateToken(jwtUser);
+         String token = jwtTokenUtil.generateToken(jwtUser);
 
-        String jiami = jwtTokenUtil.jiami2username(jwtUser.getUsername());
+        // String jiami = jwtTokenUtil.jiami2username(jwtUser.getUsername());
 
         // TransferUserToJwt transferUserToJwt = JwtTokenUtil.toUser(jwtUser);
 
@@ -61,7 +61,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         RestResult<String> restResult = new RestResult<>();
         restResult.setCode(User_Login_Success.getCode());
         restResult.setMessage(User_Login_Success.getMessage());
-        restResult.setData(jiami);
+        restResult.setData(token);
 
         response.getWriter().write(JSON.toJSONString(restResult));
     }

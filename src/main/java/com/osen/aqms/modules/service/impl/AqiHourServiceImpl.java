@@ -173,10 +173,7 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
             MybatisPlusConfig.TableName.set(tableName);
             query.eq(AqiHour::getDeviceNo, device.getDeviceNo()).between(AqiHour::getDateTime, start, end);
             AqiHour aqiHour = super.getOne(query);
-            if (aqiHour == null) {
-                // 添加
-                aqiReportToHourModels.add(hourModel);
-            } else {
+            if (aqiHour != null) {
                 hourModel.setAqi(aqiHour.getAqi() + "");
                 hourModel.setQuality(aqiHour.getQuality());
                 hourModel.setLevel(aqiHour.getLevel() + "");
@@ -196,11 +193,11 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
                 hourModel.setNo2Index(aqiHour.getNo2Index() + "");
                 hourModel.setCoIndex(aqiHour.getCoIndex() + "");
                 hourModel.setO3Index(aqiHour.getO3Index() + "");
-                // 添加
-                aqiReportToHourModels.add(hourModel);
             }
+            // 添加
+            aqiReportToHourModels.add(hourModel);
         }
-        return aqiReportToHourModels;
+        return aqiReportToHourModels.stream().sorted(Comparator.comparing(AqiReportToHourModel::getAqi).reversed()).collect(Collectors.toList());
     }
 
     @Override
@@ -247,6 +244,7 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         aqiFeatureModel.setNowCo(nowAvg.getCo().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setNowO3(nowAvg.getO3().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setNowVoc(nowAvg.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
+
         aqiFeatureModel.setYeaAqi(yesAvg.getAqi());
         aqiFeatureModel.setYeaPM25(yesAvg.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setYeaPM10(yesAvg.getPm10().setScale(1, BigDecimal.ROUND_DOWN));
@@ -255,6 +253,7 @@ public class AqiHourServiceImpl extends ServiceImpl<AqiHourMapper, AqiHour> impl
         aqiFeatureModel.setYeaCo(yesAvg.getCo().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setYeaO3(yesAvg.getO3().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setYeaVoc(yesAvg.getVoc().setScale(1, BigDecimal.ROUND_DOWN));
+
         aqiFeatureModel.setMonAqi(monAvg.getAqi());
         aqiFeatureModel.setMonPM25(monAvg.getPm25().setScale(1, BigDecimal.ROUND_DOWN));
         aqiFeatureModel.setMonPM10(monAvg.getPm10().setScale(1, BigDecimal.ROUND_DOWN));

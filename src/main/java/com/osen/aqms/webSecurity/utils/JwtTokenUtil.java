@@ -39,8 +39,8 @@ public class JwtTokenUtil {
     // 保存jwt与jwtuser
     public static String ACCESS_TOKEN = "AccessToken_";
 
-    // 有效时间，默认6小时
-    public static final long EXPIRATION = 60 * 60 * 6000 * 6;
+    // 有效时间，默认7天
+    private static final long EXPIRATION = 60 * 60 * 24 * 7 * 1000;
 
     @Autowired
     private SymmetricCrypto symmetricCrypto;

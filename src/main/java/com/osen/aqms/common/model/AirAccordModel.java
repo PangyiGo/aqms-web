@@ -21,11 +21,11 @@ public class AirAccordModel {
 
     private String deviceName;
 
-    private String aqi = "NA";
+    private String aqi = "Null";
 
-    private String level = "NA";
+    private String level = "Null";
 
-    private String pollute = "NA";
+    private String pollute = "Null";
 
     private int count;
 
