@@ -14,7 +14,7 @@
                  open="(" close=")" separator=",">
             #{deviceNo}
         </foreach>
-        AND date_time = "${time}"
+        AND date_time = #{time}
     </select>
 
     <select id="getSensorHistory" resultType="com.osen.aqms.common.model.AqiSensorDayModel">
@@ -25,9 +25,9 @@
             ${tableName}
         WHERE
             (
-                device_no = ${deviceNo}
-                AND date_time BETWEEN "${start}"
-                AND "${end}"
+                device_no = #{deviceNo}
+                AND date_time BETWEEN #{start}
+                AND #{end}
             );
     </select>
 

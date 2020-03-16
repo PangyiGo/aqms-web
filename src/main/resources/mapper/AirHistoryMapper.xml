@@ -15,7 +15,7 @@
             ${tableName}
         WHERE
             (
-                device_no = ${deviceNo}
+                device_no = "${deviceNo}"
                 AND date_time BETWEEN "${start}"
                 AND "${end}"
             )
@@ -47,10 +47,10 @@
         FROM
              ${tableName}
         WHERE
-            device_no = ${deviceNo}
+            device_no = #{deviceNo}
             AND (
-                date_time BETWEEN "${start}"
-                AND "${end}"
+                date_time BETWEEN #{start}
+                AND #{end}
             )
     </select>
 </mapper>

@@ -36,6 +36,5 @@ public interface AirHistoryMapper extends BaseMapper<AirHistory> {
      * @param end       结束时间
      * @return 信息
      */
-    AirAccordMapperModel getAirAccord(@Param("tableName") String tableName, @Param("deviceNo") String deviceNo,
-                                      @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    AirAccordMapperModel getAirAccord(@Param("tableName") String tableName, @Param("deviceNo") String deviceNo, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
