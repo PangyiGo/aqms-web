@@ -1,7 +1,7 @@
 ## 系统开发配置
 spring:
   profiles:
-    active: pro
+    active: dev
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

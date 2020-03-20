@@ -153,7 +153,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                             } else {
                                 DeviceTreeModel areaNode = new DeviceTreeModel();
                                 areaNode.setLabel(area.getArea().trim().equals("") ? "三级地区" : area.getArea());
-                                areaNode.setCode("");
+                                areaNode.setCode(area.getAreaCode());
                                 areaNode.setDeviceNo("area");
                                 List<DeviceTreeModel> areaClid = new ArrayList<>(0);
                                 // 具体区级下的设备列表
