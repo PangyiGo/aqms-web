@@ -1,4 +1,2 @@
-2020-03-20 09:58:02.235 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2020-03-20 10:26:53.065 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2020-03-20 10:38:02.630 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
-2020-03-20 10:45:54.770 log message -> DatebookHikariCP - idleTimeout is close to or more than maxLifetime, disabling it.
+2020-04-02 11:04:41.998 log message -> UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
+2020-04-02 11:07:05.460 log message -> UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
